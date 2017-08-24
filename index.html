@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="FPLAnalyzer">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700"> -->
+	<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+	<link rel="stylesheet" href="./src/fonts.min.css">
+	<link rel="stylesheet" href="./src/styles.css">
+	<!-- <link rel="shortcut icon" type="image/x-icon" href="./src/favicon.ico"> -->
+	<title>Trello Reports - Elkhart</title>
+</head>
+
+<body ng-controller="FPLCtrl">
+	<div id="side-nav" ng-class="{'side-nav-open': sideNavOpen}">
+		<header>
+			<i class="material-icons" style="margin-right: 10px;">search</i>
+			<input type="text" placeholder="Search" ng-model="search.name" ng-change="filter()">
+		</header>
+		<ul>
+			<h2>Limit</h2>
+			<li>
+				<div class="checkbox">
+					<label><input type="checkbox" ng-model="search.limit" ng-change="filter()">
+						<i class="material-icons on">check_box</i>
+						<i class="material-icons off">check_box_outline_blank</i>
+					</label>
+				</div>
+				<input type="range" ng-model="search.limitSize" min="1" max="{{data.players.length}}" ng-change="filter()" ng-disabled="!search.limit">
+				&nbsp;
+				<input type="text" ng-model="search.limitSize" ng-change="filter()" ng-disabled="!search.limit" style="width: 50px;">
+			</li>
+			<h2>Sort by</h2>
+			<li>
+				<table class="select" tabindex="1" style="width: 300px;">
+					<thead>
+						<th id="sort-text">Name</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr><td ng-click="search.sort = 'web_name';">Name</td></tr>
+						<tr><td ng-click="search.sort = 'team';">Team</td></tr>
+						<tr><td ng-click="search.sort = 'element_type';">Pos</td></tr>
+						<tr><td ng-click="search.sort = 'total_points';">Total Points</td></tr>
+					</tbody>
+				</table>
+			</li>
+			<li>
+				<label><div class="checkbox">
+					<label><input type="checkbox" ng-model="search.reverse" ng-change="filter()">
+						<i class="material-icons on">check_box</i>
+						<i class="material-icons off">check_box_outline_blank</i>
+					</label>
+				</div>
+				<span ng-class="{accent: search.reverse}">Reverse sort</span></label>
+			</li>
+			<h2>Teams</h2>
+			<li>
+				<table class="select multi" tabindex="1" style="width: 300px;">
+					<thead>
+						<th>Select teams</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr><td>
+							<label><div class="checkbox">
+								<label><input type="checkbox" ng-model="search.teams.all" ng-change="filter()">
+									<i class="material-icons on">check_box</i>
+									<i class="material-icons off">check_box_outline_blank</i>
+								</label>
+							</div>
+							<span ng-class="{accent: search.teams.all}">All teams</span></label>
+						</td></tr>
+						<tr ng-repeat="team in data.teams"><td>
+							<label><div class="checkbox">
+								<label><input type="checkbox" ng-model="search.teams[team.id]" ng-change="filter()">
+									<i class="material-icons on">check_box</i>
+									<i class="material-icons off">check_box_outline_blank</i>
+								</label>
+							</div>
+							<span ng-class="{accent: search.teams[team.id]}">{{team.name}}</span></label>
+						</td></tr>
+					</tbody>
+				</table>
+			</li>
+			<h2>Positions</h2>
+			<li>
+				<table class="select multi" tabindex="1" style="width: 225px;">
+					<thead>
+						<th>Select positions</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr><td>
+							<label><div class="checkbox">
+								<label><input type="checkbox" ng-model="search.poss.all" ng-change="filter()">
+									<i class="material-icons on">check_box</i>
+									<i class="material-icons off">check_box_outline_blank</i>
+								</label>
+							</div>
+							<span ng-class="{accent: search.poss.all}">All positions</span></label>
+						</td></tr>
+						<tr ng-repeat="pos in data.element_types"><td>
+							<label><div class="checkbox">
+								<label><input type="checkbox" ng-model="search.poss[pos.id]" ng-change="filter()">
+									<i class="material-icons on">check_box</i>
+									<i class="material-icons off">check_box_outline_blank</i>
+								</label>
+							</div>
+							<span ng-class="{accent: search.poss[pos.id]}">{{pos.plural_name}}</span></label>
+						</td></tr>
+					</tbody>
+				</table>
+			</li>
+			<h2>Due Complete</h2>
+			<li>
+				<table class="select" tabindex="1">
+					<thead>
+						<th>None</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr><td ng-click="search.dueComplete = undefined; filter()">None</td></tr>
+						<tr><td ng-click="search.dueComplete = 'true'; filter()">True</td></tr>
+						<tr><td ng-click="search.dueComplete = 'false'; filter()">False</td></tr>
+					</tbody>
+				</table>
+			</li>
+			<h2>Checked Items</h2>
+			<li>
+				<input type="number" ng-model="search.checkItemsStart" ng-change="filter()">
+				&nbsp;to&nbsp;
+				<input type="number" ng-model="search.checkItemsEnd" ng-change="filter()">
+				&nbsp;&nbsp;
+				<table class="select" tabindex="1">
+					<thead>
+						<th>%</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr><td ng-click="search.checkItemsUnit = 'items'; filter()">Items</td></tr>
+						<tr><td ng-click="search.checkItemsUnit = 'percent'; filter()">%</td></tr>
+					</tbody>
+				</table>
+			</li>
+			<h2>Checked Items (Account Manager)</h2>
+			<li>
+				<input type="number" ng-model="search.acctMgrCheckItemsStart" ng-change="filter()">
+				&nbsp;to&nbsp;
+				<input type="number" ng-model="search.acctMgrCheckItemsEnd" ng-change="filter()">
+				&nbsp;&nbsp;
+				<table class="select" tabindex="1">
+					<thead>
+						<th>%</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr><td ng-click="search.acctMgrCheckItemsUnit = 'items'; filter()">Items</td></tr>
+						<tr><td ng-click="search.acctMgrCheckItemsUnit = 'percent'; filter()">%</td></tr>
+					</tbody>
+				</table>
+			</li>
+		</ul>
+		<footer>
+			<input type="button" value="Clear filters" onclick="$('#cards .select th').eq(0).text('Name');" ng-click="resetSearch(); filter()">
+		</footer>
+	</div>
+
+	<div id="content" ng-class="{'side-nav-open': sideNavOpen}">
+		<header>
+			<h1>Trello Reports - Elkhart NPD</h1>
+			<input type="button" value="Link to this report" ng-click="openURL()">
+			<div id="side-nav-toggle" ng-click="sideNavOpen = !sideNavOpen">
+				<i ng-show="!sideNavOpen" class="material-icons">filter_list</i>
+				<i ng-show="sideNavOpen" class="material-icons" ng-cloak>chevron_right</i>
+			</div>
+		</header>
+
+		<main>
+			<span class="small-text" style="float: right" ng-cloak>Viewing <span class="accent">{{search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0)}}</span> of {{data.elements.length || 0}} total players</span>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Team</th>
+						<th>Pos</th>
+						<th>Total Points</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody ng-cloak>
+					<tr ng-repeat="player in filteredPlayers | orderBy: search.sort:search.reverse | limitTo: search.limit ? search.limitSize: data.players.length">
+						<td>{{player.web_name}}</td>
+						<td>{{data.teams[player.team - 1].name}}</td>
+						<td>{{data.element_types[player.element_type - 1].singular_name_short}}</td>
+						<td>{{player.total_points}}</td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</main>
+
+		<footer>
+			<div style="height: 300px; width: 100%; background: #eeeeee;"></div>
+			<div style="height: 100px; width: 100%; background: #9e9e9e;"></div>
+		</footer>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<script src="./src/controller.js"></script>
+	<script src="./src/script.js"></script>
+</body>
+
+</html>
