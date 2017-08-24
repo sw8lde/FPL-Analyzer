@@ -27,22 +27,27 @@
 						<i class="material-icons off">check_box_outline_blank</i>
 					</label>
 				</div>
-				<input type="range" ng-model="search.limitSize" min="1" max="{{data.players.length}}" ng-change="filter()" ng-disabled="!search.limit">
+				<input type="range" ng-model="search.limitSize" min="1" max="{{ data.players.length }}" ng-change="filter()" ng-disabled="!search.limit">
 				&nbsp;
 				<input type="text" ng-model="search.limitSize" ng-change="filter()" ng-disabled="!search.limit" style="width: 50px;">
 			</li>
-			<h2>Sort by</h2>
+			<h2>Show/hide columns</h2>
 			<li>
-				<table class="select" tabindex="1" style="width: 300px;">
+				<table class="select multi" tabindex="1" style="width: 300px;">
 					<thead>
-						<th id="sort-text">Name</th>
+						<th>Select columns</th>
 						<th><i class="material-icons">arrow_drop_down</i></th>
 					</thead>
 					<tbody style="display: none;">
-						<tr><td ng-click="search.sort = 'web_name';">Name</td></tr>
-						<tr><td ng-click="search.sort = 'team';">Team</td></tr>
-						<tr><td ng-click="search.sort = 'element_type';">Pos</td></tr>
-						<tr><td ng-click="search.sort = 'total_points';">Total Points</td></tr>
+						<tr ng-repeat="col in cols"><td>
+							<label><div class="checkbox">
+								<label><input type="checkbox" ng-model="cols[col.id].show" ng-change="filter()">
+									<i class="material-icons on">check_box</i>
+									<i class="material-icons off">check_box_outline_blank</i>
+								</label>
+							</div>
+							<span ng-class="{accent: cols[col.id].show}">{{ col.name }}</span></label>
+						</td></tr>
 					</tbody>
 				</table>
 			</li>
@@ -79,7 +84,7 @@
 									<i class="material-icons off">check_box_outline_blank</i>
 								</label>
 							</div>
-							<span ng-class="{accent: search.teams[team.id]}">{{team.name}}</span></label>
+							<span ng-class="{accent: search.teams[team.id]}">{{ team.name }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
@@ -108,62 +113,26 @@
 									<i class="material-icons off">check_box_outline_blank</i>
 								</label>
 							</div>
-							<span ng-class="{accent: search.poss[pos.id]}">{{pos.plural_name}}</span></label>
+							<span ng-class="{accent: search.poss[pos.id]}">{{ pos.plural_name }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
 			</li>
-			<h2>Due Complete</h2>
+			<h2>Total Points</h2>
 			<li>
-				<table class="select" tabindex="1">
-					<thead>
-						<th>None</th>
-						<th><i class="material-icons">arrow_drop_down</i></th>
-					</thead>
-					<tbody style="display: none;">
-						<tr><td ng-click="search.dueComplete = undefined; filter()">None</td></tr>
-						<tr><td ng-click="search.dueComplete = 'true'; filter()">True</td></tr>
-						<tr><td ng-click="search.dueComplete = 'false'; filter()">False</td></tr>
-					</tbody>
-				</table>
-			</li>
-			<h2>Checked Items</h2>
-			<li>
-				<input type="number" ng-model="search.checkItemsStart" ng-change="filter()">
+				<input type="number" ng-model="search.totalPtsStart" ng-change="filter()">
 				&nbsp;to&nbsp;
-				<input type="number" ng-model="search.checkItemsEnd" ng-change="filter()">
-				&nbsp;&nbsp;
-				<table class="select" tabindex="1">
-					<thead>
-						<th>%</th>
-						<th><i class="material-icons">arrow_drop_down</i></th>
-					</thead>
-					<tbody style="display: none;">
-						<tr><td ng-click="search.checkItemsUnit = 'items'; filter()">Items</td></tr>
-						<tr><td ng-click="search.checkItemsUnit = 'percent'; filter()">%</td></tr>
-					</tbody>
-				</table>
+				<input type="number" ng-model="search.totalPtsEnd" ng-change="filter()">
 			</li>
-			<h2>Checked Items (Account Manager)</h2>
+			<h2>Form</h2>
 			<li>
-				<input type="number" ng-model="search.acctMgrCheckItemsStart" ng-change="filter()">
+				<input type="number" ng-model="search.formStart" ng-change="filter()">
 				&nbsp;to&nbsp;
-				<input type="number" ng-model="search.acctMgrCheckItemsEnd" ng-change="filter()">
-				&nbsp;&nbsp;
-				<table class="select" tabindex="1">
-					<thead>
-						<th>%</th>
-						<th><i class="material-icons">arrow_drop_down</i></th>
-					</thead>
-					<tbody style="display: none;">
-						<tr><td ng-click="search.acctMgrCheckItemsUnit = 'items'; filter()">Items</td></tr>
-						<tr><td ng-click="search.acctMgrCheckItemsUnit = 'percent'; filter()">%</td></tr>
-					</tbody>
-				</table>
+				<input type="number" ng-model="search.formEnd" ng-change="filter()">
 			</li>
 		</ul>
 		<footer>
-			<input type="button" value="Clear filters" onclick="$('#cards .select th').eq(0).text('Name');" ng-click="resetSearch(); filter()">
+			<input type="button" value="Clear filters" ng-click="resetTable(); filter()">
 		</footer>
 	</div>
 
@@ -178,32 +147,37 @@
 		</header>
 
 		<main>
-			<span class="small-text" style="float: right" ng-cloak>Viewing <span class="accent">{{search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0)}}</span> of {{data.elements.length || 0}} total players</span>
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Team</th>
-						<th>Pos</th>
-						<th>Total Points</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody ng-cloak>
-					<tr ng-repeat="player in filteredPlayers | orderBy: search.sort:search.reverse | limitTo: search.limit ? search.limitSize: data.players.length">
-						<td>{{player.web_name}}</td>
-						<td>{{data.teams[player.team - 1].name}}</td>
-						<td>{{data.element_types[player.element_type - 1].singular_name_short}}</td>
-						<td>{{player.total_points}}</td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
+			<div style="display: flex; align-items: center; justify-content: flex-end; padding: 10px 0;">
+				<span class="small-text" ng-cloak>Viewing <span class="accent">{{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}</span> of {{ data.elements.length || 0 }} total players</span>
+			</div>
+			<div id="table-wrapper">
+				<table id="table">
+					<thead>
+						<tr>
+							<th ng-click="toggleSort(cols[0])" ng-show="cols[0].show"><div>{{ cols[0].name }}<div class="dir"><i class="material-icons">arrow_drop_up</i></div></div></th>
+							<th ng-click="toggleSort(cols[1])" ng-show="cols[1].show"><div>{{ cols[1].name }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[2])" ng-show="cols[2].show"><div>{{ cols[2].name }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[3])" ng-show="cols[3].show"><div>{{ cols[3].name }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[4])" ng-show="cols[4].show"><div>{{ cols[4].name }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[5])" ng-show="cols[5].show"><div>{{ cols[5].name }}<div class="dir"></div></div></th>
+						</tr>
+					</thead>
+					<tbody ng-cloak>
+						<tr ng-repeat="player in filteredPlayers | orderBy: search.sort:search.reverse | limitTo: search.limit ? search.limitSize: data.players.length">
+							<td ng-show="cols[0].show">{{ player.web_name }}</td>
+							<td ng-show="cols[1].show">{{ data.teams[player.team - 1].name }}</td>
+							<td ng-show="cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
+							<td ng-show="cols[3].show">{{ player.total_points }}</td>
+							<td ng-show="cols[4].show">{{ player.form }}</td>
+							<td ng-show="cols[5].show">{{ player.now_cost / 10 }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</main>
 
 		<footer>
-			<div style="height: 300px; width: 100%; background: #eeeeee;"></div>
+			<div style="height: 200px; width: 100%; background: #eeeeee;"></div>
 			<div style="height: 100px; width: 100%; background: #9e9e9e;"></div>
 		</footer>
 	</div>

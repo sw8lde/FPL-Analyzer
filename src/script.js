@@ -9,9 +9,9 @@ function exportToCSV(fileName, rows) {
 			};
 			let result = innerValue.replace(/"/g, '""');
 			if(result.search(/("|,|\n)/g) >= 0)
-			result = '"' + result + '"';
+				result = '"' + result + '"';
 			if(j > 0)
-			finalVal += ',';
+				finalVal += ',';
 			finalVal += result;
 		}
 		return finalVal + '\n';
@@ -39,16 +39,22 @@ function exportToCSV(fileName, rows) {
 }
 
 $(function() {
-	$('#side-nav .select, .filters-popup .select').focusout(function() {
+	$('#table-wrapper').scroll(function() {
+		let $this = $(this);
+
+		$this.find('thead').css('transform', `translateY(${$this.scrollTop()}px)`);
+	});
+
+	$('#side-nav .select').focusout(function() {
    	$(this).removeClass('open')
    	.find('tbody').slideUp(200);
 	});
-	$('#side-nav .select thead, .filters-popup .select thead').click(function() {
+	$('#side-nav .select thead').click(function() {
 		$(this).next().width($(this).width())
 		.slideToggle(200)
 		.parent().toggleClass('open');
 	});
-	$('#side-nav .select:not(.multi) td, .filters-popup .select:not(.multi) td').click(function() {
+	$('#side-nav .select:not(.multi) td').click(function() {
 		$(this).parent().parent().slideUp(200)
 		.parent().removeClass('open')
 		.find('th').eq(0).text($(this).text());
