@@ -39,8 +39,8 @@ function exportToCSV(fileName, rows) {
 
 function between(num, low, high) {
 	if(low !==0) low = low || -9999;
-	if(high !==0) high = high || -9999;
-	return (num >= low) && (high >= low && num <= high || true);
+	if(high !==0) high = high || 9999;
+	return (num >= low) && ((high >= low && num <= high) || high < low);
 }
 
 $(function() {

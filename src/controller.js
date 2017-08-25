@@ -55,6 +55,40 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				poss: { all: true }
 			};
 
+			$scope.filters = [
+				{name: 'Total Points', field: 'total_points'},
+				{name: 'GW Points', field: 'event_points'},
+				{name: 'PPG', field: 'points_per_game'},
+				{name: 'PPMil', field: 'value_season'},
+				{name: 'Form', field: 'form'},
+				{name: 'FPMil', field: 'value_form'},
+				{name: 'Price', field: 'now_cost'},
+				{name: 'VAPMil', field: 'value_added_per_mil'},
+				{name: 'Minutes', field: 'minutes'},
+				{name: 'Transfers In', field: 'transfers_in'},
+				{name: 'Transfers Out', field: 'transfers_out'},
+				{name: 'Net Transfers', field: 'transfers_diff'},
+				{name: 'Transfers In (GW)', field: 'transfers_in_event'},
+				{name: 'Transfers out (GW)', field: 'transfers_out_event'},
+				{name: 'Net Transfers (GW)', field: 'transfers_diff_event'},
+				{name: 'Selected By', field: 'selected_by_percent'},
+				{name: 'Cost Change', field: 'cost_change_start'},
+				{name: 'Cost Change (GW)', field: 'cost_change_event'},
+				{name: 'ICT', field: 'ict_index'},
+				{name: 'Threat', field: 'threat'},
+				{name: 'Creativity', field: 'creativity'},
+				{name: 'Influence', field: 'influence'},
+				{name: 'Bonus', field: 'bonus'},
+				{name: 'BPS', field: 'bps'},
+				{name: 'Goals', field: 'goals_scored'},
+				{name: 'Assists', field: 'assists'},
+				{name: 'CS', field: 'clean_sheets'},
+				{name: 'Saves', field: 'saves'},
+				{name: 'Conceded', field: 'goals_conceded'},
+				{name: 'Yellow Cards', field: 'yellow_cards'},
+				{name: 'Red Cards', field: 'red_cards'},
+			];
+
 			$scope.cols = [
 				{ id: 0, name: 'Name', field: 'web_name', show: true },
 				{ id: 1, name: 'Team', field: 'team', show: true },
@@ -70,10 +104,10 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				{ id: 11, name: 'Minutes', field: 'minutes', show: true },
 				{ id: 12, name: 'Transfers In', field: 'transfers_in', show: false },
 				{ id: 13, name: 'Transfers Out', field: 'transfers_out', show: false },
-				{ id: 14, name: 'Net Transfers', field: 'transfers_in - transfers_out', show: false },
+				{ id: 14, name: 'Net Transfers', field: 'transfers_diff', show: false },
 				{ id: 15, name: 'Transfers In (GW)', field: 'transfers_in_event', show: false },
 				{ id: 16, name: 'Transfers out (GW)', field: 'transfers_out_event', show: false },
-				{ id: 17, name: 'Net Transfers (GW)', field: 'transfers_in_event - transfers_out_event', show: false },
+				{ id: 17, name: 'Net Transfers (GW)', field: 'transfers_diff_event', show: false },
 				{ id: 18, name: 'Selected By', field: 'selected_by_percent', show: true },
 				{ id: 19, name: 'Cost Change', field: 'cost_change_start', show: true },
 				{ id: 20, name: 'Cost Change (GW)', field: 'cost_change_event', show: true },
@@ -109,6 +143,8 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				player.value_form = parseFloat(player.value_form);
 				player.value_season = parseFloat(player.value_season);
 				player.value_added_per_mil = (player.points_per_game - 2) / (player.now_cost / 10);
+				player.transfers_diff = player.transfers_in - player.transfers_out;
+				player.transfers_diff_event = player.transfers_in_event - player.transfers_out_event;
 
 				if(s.name &&
 					player.web_name.toLowerCase().indexOf(s.name.toLowerCase()) === -1)
@@ -120,16 +156,14 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				if(!s.poss.all && !s.poss[player.element_type])
 					include = false;
 
-				if(!between(player.total_points, s.totalPtsLow, s.totalPtsHigh))
-					include = false;
-
-				if(!between(player.form, s.formLow, s.formHigh))
-					include = false;
-
-				if(!between(player.now_cost / 10, s.priceLow, s.priceHigh))
-					include = false;
-
-
+				$scope.filters.some(filter => {
+					if(filter.show && !between(player[filter.field], filter.low, filter.high)) {
+						include = false;
+						return true;
+					}
+					return false;
+				});
+				
 				if(include) filtered.push(player);
 			});
 

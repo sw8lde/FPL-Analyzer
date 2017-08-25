@@ -31,29 +31,29 @@
 				&nbsp;
 				<input type="text" ng-model="search.limitSize" ng-change="filter()" ng-disabled="!search.limit" style="width: 50px;">
 			</li>
-			<h2>Show/hide columns</h2>
+			<h2>Columns</h2>
 			<li>
-				<table class="select multi" tabindex="1" style="width: 300px;">
+				<table class="select multi" tabindex="1" style="width: 225px;">
 					<thead>
-						<th>Select columns</th>
+						<th>show/hide</th>
 						<th><i class="material-icons">arrow_drop_down</i></th>
 					</thead>
 					<tbody style="display: none;">
 						<tr ng-repeat="col in cols"><td>
 							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="cols[col.id].show" ng-change="filter()">
+								<label><input type="checkbox" ng-model="col.show" ng-change="filter()">
 									<i class="material-icons on">check_box</i>
 									<i class="material-icons off">check_box_outline_blank</i>
 								</label>
 							</div>
-							<span ng-class="{accent: cols[col.id].show}">{{ col.name }}</span></label>
+							<span ng-class="{accent: col.show}">{{ col.name }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
 			</li>
 			<h2>Teams</h2>
 			<li>
-				<table class="select multi" tabindex="1" style="width: 300px;">
+				<table class="select multi" tabindex="1" style="width: 225px;">
 					<thead>
 						<th>Select teams</th>
 						<th><i class="material-icons">arrow_drop_down</i></th>
@@ -109,31 +109,40 @@
 					</tbody>
 				</table>
 			</li>
-			<h2>Total Points</h2>
+			<h2>Filters</h2>
 			<li>
-				<input type="number" ng-model="search.totalPtsLow" ng-change="filter()">
-				&nbsp;to&nbsp;
-				<input type="number" ng-model="search.totalPtsHigh" ng-change="filter()">
+				<table class="select multi" tabindex="1" style="width: 225px;">
+					<thead>
+						<th>show/hide</th>
+						<th><i class="material-icons">arrow_drop_down</i></th>
+					</thead>
+					<tbody style="display: none;">
+						<tr ng-repeat="filter in filters"><td>
+							<label><div class="checkbox">
+								<label><input type="checkbox" ng-model="filter.show">
+									<i class="material-icons on">check_box</i>
+									<i class="material-icons off">check_box_outline_blank</i>
+								</label>
+							</div>
+							<span ng-class="{accent: filter.show}">{{ filter.name }}</span></label>
+						</td></tr>
+					</tbody>
+				</table>
 			</li>
-			<h2>Form</h2>
-			<li>
-				<input type="number" ng-model="search.formLow" ng-change="filter()">
-				&nbsp;to&nbsp;
-				<input type="number" ng-model="search.formHigh" ng-change="filter()">
-			</li>
-			<h2>Price</h2>
-			<li>
-				<input type="number" ng-model="search.priceLow" ng-change="filter()">
-				&nbsp;to&nbsp;
-				<input type="number" ng-model="search.priceHigh" ng-change="filter()">
-			</li>
+			<div ng-repeat="filter in filters" ng-show="filter.show">
+				<h2>{{ filter.name }}</h2>
+				<li>
+					<input type="number" ng-model="filter.low" ng-change="$parent.filter()">
+					&nbsp;to&nbsp;
+					<input type="number" ng-model="filter.high" ng-change="$parent.filter()">
+				</li>
+			</div>
 		</ul>
 		<footer>
 			<input type="button" value="Clear filters" ng-click="resetTable(); filter()">
 		</footer>
 	</div>
 
-	<!-- <div id="blur" onclick="$(this).removeClass('open')"> -->
 	<div id="blur"onclick="$(this).fadeOut(200)" style="display: none;">
 		<div id="popup">
 			<div id="popup-header">
@@ -170,7 +179,7 @@
 				<tr>
 					<td>{{ (popupPlayer.now_cost / 10).toFixed(1) }}</td>
 					<td>{{ popupPlayer.selected_by_percent }}%</td>
-					<td>{{ popupPlayer.transfers_in - popupPlayer.transfers_out }}</td>
+					<td>{{ popupPlayer.transfers_diff }}</td>
 					<td>{{ popupPlayer.cost_change_start }}</td>
 					<td>{{ popupPlayer.minutes }}</td>
 				</tr>
@@ -248,10 +257,10 @@
 							<td ng-show="cols[11].show">{{ ::player.minutes }}</td>
 							<td ng-show="cols[12].show">{{ ::player.transfers_in }}</td>
 							<td ng-show="cols[13].show">{{ ::player.transfers_out }}</td>
-							<td ng-show="cols[14].show">{{ ::player.transfers_in - player.transfers_out }}</td>
+							<td ng-show="cols[14].show">{{ ::player.transfers_diff }}</td>
 							<td ng-show="cols[15].show">{{ ::player.transfers_in_event }}</td>
 							<td ng-show="cols[16].show">{{ ::player.transfers_out_event }}</td>
-							<td ng-show="cols[17].show">{{ ::player.transfers_in_event - player.transfers_out_event }}</td>
+							<td ng-show="cols[17].show">{{ ::player.transfers_diff_event }}</td>
 							<td ng-show="cols[18].show">{{ ::player.selected_by_percent }}%</td>
 							<td ng-show="cols[19].show">{{ ::(player.cost_change_start / 10).toFixed(1) }}</td>
 							<td ng-show="cols[20].show">{{ ::(player.cost_change_event / 10).toFixed(1) }}</td>
