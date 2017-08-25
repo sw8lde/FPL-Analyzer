@@ -1,4 +1,3 @@
-
 function exportToCSV(fileName, rows) {
 	let processRow = function(row) {
 		let finalVal = '';
@@ -36,6 +35,12 @@ function exportToCSV(fileName, rows) {
 			document.body.removeChild(link);
 		}
 	}
+}
+
+function between(num, low, high) {
+	if(low !==0) low = low || -9999;
+	if(high !==0) high = high || -9999;
+	return (num >= low) && (high >= low && num <= high || true);
 }
 
 $(function() {

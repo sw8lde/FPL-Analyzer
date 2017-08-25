@@ -295,6 +295,65 @@ body {
 	border-top: 1px solid rgba(0,0,0,.14);
 }
 
+#blur {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(0,0,0,.5);
+	cursor: default;
+	z-index: 2;
+}
+#popup {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	background: #fff;
+}
+#popup-header {
+	position: relative;
+}
+#popup-header img {
+	margin: 20px 100px 0 20px;
+	height: 100px;
+    vertical-align: bottom;
+}
+#popup-header > div {
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 20px;
+}
+#popup-header div > div+div {
+	font-size: 16px;
+	margin-top: 10px;
+}
+#popup-name {
+	font-size: 18px;
+	font-weight: 500;
+}
+#popup-number {
+	position: absolute;
+	top: -30px;
+	right: 0;
+	font-size: 150px;
+	color: rgba(0,0,0,.12);
+	font-weight: 500;
+}
+#popup table {
+	border-collapse: collapse;
+	width: 100%;
+	text-align: center;
+}
+#popup table tr:nth-child(odd) {
+	font-weight: 500;
+	background: #f5f5f5;
+}
+#popup table td {
+	padding: 5px 10px;
+}
+
 #content {
 	position: relative;
 	margin-right: 0;
@@ -364,6 +423,7 @@ body {
 }
 #table {
 	border-collapse: collapse;
+	min-width: 100%;
 }
 #table thead {
 	background: #f44336;
@@ -393,4 +453,10 @@ body {
 #table td {
 	padding: 5px;
 	text-align: center;
+}
+#loading {
+	padding: 20px;
+	text-align: center;
+	font-size: 18px;
+	color: rgba(0,0,0,.54);
 }
