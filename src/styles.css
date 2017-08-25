@@ -140,8 +140,8 @@ a.button:hover {
 .select tbody {
 	position: absolute;
 	background: #fff;
-    max-height: 400px;
-    overflow-y: auto;
+  max-height: 300px;
+  overflow-y: auto;
 	box-shadow: 0 0 2px rgba(0,0,0,.12),
 		0 2px 4px rgba(0,0,0,.24);
 	z-index: 1;
