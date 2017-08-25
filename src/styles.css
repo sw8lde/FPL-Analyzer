@@ -14,7 +14,7 @@ input[type=range]::-webkit-slider-runnable-track {
 	width: 100%;
 	height: 4px;
 	cursor: pointer;
-	background: #f44336;
+	background: #38003C;
 }
 input[type=range]:disabled::-webkit-slider-runnable-track {
 	background: #bdbdbd;
@@ -23,7 +23,7 @@ input[type=range]::-webkit-slider-thumb {
 	height: 16px;
 	width: 16px;
 	border-radius: 50px;
-	background: #f44336;
+	background: #38003C;
 	cursor: pointer;
 	-webkit-appearance: none;
 	margin-top: -6px;
@@ -32,13 +32,13 @@ input[type=range]:disabled::-webkit-slider-thumb {
 	background: #bdbdbd;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-	background: #f44336;
+	background: #38003C;
 }
 input[type=range]::-moz-range-track {
 	width: 100%;
 	height: 4px;
 	cursor: pointer;
-	background: #f44336;
+	background: #38003C;
 }
 input[type=range]:disabled::-moz-range-track {
 	background: #bdbdbd;
@@ -48,7 +48,7 @@ input[type=range]::-moz-range-thumb {
 	width: 16px;
 	border-radius: 50px;
 	border: none;
-	background: #f44336;
+	background: #38003C;
 	cursor: pointer;
 }
 input[type=range]:disabled::-moz-range-thumb {
@@ -61,7 +61,7 @@ input[type=text], input[type=number] {
 }
 input[type=text]:focus, input[type=number]:focus {
 	outline: none;
-	border-color: #f44336;
+	border-color: #38003C;
 }
 input[type=text]:disabled, input[type=number]:disabled {
 	background: transparent;
@@ -73,7 +73,7 @@ input[type=button] {
 	border: none;
 	border-radius: 0;
 	font-size: 14px;
-	color: #f44336;
+	color: #38003C;
 	font-weight: 700;
 	text-decoration: none;
 	text-transform: uppercase;
@@ -86,7 +86,7 @@ input[type=button]:focus {outline: none;}
 
 a.button {
 	padding: 5px 10px;
-	color: #f44336;
+	color: #38003C;
 	font-size: 14px;
 	line-height: 27px;
 	font-weight: 700;
@@ -121,7 +121,7 @@ a.button:hover {
 .select.open thead:hover {
 	box-shadow: none;
 }
-.select.open thead {border: #f44336;}
+.select.open thead {border: #38003C;}
 .select th:nth-child(1) {
 	padding: 5px;
 	font-weight: normal;
@@ -182,7 +182,7 @@ div.checkbox {
 	position: absolute;
 	left: 0;
 	top: 0;
-	color: #f44336;
+	color: #38003C;
 	transition: opacity .2s linear;
 }
 .checkbox input[type=checkbox]:checked + .on {opacity: 1;}
@@ -192,7 +192,7 @@ div.checkbox {
 	color: rgba(0,0,0,.54);
 	font-size: 14px;
 }
-.accent {color: #f44336;}
+.accent {color: #38003C;}
 
 div.hr {
 	width: 100%;
@@ -202,12 +202,7 @@ div.hr {
 	margin: 5px 0;
 }
 .header {
-	background: #f44336 !important;
-	font-weight: 500;
-	color: #fff;
-}
-.header2 {
-	background: #e57373 !important;
+	background: #38003C !important;
 	font-weight: 500;
 	color: #fff;
 }
@@ -278,9 +273,9 @@ body {
 #side-nav li input {
 	max-width: 100px;
 	font: 16px 'Roboto';
-	color: #f44336;
+	color: #38003C;
 }
-#side-nav .select th {color: #f44336;}
+#side-nav .select th {color: #38003C;}
 #side-nav .select tbody {margin-bottom: 97px;}
 #side-nav .checkbox {margin-right: 15px;}
 #side-nav footer {
@@ -414,7 +409,7 @@ body {
 }
 
 #table-wrapper {
-	height: 500px;
+	height: 700px;
 	overflow: auto;
 	resize: vertical;
 	background: #fff;
@@ -426,7 +421,7 @@ body {
 	min-width: 100%;
 }
 #table thead {
-	background: #f44336;
+	background: #38003C;
 }
 #table th {
 	padding: 15px;

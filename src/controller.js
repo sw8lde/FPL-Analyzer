@@ -59,11 +59,11 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				{name: 'Total Points', field: 'total_points'},
 				{name: 'GW Points', field: 'event_points'},
 				{name: 'PPG', field: 'points_per_game'},
-				{name: 'PPMil', field: 'value_season'},
+				{name: 'PPM', field: 'value_season'},
 				{name: 'Form', field: 'form'},
-				{name: 'FPMil', field: 'value_form'},
+				{name: 'FPM', field: 'value_form'},
 				{name: 'Price', field: 'now_cost'},
-				{name: 'VAPMil', field: 'value_added_per_mil'},
+				{name: 'VAPM', field: 'value_added_per_mil'},
 				{name: 'Minutes', field: 'minutes'},
 				{name: 'Transfers In', field: 'transfers_in'},
 				{name: 'Transfers Out', field: 'transfers_out'},
@@ -96,11 +96,11 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				{ id: 3, name: 'Total Points', field: 'total_points', show: true },
 				{ id: 4, name: 'GW Points', field: 'event_points', show: true },
 				{ id: 5, name: 'PPG', field: 'points_per_game', show: false },
-				{ id: 6, name: 'PPMil', field: 'value_season', show: false },
+				{ id: 6, name: 'PPM', field: 'value_season', show: false },
 				{ id: 7, name: 'Form', field: 'form', show: true },
-				{ id: 8, name: 'FPMil', field: 'value_form', show: false },
+				{ id: 8, name: 'FPM', field: 'value_form', show: false },
 				{ id: 9, name: 'Price', field: 'now_cost', show: true },
-				{ id: 10, name: 'VAPMil', field: 'value_added_per_mil', show: true },
+				{ id: 10, name: 'VAPM', field: 'value_added_per_mil', show: true },
 				{ id: 11, name: 'Minutes', field: 'minutes', show: true },
 				{ id: 12, name: 'Transfers In', field: 'transfers_in', show: false },
 				{ id: 13, name: 'Transfers Out', field: 'transfers_out', show: false },
@@ -163,7 +163,7 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 					}
 					return false;
 				});
-				
+
 				if(include) filtered.push(player);
 			});
 
