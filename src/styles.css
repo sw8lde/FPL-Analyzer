@@ -298,7 +298,7 @@ body {
 	right: 0;
 	background: rgba(0,0,0,.5);
 	cursor: default;
-	z-index: 2;
+	z-index: 20;
 }
 #popup {
 	position: absolute;
@@ -434,7 +434,10 @@ body {
 	justify-content: center;
 	cursor: pointer;
 }
-#table .dir {width: 24px;}
+#table th:nth-child(n+3) > div {
+	justify-content: flex-end;
+}
+#table .dir {width: 24px; height: 24px;}
 #table .dir i.material-icons {
 	color: #fff;
 }
@@ -447,7 +450,11 @@ body {
 }
 #table td {
 	padding: 5px;
-	text-align: center;
+	text-align: left;
+}
+#table td:nth-child(n+3) {
+	text-align: right;
+	padding-right: 40px;
 }
 #loading {
 	padding: 20px;
