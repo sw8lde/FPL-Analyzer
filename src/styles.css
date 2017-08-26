@@ -434,6 +434,25 @@ body {
 	justify-content: center;
 	cursor: pointer;
 }
+#table th > div.abbr {
+	position: relative;
+	text-decoration: underline;
+}
+#table div.full_label {
+	position: absolute;
+	top: 125%;
+	display: none;
+	min-width: 100px;
+	padding: 10px;
+	background: #fff;
+	font-weight: normal;
+	color: #212121;
+	box-shadow: 0 0 2px rgba(0,0,0,.12),
+	0 0 4px rgba(0,0,0,.24);
+}
+#table th > div.abbr:hover div.full_label{
+	display: block;
+}
 #table th:nth-child(n+3) > div {
 	justify-content: flex-end;
 }

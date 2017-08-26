@@ -46,7 +46,7 @@
 									<i class="material-icons off">check_box_outline_blank</i>
 								</label>
 							</div>
-							<span ng-class="{accent: col.show}">{{ col.name }}</span></label>
+							<span ng-class="{accent: col.show}">{{ col.label }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
@@ -124,13 +124,13 @@
 									<i class="material-icons off">check_box_outline_blank</i>
 								</label>
 							</div>
-							<span ng-class="{accent: filter.show}">{{ filter.name }}</span></label>
+							<span ng-class="{accent: filter.show}">{{ filter.label }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
 			</li>
 			<div ng-repeat="filter in filters" ng-show="filter.show">
-				<h2>{{ filter.name }}</h2>
+				<h2>{{ filter.label }}</h2>
 				<li>
 					<input type="number" ng-model="filter.low" ng-change="$parent.filter()">
 					&nbsp;to&nbsp;
@@ -177,7 +177,7 @@
 					<td>Minutes</td>
 				</tr>
 				<tr>
-					<td>{{ (popupPlayer.now_cost / 10).toFixed(1) }}</td>
+					<td>£{{ (popupPlayer.now_cost / 10).toFixed(1) }}</td>
 					<td>{{ popupPlayer.selected_by_percent }}%</td>
 					<td>{{ popupPlayer.transfers_diff }}</td>
 					<td>{{ popupPlayer.cost_change_start }}</td>
@@ -205,40 +205,45 @@
 				<table id="table" ng-cloak>
 					<thead>
 						<tr>
-							<th ng-click="toggleSort(cols[0])" ng-show="cols[0].show"><div>{{ ::cols[0].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[1])" ng-show="cols[1].show"><div>{{ ::cols[1].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[2])" ng-show="cols[2].show"><div>{{ ::cols[2].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[3])" ng-show="cols[3].show"><div>{{ ::cols[3].name }}<div class="dir"><i class="material-icons">arrow_drop_down</i></div></div></th>
-							<th ng-click="toggleSort(cols[4])" ng-show="cols[4].show"><div>{{ ::cols[4].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[5])" ng-show="cols[5].show"><div>{{ ::cols[5].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[6])" ng-show="cols[6].show"><div>{{ ::cols[6].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[7])" ng-show="cols[7].show"><div>{{ ::cols[7].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[8])" ng-show="cols[8].show"><div>{{ ::cols[8].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[9])" ng-show="cols[9].show"><div>{{ ::cols[9].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[10])" ng-show="cols[10].show"><div>{{ ::cols[10].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[11])" ng-show="cols[11].show"><div>{{ ::cols[11].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[12])" ng-show="cols[12].show"><div>{{ ::cols[12].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[13])" ng-show="cols[13].show"><div>{{ ::cols[13].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[14])" ng-show="cols[14].show"><div>{{ ::cols[14].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[15])" ng-show="cols[15].show"><div>{{ ::cols[15].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[16])" ng-show="cols[16].show"><div>{{ ::cols[16].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[17])" ng-show="cols[17].show"><div>{{ ::cols[17].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[18])" ng-show="cols[18].show"><div>{{ ::cols[18].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[19])" ng-show="cols[19].show"><div>{{ ::cols[19].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[20])" ng-show="cols[20].show"><div>{{ ::cols[20].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[21])" ng-show="cols[21].show"><div>{{ ::cols[21].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[22])" ng-show="cols[22].show"><div>{{ ::cols[22].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[23])" ng-show="cols[23].show"><div>{{ ::cols[23].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[24])" ng-show="cols[24].show"><div>{{ ::cols[24].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[25])" ng-show="cols[25].show"><div>{{ ::cols[25].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[26])" ng-show="cols[26].show"><div>{{ ::cols[26].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[27])" ng-show="cols[27].show"><div>{{ ::cols[27].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[28])" ng-show="cols[28].show"><div>{{ ::cols[28].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[29])" ng-show="cols[29].show"><div>{{ ::cols[29].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[30])" ng-show="cols[30].show"><div>{{ ::cols[30].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[31])" ng-show="cols[31].show"><div>{{ ::cols[31].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[32])" ng-show="cols[32].show"><div>{{ ::cols[32].name }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[33])" ng-show="cols[33].show"><div>{{ ::cols[33].name }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[0])" ng-show="cols[0].show"><div>{{ ::cols[0].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[1])" ng-show="cols[1].show"><div>{{ ::cols[1].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[2])" ng-show="cols[2].show"><div>{{ ::cols[2].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[3])" ng-show="cols[3].show"><div>{{ ::cols[3].label }}<div class="dir"><i class="material-icons">arrow_drop_down</i></div></div></th>
+							<th ng-click="toggleSort(cols[4])" ng-show="cols[4].show"><div>{{ ::cols[4].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[5])" ng-show="cols[5].show"><div class="abbr">{{ ::cols[5].label }}<div class="dir"></div>
+								<div class="full_label">{{ ::cols[5].full_label }}</div></div></th>
+							<th ng-click="toggleSort(cols[6])" ng-show="cols[6].show"><div class="abbr">{{ ::cols[6].label }}<div class="dir"></div>
+								<div class="full_label">{{ ::cols[6].full_label }}</div></div></th>
+							<th ng-click="toggleSort(cols[7])" ng-show="cols[7].show"><div>{{ ::cols[7].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[8])" ng-show="cols[8].show"><div class="abbr">{{ ::cols[8].label }}<div class="dir"></div>
+								<div class="full_label">{{ ::cols[8].full_label }}</div></div></th>
+							<th ng-click="toggleSort(cols[9])" ng-show="cols[9].show"><div>{{ ::cols[9].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[10])" ng-show="cols[10].show"><div class="abbr">{{ ::cols[10].label }}<div class="dir"></div>
+								<div class="full_label">{{ ::cols[10].full_label }}</div></div></th>
+							<th ng-click="toggleSort(cols[11])" ng-show="cols[11].show"><div>{{ ::cols[11].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[12])" ng-show="cols[12].show"><div>{{ ::cols[12].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[13])" ng-show="cols[13].show"><div>{{ ::cols[13].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[14])" ng-show="cols[14].show"><div>{{ ::cols[14].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[15])" ng-show="cols[15].show"><div>{{ ::cols[15].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[16])" ng-show="cols[16].show"><div>{{ ::cols[16].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[17])" ng-show="cols[17].show"><div>{{ ::cols[17].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[18])" ng-show="cols[18].show"><div>{{ ::cols[18].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[19])" ng-show="cols[19].show"><div>{{ ::cols[19].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[20])" ng-show="cols[20].show"><div>{{ ::cols[20].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[21])" ng-show="cols[21].show"><div>{{ ::cols[21].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[22])" ng-show="cols[22].show"><div>{{ ::cols[22].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[23])" ng-show="cols[23].show"><div>{{ ::cols[23].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[24])" ng-show="cols[24].show"><div>{{ ::cols[24].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[25])" ng-show="cols[25].show"><div>{{ ::cols[25].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[26])" ng-show="cols[26].show"><div>{{ ::cols[26].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[27])" ng-show="cols[27].show"><div>{{ ::cols[27].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[28])" ng-show="cols[28].show"><div>{{ ::cols[28].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[29])" ng-show="cols[29].show"><div class="abbr">{{ ::cols[29].label }}<div class="dir"></div>
+								<div class="full_label">{{ ::cols[29].full_label }}</div></div></th>
+							<th ng-click="toggleSort(cols[30])" ng-show="cols[30].show"><div>{{ ::cols[30].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[31])" ng-show="cols[31].show"><div>{{ ::cols[31].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[32])" ng-show="cols[32].show"><div>{{ ::cols[32].label }}<div class="dir"></div></div></th>
+							<th ng-click="toggleSort(cols[33])" ng-show="cols[33].show"><div>{{ ::cols[33].label }}<div class="dir"></div></div></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -252,7 +257,7 @@
 							<td ng-show="cols[6].show">{{ ::player.value_season }}</td>
 							<td ng-show="cols[7].show">{{ ::player.form }}</td>
 							<td ng-show="cols[8].show">{{ ::player.value_form }}</td>
-							<td ng-show="cols[9].show">{{ ::(player.now_cost / 10).toFixed(1) }}</td>
+							<td ng-show="cols[9].show">£{{ ::(player.now_cost / 10).toFixed(1) }}</td>
 							<td ng-show="cols[10].show">{{ ::player.value_added_per_mil.toFixed(2) }}</td>
 							<td ng-show="cols[11].show">{{ ::player.minutes }}</td>
 							<td ng-show="cols[12].show">{{ ::player.transfers_in }}</td>
