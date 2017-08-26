@@ -177,7 +177,7 @@
 					<td>Minutes</td>
 				</tr>
 				<tr>
-					<td>£{{ (popupPlayer.now_cost / 10).toFixed(1) }}</td>
+					<td>£{{ popupPlayer.now_cost.toFixed(1) }}</td>
 					<td>{{ popupPlayer.selected_by_percent }}%</td>
 					<td>{{ popupPlayer.transfers_diff }}</td>
 					<td>{{ popupPlayer.cost_change_start }}</td>
@@ -257,7 +257,7 @@
 							<td ng-show="cols[6].show">{{ ::player.value_season }}</td>
 							<td ng-show="cols[7].show">{{ ::player.form }}</td>
 							<td ng-show="cols[8].show">{{ ::player.value_form }}</td>
-							<td ng-show="cols[9].show">£{{ ::(player.now_cost / 10).toFixed(1) }}</td>
+							<td ng-show="cols[9].show">£{{ ::player.now_cost.toFixed(1) }}</td>
 							<td ng-show="cols[10].show">{{ ::player.value_added_per_mil.toFixed(2) }}</td>
 							<td ng-show="cols[11].show">{{ ::player.minutes }}</td>
 							<td ng-show="cols[12].show">{{ ::player.transfers_in }}</td>

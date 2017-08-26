@@ -127,12 +127,9 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 			];
 		}
 
-		$scope.filter = function() {
-			let filtered = [];
-
+		$scope.updatePlayers = function() {
 			$scope.data.elements.forEach(player => {
-				let s = $scope.search,
-					include = true;
+				player.now_cost = parseFloat(player.now_cost / 10);
 				player.creativity = parseFloat(player.creativity);
 				player.form = parseFloat(player.form);
 				player.ict_index = parseFloat(player.ict_index);
@@ -142,9 +139,18 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				player.threat = parseFloat(player.threat);
 				player.value_form = parseFloat(player.value_form);
 				player.value_season = parseFloat(player.value_season);
-				player.value_added_per_mil = (player.points_per_game - 2) / (player.now_cost / 10);
+				player.value_added_per_mil = (player.points_per_game - 2) / (player.now_cost);
 				player.transfers_diff = player.transfers_in - player.transfers_out;
 				player.transfers_diff_event = player.transfers_in_event - player.transfers_out_event;
+			});
+		}
+
+		$scope.filter = function() {
+			let filtered = [];
+
+			$scope.data.elements.forEach(player => {
+				let s = $scope.search,
+					include = true;
 
 				if(s.name &&
 					player.web_name.toLowerCase().indexOf(s.name.toLowerCase()) === -1)
@@ -181,8 +187,7 @@ var FPLAnalyzer = angular.module('FPLAnalyzer', [])
 				$('#loading').hide();
 				$scope.data = data;
 				$scope.filteredPlayers = data.elements;
-				$scope.$digest();
-				$scope.filter();
+				$scope.updatePlayers();
 				$scope.$digest();
 			},
 			error: console.log
