@@ -1,3 +1,9 @@
+function between(num, low, high) {
+	if(low !==0) low = low || -Infinity;
+	if(high !==0) high = high || Infinity;
+	return (num >= low) && ((high >= low && num <= high) || high < low);
+}
+
 function exportToCSV(fileName, rows) {
 	let processRow = function(row) {
 		let finalVal = '';
@@ -8,9 +14,9 @@ function exportToCSV(fileName, rows) {
 			};
 			let result = innerValue.replace(/"/g, '""');
 			if(result.search(/("|,|\n)/g) >= 0)
-				result = '"' + result + '"';
+			result = '"' + result + '"';
 			if(j > 0)
-				finalVal += ',';
+			finalVal += ',';
 			finalVal += result;
 		}
 		return finalVal + '\n';
@@ -37,10 +43,22 @@ function exportToCSV(fileName, rows) {
 	}
 }
 
-function between(num, low, high) {
-	if(low !==0) low = low || -9999;
-	if(high !==0) high = high || 9999;
-	return (num >= low) && ((high >= low && num <= high) || high < low);
+function formatDate(date, inclTime) {
+    if(!date) return null;
+    let d = new Date(date);
+
+    return `${d.getMonth() + 1}-${d.getDate()}-${d.getFullYear()}` +
+        (inclTime ? ` at ${d.getHours()}:${(d.getMinutes() < 10 ? '0':'') + d.getMinutes()}`:'');
+}
+
+function get(url, success, error = console.log) {
+	$.ajax({
+		type: 'GET',
+		url: 'https://json2jsonp.com/?url=' + url,
+		dataType: 'jsonp',
+		success: success,
+		error: error
+	});
 }
 
 $(function() {

@@ -4,32 +4,26 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700"> -->
-	<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
-	<link rel="stylesheet" href="./src/fonts.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<link rel="stylesheet" href="./src/styles.min.css">
 	<link rel="shortcut icon" type="image/x-icon" href="./src/favicon.ico">
 	<title>FPL Analyzer</title>
 </head>
 
-<body ng-controller="FPLCtrl">
-	<div id="side-nav" ng-class="{'side-nav-open': sideNavOpen}">
+<body ng-controller="FPLCtrl as fpl">
+	<div id="side-nav" ng-class="{'side-nav-open': fpl.sideNavOpen}">
 		<header>
 			<i class="material-icons" style="margin-right: 10px;">search</i>
-			<input type="text" placeholder="Search" ng-model="search.name" ng-change="filter()">
+			<input type="text" placeholder="Search" ng-model="fpl.search.name" ng-change="fpl.filter()">
 		</header>
 		<ul>
 			<h2>Limit</h2>
 			<li>
-				<div class="checkbox">
-					<label><input type="checkbox" ng-model="search.limit" ng-change="filter()">
-						<i class="material-icons on">check_box</i>
-						<i class="material-icons off">check_box_outline_blank</i>
-					</label>
-				</div>
-				<input type="range" ng-model="search.limitSize" min="1" max="{{ data.players.length }}" ng-change="filter()" ng-disabled="!search.limit">
+				<fpl-checkbox model="fpl.search.limit"></fpl-checkbox>
+				<input type="range" ng-model="fpl.search.limitSize" min="1" max="{{ fpl.data.players.length }}" ng-disabled="!fpl.search.limit">
 				&nbsp;
-				<input type="text" ng-model="search.limitSize" ng-change="filter()" ng-disabled="!search.limit" style="width: 50px;">
+				<input type="text" ng-model="fpl.search.limitSize" ng-disabled="!fpl.search.limit" style="width: 50px;">
 			</li>
 			<h2>Columns</h2>
 			<li>
@@ -39,13 +33,8 @@
 						<th><i class="material-icons">arrow_drop_down</i></th>
 					</thead>
 					<tbody style="display: none;">
-						<tr ng-repeat="col in cols"><td>
-							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="col.show" ng-change="filter()">
-									<i class="material-icons on">check_box</i>
-									<i class="material-icons off">check_box_outline_blank</i>
-								</label>
-							</div>
+						<tr ng-repeat="col in fpl.cols"><td>
+							<label><fpl-checkbox model="col.show"></fpl-checkbox>
 							<span ng-class="{accent: col.show}">{{ col.label }}</span></label>
 						</td></tr>
 					</tbody>
@@ -60,21 +49,11 @@
 					</thead>
 					<tbody style="display: none;">
 						<tr><td>
-							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="search.teams.all" ng-change="filter()">
-									<i class="material-icons on">check_box</i>
-									<i class="material-icons off">check_box_outline_blank</i>
-								</label>
-							</div>
-							<span ng-class="{accent: search.teams.all}">All teams</span></label>
+							<label><fpl-checkbox model="fpl.search.teams.all" change="fpl.filter()"></fpl-checkbox>
+							<span ng-class="{accent: fpl.search.teams.all}">All teams</span></label>
 						</td></tr>
-						<tr ng-repeat="team in data.teams"><td>
-							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="search.teams[team.id]" ng-change="filter()">
-									<i class="material-icons on">check_box</i>
-									<i class="material-icons off">check_box_outline_blank</i>
-								</label>
-							</div>
+						<tr ng-repeat="team in fpl.data.teams"><td>
+							<label><fpl-checkbox model="fpl.search.teams[team.id]" change="fpl.filter()"></fpl-checkbox>
 							<span ng-class="{accent: search.teams[team.id]}">{{ team.name }}</span></label>
 						</td></tr>
 					</tbody>
@@ -89,22 +68,12 @@
 					</thead>
 					<tbody style="display: none;">
 						<tr><td>
-							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="search.poss.all" ng-change="filter()">
-									<i class="material-icons on">check_box</i>
-									<i class="material-icons off">check_box_outline_blank</i>
-								</label>
-							</div>
-							<span ng-class="{accent: search.poss.all}">All positions</span></label>
+							<label><fpl-checkbox model="fpl.search.poss.all" change="fpl.filter()"></fpl-checkbox>
+							<span ng-class="{accent: fpl.search.poss.all}">All positions</span></label>
 						</td></tr>
-						<tr ng-repeat="pos in data.element_types"><td>
-							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="search.poss[pos.id]" ng-change="filter()">
-									<i class="material-icons on">check_box</i>
-									<i class="material-icons off">check_box_outline_blank</i>
-								</label>
-							</div>
-							<span ng-class="{accent: search.poss[pos.id]}">{{ pos.plural_name }}</span></label>
+						<tr ng-repeat="pos in fpl.data.element_types"><td>
+							<label><fpl-checkbox model="fpl.search.poss[pos.id]" change="fpl.filter()"></fpl-checkbox>
+							<span ng-class="{accent: fpl.search.poss[pos.id]}">{{ pos.plural_name }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
@@ -117,42 +86,37 @@
 						<th><i class="material-icons">arrow_drop_down</i></th>
 					</thead>
 					<tbody style="display: none;">
-						<tr ng-repeat="filter in filters"><td>
-							<label><div class="checkbox">
-								<label><input type="checkbox" ng-model="filter.show">
-									<i class="material-icons on">check_box</i>
-									<i class="material-icons off">check_box_outline_blank</i>
-								</label>
-							</div>
+						<tr ng-repeat="filter in fpl.filters"><td>
+							<label><fpl-checkbox model="filter.show"></fpl-checkbox>
 							<span ng-class="{accent: filter.show}">{{ filter.label }}</span></label>
 						</td></tr>
 					</tbody>
 				</table>
 			</li>
-			<div ng-repeat="filter in filters" ng-show="filter.show">
+			<div ng-repeat="filter in fpl.filters" ng-show="filter.show">
 				<h2>{{ filter.label }}</h2>
 				<li>
-					<input type="number" ng-model="filter.low" ng-change="$parent.filter()">
+					<input type="number" ng-model="filter.low" ng-change="fpl.filter()">
 					&nbsp;to&nbsp;
-					<input type="number" ng-model="filter.high" ng-change="$parent.filter()">
+					<input type="number" ng-model="filter.high" ng-change="fpl.filter()">
 				</li>
 			</div>
 		</ul>
 		<footer>
-			<input type="button" value="Clear filters" ng-click="resetTable(); filter()">
+			<input type="button" value="Clear filters" ng-click="fpl.resetTable(); fpl.filter()">
 		</footer>
 	</div>
 
 	<div id="blur" onclick="$(this).fadeOut(200)" style="display: none;">
 		<div id="popup">
 			<div id="popup-header">
-				<img ng-src="{{ popupPlayer.url }}">
+				<img ng-src="{{ fpl.popupPlayer.url }}">
 				<div>
-					<div id="popup-name">{{ popupPlayer.first_name }} {{ popupPlayer.second_name }}</div>
-					<div id="popup-team">{{ data.teams[popupPlayer.team - 1].name }}</div>
-					<div id="popup-pos">{{ data.element_types[popupPlayer.element_type - 1].singular_name }}</div>
+					<div id="popup-name">{{ fpl.popupPlayer.first_name }} {{ fpl.popupPlayer.second_name }}</div>
+					<div id="popup-team">{{ fpl.data.teams[fpl.popupPlayer.team - 1].name }}</div>
+					<div id="popup-pos">{{ fpl.data.element_types[fpl.popupPlayer.element_type - 1].singular_name }}</div>
 				</div>
-				<span id="popup-number">{{ popupPlayer.squad_number }}</span>
+				<span id="popup-number">{{ fpl.popupPlayer.squad_number }}</span>
 			</div>
 			<table>
 				<tr>
@@ -163,11 +127,11 @@
 					<td>PPG</td>
 				</tr>
 				<tr>
-					<td>{{ popupPlayer.total_points }}</td>
-					<td>{{ popupPlayer.event_points }}</td>
-					<td>{{ popupPlayer.form }}</td>
-					<td>{{ popupPlayer.value_added_per_mil.toFixed(2) }}</td>
-					<td>{{ popupPlayer.points_per_game }}</td>
+					<td>{{ fpl.popupPlayer.total_points }}</td>
+					<td>{{ fpl.popupPlayer.event_points }}</td>
+					<td>{{ fpl.popupPlayer.form }}</td>
+					<td>{{ fpl.popupPlayer.value_added_per_mil.toFixed(2) }}</td>
+					<td>{{ fpl.popupPlayer.points_per_game }}</td>
 				</tr>
 				<tr>
 					<td>Price</td>
@@ -177,115 +141,86 @@
 					<td>Minutes</td>
 				</tr>
 				<tr>
-					<td>£{{ popupPlayer.now_cost.toFixed(1) }}</td>
-					<td>{{ popupPlayer.selected_by_percent }}%</td>
-					<td>{{ popupPlayer.transfers_diff }}</td>
-					<td>{{ popupPlayer.cost_change_start }}</td>
-					<td>{{ popupPlayer.minutes }}</td>
+					<td>£{{ fpl.popupPlayer.now_cost.toFixed(1) }}</td>
+					<td>{{ fpl.popupPlayer.selected_by_percent }}%</td>
+					<td>{{ fpl.popupPlayer.transfers_diff }}</td>
+					<td>{{ fpl.popupPlayer.cost_change_start }}</td>
+					<td>{{ fpl.popupPlayer.minutes }}</td>
 				</tr>
 			</table>
 		</div>
 	</div>
 
-	<div id="content" ng-class="{'side-nav-open': sideNavOpen}">
+	<div id="content" ng-class="{'side-nav-open': fpl.sideNavOpen}">
 		<header>
 			<h1>FPL Analyzer</h1>
 			<!-- <input type="button" value="Link to this report" ng-click="openURL()"> -->
-			<div id="side-nav-toggle" ng-click="sideNavOpen = !sideNavOpen">
-				<i ng-show="!sideNavOpen" class="material-icons">filter_list</i>
-				<i ng-show="sideNavOpen" class="material-icons" ng-cloak>chevron_right</i>
+			<div id="side-nav-toggle" ng-click="fpl.sideNavOpen = !fpl.sideNavOpen">
+				<i ng-show="!fpl.sideNavOpen" class="material-icons">filter_list</i>
+				<i ng-show="fpl.sideNavOpen" class="material-icons" ng-cloak>chevron_right</i>
 			</div>
 		</header>
 
 		<main>
 			<div style="display: flex; align-items: center; justify-content: flex-end; padding: 10px 0;">
-				<span class="small-text" ng-cloak>Viewing <span class="accent">{{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}</span> of {{ data.elements.length || 0 }} total players</span>
+				<span class="small-text" ng-cloak>Viewing <span class="accent">
+					{{ fpl.search.limit && fpl.search.limitSize < fpl.filteredPlayers.length ? fpl.search.limitSize: (fpl.filteredPlayers.length || 0) }}</span>
+					of {{ fpl.data.elements.length || 0 }} total players</span>
 			</div>
 			<div id="table-wrapper">
 				<table id="table" ng-cloak>
 					<thead>
 						<tr>
-							<th ng-click="toggleSort(cols[0])" ng-show="cols[0].show"><div>{{ ::cols[0].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[1])" ng-show="cols[1].show"><div>{{ ::cols[1].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[2])" ng-show="cols[2].show"><div>{{ ::cols[2].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[3])" ng-show="cols[3].show"><div>{{ ::cols[3].label }}<div class="dir"><i class="material-icons">arrow_drop_down</i></div></div></th>
-							<th ng-click="toggleSort(cols[4])" ng-show="cols[4].show"><div>{{ ::cols[4].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[5])" ng-show="cols[5].show"><div class="abbr">{{ ::cols[5].label }}<div class="dir"></div>
-								<div class="full_label">{{ ::cols[5].full_label }}</div></div></th>
-							<th ng-click="toggleSort(cols[6])" ng-show="cols[6].show"><div class="abbr">{{ ::cols[6].label }}<div class="dir"></div>
-								<div class="full_label">{{ ::cols[6].full_label }}</div></div></th>
-							<th ng-click="toggleSort(cols[7])" ng-show="cols[7].show"><div>{{ ::cols[7].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[8])" ng-show="cols[8].show"><div class="abbr">{{ ::cols[8].label }}<div class="dir"></div>
-								<div class="full_label">{{ ::cols[8].full_label }}</div></div></th>
-							<th ng-click="toggleSort(cols[9])" ng-show="cols[9].show"><div>{{ ::cols[9].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[10])" ng-show="cols[10].show"><div class="abbr">{{ ::cols[10].label }}<div class="dir"></div>
-								<div class="full_label">{{ ::cols[10].full_label }}</div></div></th>
-							<th ng-click="toggleSort(cols[11])" ng-show="cols[11].show"><div>{{ ::cols[11].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[12])" ng-show="cols[12].show"><div>{{ ::cols[12].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[13])" ng-show="cols[13].show"><div>{{ ::cols[13].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[14])" ng-show="cols[14].show"><div>{{ ::cols[14].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[15])" ng-show="cols[15].show"><div>{{ ::cols[15].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[16])" ng-show="cols[16].show"><div>{{ ::cols[16].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[17])" ng-show="cols[17].show"><div>{{ ::cols[17].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[18])" ng-show="cols[18].show"><div>{{ ::cols[18].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[19])" ng-show="cols[19].show"><div>{{ ::cols[19].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[20])" ng-show="cols[20].show"><div>{{ ::cols[20].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[21])" ng-show="cols[21].show"><div>{{ ::cols[21].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[22])" ng-show="cols[22].show"><div>{{ ::cols[22].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[23])" ng-show="cols[23].show"><div>{{ ::cols[23].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[24])" ng-show="cols[24].show"><div>{{ ::cols[24].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[25])" ng-show="cols[25].show"><div>{{ ::cols[25].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[26])" ng-show="cols[26].show"><div>{{ ::cols[26].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[27])" ng-show="cols[27].show"><div>{{ ::cols[27].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[28])" ng-show="cols[28].show"><div>{{ ::cols[28].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[29])" ng-show="cols[29].show"><div class="abbr">{{ ::cols[29].label }}<div class="dir"></div>
-								<div class="full_label">{{ ::cols[29].full_label }}</div></div></th>
-							<th ng-click="toggleSort(cols[30])" ng-show="cols[30].show"><div>{{ ::cols[30].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[31])" ng-show="cols[31].show"><div>{{ ::cols[31].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[32])" ng-show="cols[32].show"><div>{{ ::cols[32].label }}<div class="dir"></div></div></th>
-							<th ng-click="toggleSort(cols[33])" ng-show="cols[33].show"><div>{{ ::cols[33].label }}<div class="dir"></div></div></th>
+							<th ng-click="fpl.toggleSort(col)" ng-show="col.show" ng-repeat="col in fpl.cols">
+								<div ng-class="::{abbr: col.full_label}">{{ ::col.label }}
+									<div class="dir">
+										<i class="material-icons" ng-show="fpl.search.sort == col.field && !fpl.search.reverse">arrow_drop_up</i>
+										<i class="material-icons" ng-show="fpl.search.sort == col.field && fpl.search.reverse">arrow_drop_down</i>
+									</div>
+									<div class="full-label">{{ ::col.full_label }}</div>
+								</div></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-click="showPopup(player)" ng-repeat="player in filteredPlayers | orderBy: search.sort:search.reverse | limitTo: search.limit ? search.limitSize: data.players.length">
-							<td ng-show="cols[0].show">{{ ::player.web_name }}</td>
-							<td ng-show="cols[1].show">{{ ::data.teams[player.team - 1].name }}</td>
-							<td ng-show="cols[2].show">{{ ::data.element_types[player.element_type - 1].singular_name_short }}</td>
-							<td ng-show="cols[3].show">{{ ::player.total_points }}</td>
-							<td ng-show="cols[4].show">{{ ::player.event_points }}</td>
-							<td ng-show="cols[5].show">{{ ::player.points_per_game }}</td>
-							<td ng-show="cols[6].show">{{ ::player.value_season }}</td>
-							<td ng-show="cols[7].show">{{ ::player.form }}</td>
-							<td ng-show="cols[8].show">{{ ::player.value_form }}</td>
-							<td ng-show="cols[9].show">£{{ ::player.now_cost.toFixed(1) }}</td>
-							<td ng-show="cols[10].show">{{ ::player.value_added_per_mil.toFixed(2) }}</td>
-							<td ng-show="cols[11].show">{{ ::player.minutes }}</td>
-							<td ng-show="cols[12].show">{{ ::player.transfers_in }}</td>
-							<td ng-show="cols[13].show">{{ ::player.transfers_out }}</td>
-							<td ng-show="cols[14].show">{{ ::player.transfers_diff }}</td>
-							<td ng-show="cols[15].show">{{ ::player.transfers_in_event }}</td>
-							<td ng-show="cols[16].show">{{ ::player.transfers_out_event }}</td>
-							<td ng-show="cols[17].show">{{ ::player.transfers_diff_event }}</td>
-							<td ng-show="cols[18].show">{{ ::player.selected_by_percent }}%</td>
-							<td ng-show="cols[19].show">{{ ::(player.cost_change_start / 10).toFixed(1) }}</td>
-							<td ng-show="cols[20].show">{{ ::(player.cost_change_event / 10).toFixed(1) }}</td>
-							<td ng-show="cols[21].show">{{ ::player.ict_index }}</td>
-							<td ng-show="cols[22].show">{{ ::player.threat }}</td>
-							<td ng-show="cols[23].show">{{ ::player.creativity }}</td>
-							<td ng-show="cols[24].show">{{ ::player.influence }}</td>
-							<td ng-show="cols[25].show">{{ ::player.bonus }}</td>
-							<td ng-show="cols[26].show">{{ ::player.bps }}</td>
-							<td ng-show="cols[27].show">{{ ::player.goals_scored }}</td>
-							<td ng-show="cols[28].show">{{ ::player.assists }}</td>
-							<td ng-show="cols[29].show">{{ ::player.clean_sheets }}</td>
-							<td ng-show="cols[30].show">{{ ::player.saves }}</td>
-							<td ng-show="cols[31].show">{{ ::player.goals_conceded }}</td>
-							<td ng-show="cols[32].show">{{ ::player.yellow_cards }}</td>
-							<td ng-show="cols[33].show">{{ ::player.red_cards }}</td>
+						<tr ng-click="fpl.showPopup(player)" ng-repeat="player in fpl.filteredPlayers | orderBy: fpl.search.sort:fpl.search.reverse | limitTo: fpl.search.limit ? fpl.search.limitSize: fpl.data.players.length">
+							<td ng-show="fpl.cols[0].show">{{ ::player.web_name }}</td>
+							<td ng-show="fpl.cols[1].show">{{ ::fpl.data.teams[player.team - 1].name }}</td>
+							<td ng-show="fpl.cols[2].show">{{ ::fpl.data.element_types[player.element_type - 1].singular_name_short }}</td>
+							<td ng-show="fpl.cols[3].show">{{ ::player.total_points }}</td>
+							<td ng-show="fpl.cols[4].show">{{ ::player.event_points }}</td>
+							<td ng-show="fpl.cols[5].show">{{ ::player.points_per_game }}</td>
+							<td ng-show="fpl.cols[6].show">{{ ::player.value_season }}</td>
+							<td ng-show="fpl.cols[7].show">{{ ::player.form }}</td>
+							<td ng-show="fpl.cols[8].show">{{ ::player.value_form }}</td>
+							<td ng-show="fpl.cols[9].show">£{{ ::player.now_cost.toFixed(1) }}</td>
+							<td ng-show="fpl.cols[10].show">{{ ::player.value_added_per_mil.toFixed(2) }}</td>
+							<td ng-show="fpl.cols[11].show">{{ ::player.minutes }}</td>
+							<td ng-show="fpl.cols[12].show">{{ ::player.transfers_in }}</td>
+							<td ng-show="fpl.cols[13].show">{{ ::player.transfers_out }}</td>
+							<td ng-show="fpl.cols[14].show">{{ ::player.transfers_diff }}</td>
+							<td ng-show="fpl.cols[15].show">{{ ::player.transfers_in_event }}</td>
+							<td ng-show="fpl.cols[16].show">{{ ::player.transfers_out_event }}</td>
+							<td ng-show="fpl.cols[17].show">{{ ::player.transfers_diff_event }}</td>
+							<td ng-show="fpl.cols[18].show">{{ ::player.selected_by_percent }}%</td>
+							<td ng-show="fpl.cols[19].show">{{ ::(player.cost_change_start / 10).toFixed(1) }}</td>
+							<td ng-show="fpl.cols[20].show">{{ ::(player.cost_change_event / 10).toFixed(1) }}</td>
+							<td ng-show="fpl.cols[21].show">{{ ::player.ict_index }}</td>
+							<td ng-show="fpl.cols[22].show">{{ ::player.threat }}</td>
+							<td ng-show="fpl.cols[23].show">{{ ::player.creativity }}</td>
+							<td ng-show="fpl.cols[24].show">{{ ::player.influence }}</td>
+							<td ng-show="fpl.cols[25].show">{{ ::player.bonus }}</td>
+							<td ng-show="fpl.cols[26].show">{{ ::player.bps }}</td>
+							<td ng-show="fpl.cols[27].show">{{ ::player.goals_scored }}</td>
+							<td ng-show="fpl.cols[28].show">{{ ::player.assists }}</td>
+							<td ng-show="fpl.cols[29].show">{{ ::player.clean_sheets }}</td>
+							<td ng-show="fpl.cols[30].show">{{ ::player.saves }}</td>
+							<td ng-show="fpl.cols[31].show">{{ ::player.goals_conceded }}</td>
+							<td ng-show="fpl.cols[32].show">{{ ::player.yellow_cards }}</td>
+							<td ng-show="fpl.cols[33].show">{{ ::player.red_cards }}</td>
 						</tr>
 					</tbody>
 				</table>
-				<div id="loading">Loading...</div>
+				<div id="loading" ng-hide="fpl.data">Loading...</div>
 			</div>
 		</main>
 
@@ -297,7 +232,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-	<script src="./src/controller.min.js"></script>
+	<script src="./src/fpl.module.ts"></script>
+	<script src="./src/fpl.controller.ts"></script>
+	<script src="./src/fpl-checkbox.component.ts"></script>
 	<script src="./src/script.js"></script>
 </body>
 
