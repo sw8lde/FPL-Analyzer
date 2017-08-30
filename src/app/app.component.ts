@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
 
@@ -25,7 +25,7 @@ export interface IFilter {
 	providers: [ FplService ]
 })
 export class AppComponent implements OnInit {
-  cols: ICol[];
+	cols: ICol[];
 	data: any;
 	filteredPlayers: any[];
 	filters: IFilter[];
@@ -35,7 +35,15 @@ export class AppComponent implements OnInit {
 		this.data = {};
     fplService.getData((res: any): void => {
 			this.data = res;
-			this.filteredPlayers = fplService.updatePlayers(res.elements);
+			this.filteredPlayers = fplService.updatePlayers(res.elements).sort((a, b) => {
+	      let propertyA = a['total_points'];
+	      let propertyB = b['total_points'];
+
+	      let valueA = isNaN(+propertyA) ? propertyA : +propertyA;
+	      let valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+
+	      return valueA < valueB ? 1 : -1;
+	    });;
 		});
   }
 
@@ -169,9 +177,27 @@ export class AppComponent implements OnInit {
 	toggleSort(col: ICol): void {
 		if(col.field === this.search.sort) {
 			this.search.reverse = !this.search.reverse;
+			this.filteredPlayers.sort((a, b) => {
+	      let propertyA = a[this.search.sort];
+	      let propertyB = b[this.search.sort];
+
+	      let valueA = isNaN(+propertyA) ? propertyA : +propertyA;
+	      let valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+
+	      return (valueA < valueB ? -1 : 1) * (this.search.reverse ? -1 : 1);
+	    });
 		} else {
 			this.search.sort = col.field;
 			this.search.reverse = false;
+			this.filteredPlayers.sort((a, b) => {
+	      let propertyA = a[this.search.sort];
+	      let propertyB = b[this.search.sort];
+
+	      let valueA = isNaN(+propertyA) ? propertyA : +propertyA;
+	      let valueB = isNaN(+propertyB) ? propertyB : +propertyB;
+
+	      return valueA < valueB ? -1 : 1;
+	    });
 		}
 	}
 }

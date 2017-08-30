@@ -1,4 +1,3 @@
-<!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
   <h1>
     FPL
@@ -7,8 +6,62 @@
 <md-input-container>
   <input mdInput placeholder="Favorite food" value="Sushi">
 </md-input-container>
-<div style="max-height: 400px; overflow-y: auto;">
-  <div *ngFor="let player of data.elements">
+<div class="mat-elevation-z8" style="max-height: 400px; overflow-y: auto;">
+  <!-- <div *ngFor="let player of data.elements">
     <div>{{ player.web_name }}</div>
-  </div>
+  </div> -->
+  <table id="table" ng-cloak>
+    <thead>
+      <tr>
+        <th (click)="toggleSort(col)" [hidden]="!col.show" *ngFor="let col of cols">
+          <div [class.abbr]="col.full_label">{{ col.label }}
+            <div class="dir">
+              <i class="material-icons" *ngIf="search.sort == col.field && !search.reverse">arrow_drop_up</i>
+              <i class="material-icons" *ngIf="search.sort == col.field && search.reverse">arrow_drop_down</i>
+            </div>
+            <div class="full-label">{{ col.full_label }}</div>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr (click)="showPopup(player)" *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: data.players.length)">
+        <td [hidden]="!cols[0].show">{{ player.web_name }}</td>
+        <td [hidden]="!cols[1].show">{{ data.teams[player.team - 1].name }}</td>
+        <td [hidden]="!cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
+        <td [hidden]="!cols[3].show">{{ player.total_points }}</td>
+        <td [hidden]="!cols[4].show">{{ player.event_points }}</td>
+        <td [hidden]="!cols[5].show">{{ player.points_per_game }}</td>
+        <td [hidden]="!cols[6].show">{{ player.value_season }}</td>
+        <td [hidden]="!cols[7].show">{{ player.form }}</td>
+        <td [hidden]="!cols[8].show">{{ player.value_form }}</td>
+        <td [hidden]="!cols[9].show">£{{ player.now_cost.toFixed(1) }}</td>
+        <td [hidden]="!cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
+        <td [hidden]="!cols[11].show">{{ player.minutes }}</td>
+        <td [hidden]="!cols[12].show">{{ player.transfers_in }}</td>
+        <td [hidden]="!cols[13].show">{{ player.transfers_out }}</td>
+        <td [hidden]="!cols[14].show">{{ player.transfers_diff }}</td>
+        <td [hidden]="!cols[15].show">{{ player.transfers_in_event }}</td>
+        <td [hidden]="!cols[16].show">{{ player.transfers_out_event }}</td>
+        <td [hidden]="!cols[17].show">{{ player.transfers_diff_event }}</td>
+        <td [hidden]="!cols[18].show">{{ player.selected_by_percent }}%</td>
+        <td [hidden]="!cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
+        <td [hidden]="!cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
+        <td [hidden]="!cols[21].show">{{ player.ict_index }}</td>
+        <td [hidden]="!cols[22].show">{{ player.threat }}</td>
+        <td [hidden]="!cols[23].show">{{ player.creativity }}</td>
+        <td [hidden]="!cols[24].show">{{ player.influence }}</td>
+        <td [hidden]="!cols[25].show">{{ player.bonus }}</td>
+        <td [hidden]="!cols[26].show">{{ player.bps }}</td>
+        <td [hidden]="!cols[27].show">{{ player.goals_scored }}</td>
+        <td [hidden]="!cols[28].show">{{ player.assists }}</td>
+        <td [hidden]="!cols[29].show">{{ player.clean_sheets }}</td>
+        <td [hidden]="!cols[30].show">{{ player.saves }}</td>
+        <td [hidden]="!cols[31].show">{{ player.goals_conceded }}</td>
+        <td [hidden]="!cols[32].show">{{ player.yellow_cards }}</td>
+        <td [hidden]="!cols[33].show">{{ player.red_cards }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div id="loading" [hidden]="data">Loading...</div>
 </div>
