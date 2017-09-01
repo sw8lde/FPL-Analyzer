@@ -1,67 +1,157 @@
-<div style="text-align:center">
-  <h1>
-    FPL
-  </h1>
-</div>
-<md-input-container>
-  <input mdInput placeholder="Favorite food" value="Sushi">
-</md-input-container>
-<div class="mat-elevation-z8" style="max-height: 400px; overflow-y: auto;">
-  <!-- <div *ngFor="let player of data.elements">
-    <div>{{ player.web_name }}</div>
-  </div> -->
-  <table id="table" ng-cloak>
-    <thead>
-      <tr>
-        <th (click)="toggleSort(col)" [hidden]="!col.show" *ngFor="let col of cols">
-          <div [class.abbr]="col.full_label">{{ col.label }}
-            <div class="dir">
-              <i class="material-icons" *ngIf="search.sort == col.field && !search.reverse">arrow_drop_up</i>
-              <i class="material-icons" *ngIf="search.sort == col.field && search.reverse">arrow_drop_down</i>
-            </div>
-            <div class="full-label">{{ col.full_label }}</div>
-          </div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr (click)="showPopup(player)" *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: data.players.length)">
-        <td [hidden]="!cols[0].show">{{ player.web_name }}</td>
-        <td [hidden]="!cols[1].show">{{ data.teams[player.team - 1].name }}</td>
-        <td [hidden]="!cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
-        <td [hidden]="!cols[3].show">{{ player.total_points }}</td>
-        <td [hidden]="!cols[4].show">{{ player.event_points }}</td>
-        <td [hidden]="!cols[5].show">{{ player.points_per_game }}</td>
-        <td [hidden]="!cols[6].show">{{ player.value_season }}</td>
-        <td [hidden]="!cols[7].show">{{ player.form }}</td>
-        <td [hidden]="!cols[8].show">{{ player.value_form }}</td>
-        <td [hidden]="!cols[9].show">£{{ player.now_cost.toFixed(1) }}</td>
-        <td [hidden]="!cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
-        <td [hidden]="!cols[11].show">{{ player.minutes }}</td>
-        <td [hidden]="!cols[12].show">{{ player.transfers_in }}</td>
-        <td [hidden]="!cols[13].show">{{ player.transfers_out }}</td>
-        <td [hidden]="!cols[14].show">{{ player.transfers_diff }}</td>
-        <td [hidden]="!cols[15].show">{{ player.transfers_in_event }}</td>
-        <td [hidden]="!cols[16].show">{{ player.transfers_out_event }}</td>
-        <td [hidden]="!cols[17].show">{{ player.transfers_diff_event }}</td>
-        <td [hidden]="!cols[18].show">{{ player.selected_by_percent }}%</td>
-        <td [hidden]="!cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
-        <td [hidden]="!cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
-        <td [hidden]="!cols[21].show">{{ player.ict_index }}</td>
-        <td [hidden]="!cols[22].show">{{ player.threat }}</td>
-        <td [hidden]="!cols[23].show">{{ player.creativity }}</td>
-        <td [hidden]="!cols[24].show">{{ player.influence }}</td>
-        <td [hidden]="!cols[25].show">{{ player.bonus }}</td>
-        <td [hidden]="!cols[26].show">{{ player.bps }}</td>
-        <td [hidden]="!cols[27].show">{{ player.goals_scored }}</td>
-        <td [hidden]="!cols[28].show">{{ player.assists }}</td>
-        <td [hidden]="!cols[29].show">{{ player.clean_sheets }}</td>
-        <td [hidden]="!cols[30].show">{{ player.saves }}</td>
-        <td [hidden]="!cols[31].show">{{ player.goals_conceded }}</td>
-        <td [hidden]="!cols[32].show">{{ player.yellow_cards }}</td>
-        <td [hidden]="!cols[33].show">{{ player.red_cards }}</td>
-      </tr>
-    </tbody>
-  </table>
-  <div id="loading" [hidden]="data">Loading...</div>
-</div>
+<md-sidenav-container>
+  <md-toolbar id="content-header" color="primary">
+    <span class="flex">FPL Analyzer</span>
+    <button md-raised-button class="light">
+      Export to CSV
+    </button>
+    <button md-icon-button (click)="sidenav.toggle()">
+      <md-icon class="md-24">{{ sidenav.opened ? 'chevron_right': 'filter_list' }}</md-icon>
+    </button>
+  </md-toolbar>
+
+  <md-sidenav id="sidenav" #sidenav mode="side" position="end">
+    <md-toolbar id="sidenav-header" color="primary">
+      <md-icon class="md-24" style="margin-right: 10px;">search</md-icon>
+      <input class="blank dark" placeholder="Search players"
+        [(ngModel)]="search.name" (ngModelChange)="filter()">
+    </md-toolbar>
+
+    <ul>
+      <h2>Limit</h2>
+			<li>
+				  <md-checkbox color="accent" [(ngModel)]="search.limit"></md-checkbox>
+          <md-slider color="accent" thumbLabel step="5" min="5"
+            [max]="data.elements ? data.elements.length: 550"
+            [disabled]="!search.limit" [(ngModel)]="search.limitSize"></md-slider>
+			</li>
+			<li>
+          <md-select color="accent" placeholder="Columns" floatPlaceholder="never"
+            multiple [(ngModel)]="search.showCols" (ngModelChange)="filter()">
+            <md-select-trigger>Columns</md-select-trigger>
+  					<md-option *ngFor="let col of cols" [value]="col.field"
+              (click)="col.show = !col.show">
+              {{ col.label }}
+            </md-option>
+          </md-select>
+			</li>
+			<li>
+          <md-select color="accent" placeholder="Teams" floatPlaceholder="never"
+            multiple [(ngModel)]="search.showTeams">
+            <md-select-trigger>Teams</md-select-trigger>
+  					<md-option value="All" (click)="search.teams.all = !search.teams.all; filter()">
+              All teams
+            </md-option>
+  					<md-option *ngFor="let team of data.teams" [value]="team.id"
+              (click)="search.teams[team.id] = !search.teams[team.id]; filter()">
+              {{ team.name }}
+            </md-option>
+          </md-select>
+			</li>
+			<li>
+          <md-select color="accent" placeholder="Positions" floatPlaceholder="never"
+            multiple [(ngModel)]="search.showPoss">
+            <md-select-trigger>Positions</md-select-trigger>
+  					<md-option value="All" (click)="search.poss.all = !search.poss.all; filter()">
+              All positions
+            </md-option>
+  					<md-option *ngFor="let pos of data.element_types" [value]="pos.id"
+              (click)="search.poss[pos.id] = !search.poss[pos.id]; filter()">
+              {{ pos.plural_name }}
+            </md-option>
+          </md-select>
+			</li>
+			<li>
+          <md-select color="accent" placeholder="Filters" floatPlaceholder="never"
+            multiple [(ngModel)]="search.showFilters" (ngModelChange)="filter()">
+            <md-select-trigger>Filters</md-select-trigger>
+  					<md-option *ngFor="let f of filters" [value]="f.field"
+              (click)="f.show = !f.show">
+              {{ f.label }}
+            </md-option>
+          </md-select>
+			</li>
+      <div *ngFor="let f of filters" [hidden]="!f.show" class="filter">
+        <h2>{{ f.label }}</h2>
+  			<li>
+          <md-input-container color="accent">
+    				<input mdInput type="number" placeholder="Min"
+              [(ngModel)]="f.low" (ngModelChange)="filter()">
+          </md-input-container>
+  				&nbsp;to&nbsp;
+          <md-input-container color="accent">
+    				<input mdInput type="number" placeholder="Max"
+              [(ngModel)]="f.high" (ngModelChange)="filter()">
+          </md-input-container>
+  			</li>
+      </div>
+    </ul>
+		<footer>
+			<button md-button (click)="resetTable(); filter()">
+	      Clear filters
+	    </button>
+		</footer>
+  </md-sidenav>
+
+  <div id="content">
+    <div class="small-text" ng-cloak style="margin-bottom: 20px; text-align: right;">
+        Viewing <span class="accent">
+					{{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}</span>
+				of {{ data.elements.length || 0 }} total players</div>
+    <div id="table-wrapper" class="mat-elevation-z8">
+      <table id="table" ng-cloak>
+        <thead class="bg-primary">
+          <tr>
+            <th (click)="toggleSort(col)" [hidden]="!col.show" *ngFor="let col of cols">
+              <div [class.abbr]="col.full_label">{{ col.label }}
+                <div class="dir">
+                  <md-icon class="md-24" *ngIf="search.sort == col.field && !search.reverse">arrow_upwards</md-icon>
+                  <md-icon class="md-24" *ngIf="search.sort == col.field && search.reverse">arrow_downwards</md-icon>
+                </div>
+                <div class="full-label">{{ col.full_label }}</div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr (click)="showPopup(player)" *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: data.elements.length)">
+            <td [hidden]="!cols[0].show">{{ player.web_name }}</td>
+            <td [hidden]="!cols[1].show">{{ data.teams[player.team - 1].name }}</td>
+            <td [hidden]="!cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
+            <td [hidden]="!cols[3].show">{{ player.total_points }}</td>
+            <td [hidden]="!cols[4].show">{{ player.event_points }}</td>
+            <td [hidden]="!cols[5].show">{{ player.points_per_game }}</td>
+            <td [hidden]="!cols[6].show">{{ player.value_season }}</td>
+            <td [hidden]="!cols[7].show">{{ player.form }}</td>
+            <td [hidden]="!cols[8].show">{{ player.value_form }}</td>
+            <td [hidden]="!cols[9].show">£{{ player.now_cost.toFixed(1) }}</td>
+            <td [hidden]="!cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
+            <td [hidden]="!cols[11].show">{{ player.minutes }}</td>
+            <td [hidden]="!cols[12].show">{{ player.transfers_in }}</td>
+            <td [hidden]="!cols[13].show">{{ player.transfers_out }}</td>
+            <td [hidden]="!cols[14].show">{{ player.transfers_diff }}</td>
+            <td [hidden]="!cols[15].show">{{ player.transfers_in_event }}</td>
+            <td [hidden]="!cols[16].show">{{ player.transfers_out_event }}</td>
+            <td [hidden]="!cols[17].show">{{ player.transfers_diff_event }}</td>
+            <td [hidden]="!cols[18].show">{{ player.selected_by_percent }}%</td>
+            <td [hidden]="!cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
+            <td [hidden]="!cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
+            <td [hidden]="!cols[21].show">{{ player.ict_index }}</td>
+            <td [hidden]="!cols[22].show">{{ player.threat }}</td>
+            <td [hidden]="!cols[23].show">{{ player.creativity }}</td>
+            <td [hidden]="!cols[24].show">{{ player.influence }}</td>
+            <td [hidden]="!cols[25].show">{{ player.bonus }}</td>
+            <td [hidden]="!cols[26].show">{{ player.bps }}</td>
+            <td [hidden]="!cols[27].show">{{ player.goals_scored }}</td>
+            <td [hidden]="!cols[28].show">{{ player.assists }}</td>
+            <td [hidden]="!cols[29].show">{{ player.clean_sheets }}</td>
+            <td [hidden]="!cols[30].show">{{ player.saves }}</td>
+            <td [hidden]="!cols[31].show">{{ player.goals_conceded }}</td>
+            <td [hidden]="!cols[32].show">{{ player.yellow_cards }}</td>
+            <td [hidden]="!cols[33].show">{{ player.red_cards }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div id="loading" [hidden]="data">Loading...</div>
+    </div>
+  </div>
+</md-sidenav-container>
