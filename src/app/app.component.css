@@ -1,9 +1,4 @@
 /* header */
-#content-header {
-  position: fixed;
-  top: 0;
-}
-
 #content-header button+button {
   margin-left: 20px;
 }

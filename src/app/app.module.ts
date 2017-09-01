@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FplFixedDirective } from './fpl-fixed.directive';
+import { FplService } from './fpl.service';
 import { FormsModule } from '@angular/forms';
 import { JsonpModule } from '@angular/http';
 import {
@@ -13,6 +14,7 @@ import {
   MdToolbarModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
+import { WindowRefService } from './window-ref.service';
 import 'hammerjs';
 
 import { AppComponent } from './app.component';
@@ -35,7 +37,7 @@ import { AppComponent } from './app.component';
     MdSliderModule,
     MdToolbarModule
   ],
-  providers: [],
+	providers: [ FplService, WindowRefService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
