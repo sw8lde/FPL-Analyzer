@@ -44,8 +44,9 @@ input::-webkit-inner-spin-button {
 }
 
 md-icon {
-  font-family: 'Material Icons';
-  text-transform: lowercase;
+  font-family: 'Material Icons' !important;
+  text-transform: lowercase !important;
+  text-decoration: none !important;
 }
 
 /* modifiers */

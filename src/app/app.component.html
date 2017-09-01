@@ -1,7 +1,7 @@
 <md-sidenav-container>
   <md-toolbar id="content-header" color="primary">
     <span class="flex">FPL Analyzer</span>
-    <button md-raised-button class="light">
+    <button md-raised-button class="light" (click)="exportToCSV()">
       Export to CSV
     </button>
     <button md-icon-button (click)="sidenav.toggle()">
@@ -94,18 +94,21 @@
 
   <div id="content">
     <div class="small-text" ng-cloak style="margin-bottom: 20px; text-align: right;">
-        Viewing <span class="accent">
-					{{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}</span>
-				of {{ data.elements.length || 0 }} total players</div>
-    <div id="table-wrapper" class="mat-elevation-z8">
+        Viewing
+        <span class="accent">
+          {{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}
+        </span>
+        of {{ data.elements ? data.elements.length: 0 }} total players.
+      </div>
+    <div id="table-wrapper" class="fixed-container mat-elevation-z8">
       <table id="table" ng-cloak>
-        <thead class="bg-primary">
+        <thead class="bg-primary" fpl-fixed="#table-wrapper">
           <tr>
             <th (click)="toggleSort(col)" [hidden]="!col.show" *ngFor="let col of cols">
               <div [class.abbr]="col.full_label">{{ col.label }}
                 <div class="dir">
-                  <md-icon class="md-24" *ngIf="search.sort == col.field && !search.reverse">arrow_upwards</md-icon>
-                  <md-icon class="md-24" *ngIf="search.sort == col.field && search.reverse">arrow_downwards</md-icon>
+                  <md-icon class="md-24" *ngIf="(search.sort == col.field) && !search.reverse">arrow_upwards</md-icon>
+                  <md-icon class="md-24" *ngIf="(search.sort == col.field) && search.reverse">arrow_downwards</md-icon>
                 </div>
                 <div class="full-label">{{ col.full_label }}</div>
               </div>

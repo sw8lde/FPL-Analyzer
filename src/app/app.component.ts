@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
 
 	constructor(fplService: FplService) {
 		this.data = {};
+		this.filteredPlayers = [];
     fplService.getData((res: any): void => {
 			this.data = res;
 			this.filteredPlayers = fplService.updatePlayers(res.elements);
@@ -48,6 +49,60 @@ export class AppComponent implements OnInit {
 		if(low !==0) low = low || -Infinity;
 		if(high !==0) high = high || Infinity;
 		return (num >= low) && ((high >= low && num <= high) || high < low);
+	}
+
+	exportToCSV(): void {
+		const d = new Date();
+		const fileName = 'FPL player stats ' +
+			`${d.getDay()}/${d.getDate()}/${d.getFullYear()}.csv`;
+		let rows = [];
+
+		rows.push(this.cols.map(col => {
+			return col.label;
+		}));
+
+		this.data.elements.forEach(player => {
+			rows.push(this.cols.map(col => {
+				return player[col.field];
+			}));
+		});
+
+		let processRow = function(row) {
+			let finalVal = '';
+			for(let j = 0; j < row.length; j++) {
+				let innerValue = row[j] == undefined ? '' : row[j].toString();
+				if(row[j] instanceof Date) {
+					innerValue = row[j].toLocaleString();
+				};
+				let result = innerValue.replace(/"/g, '""');
+				if(result.search(/("|,|\n)/g) >= 0)
+				result = '"' + result + '"';
+				if(j > 0)
+				finalVal += ',';
+				finalVal += result;
+			}
+			return finalVal + '\n';
+		};
+
+		let csvFile = '';
+		for(let i = 0; i < rows.length; i++) {
+			csvFile += processRow(rows[i]);
+		}
+
+		let blob = new Blob([csvFile], {type: 'text/csv;charset=utf-8;'});
+		if(navigator.msSaveBlob) {
+			navigator.msSaveBlob(blob, fileName);
+		} else {
+			let link = document.createElement("a");
+			if(link.download !== undefined) {
+				link.setAttribute("href", URL.createObjectURL(blob));
+				link.setAttribute("download", fileName);
+				link.style.visibility = 'hidden';
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+			}
+		}
 	}
 
 	filter(): void {
