@@ -7,13 +7,17 @@ import { JsonpModule } from '@angular/http';
 import {
   MdButtonModule,
   MdCheckboxModule,
+  MdDialogModule,
+  MdMenuModule,
   MdInputModule,
   MdSelectModule,
   MdSidenavModule,
   MdSliderModule,
-  MdToolbarModule
+  MdToolbarModule,
+  MdTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
+import { PlayerDialog } from './player-dialog.component';
 import { WindowRefService } from './window-ref.service';
 import 'hammerjs';
 
@@ -22,7 +26,11 @@ import { AppComponent } from './app.component';
 @NgModule({
   declarations: [
     AppComponent,
-    FplFixedDirective
+    FplFixedDirective,
+    PlayerDialog
+  ],
+  entryComponents: [
+    PlayerDialog
   ],
   imports: [
     BrowserModule,
@@ -31,11 +39,14 @@ import { AppComponent } from './app.component';
     JsonpModule,
     MdButtonModule,
     MdCheckboxModule,
+    MdDialogModule,
+    MdMenuModule,
     MdInputModule,
     MdSelectModule,
     MdSidenavModule,
     MdSliderModule,
-    MdToolbarModule
+    MdToolbarModule,
+    MdTooltipModule
   ],
 	providers: [ FplService, WindowRefService ],
   bootstrap: [AppComponent]

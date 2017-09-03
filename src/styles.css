@@ -43,8 +43,13 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+.mat-menu-item {
+    text-transform: none;
+}
+
 md-icon {
   font-family: 'Material Icons' !important;
+  font-size: 24px;
   text-transform: lowercase !important;
   text-decoration: none !important;
 }
@@ -58,8 +63,6 @@ md-icon {
 .bg-accent2 { background: #18ffff; }
 
 .flex { flex: 1 1 auto; }
-
-.md-24 { font-size: 24px; }
 
 input.blank {
   background: none;
@@ -75,4 +78,9 @@ input.dark::-moz-placeholder {
 }
 input.dark::-ms-input-placeholder {
     color: rgba(255,255,255,.8);
+}
+
+.small-text {
+  font-size: .8em;
+  color: rgba(0,0,0,.54);
 }

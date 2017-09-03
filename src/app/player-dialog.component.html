@@ -1,0 +1,41 @@
+<md-dialog-content style="padding: 0">
+  <div id="popup-header">
+		<div style="display: inline-block;height: 130px; width: 200px"><img [src]="player.player.url"></div>
+		<div id="player-info">
+			<div><h3>{{ player.player.first_name }} {{ player.player.second_name }}</h3></div>
+			<div>{{ player.player.team_name }}</div>
+			<div>{{ player.player.pos_name }}</div>
+		</div>
+		<span id="popup-number">{{ player.player.squad_number }}</span>
+	</div>
+	<table>
+		<tr class="bg-accent">
+			<td>Points</td>
+			<td>GW</td>
+			<td>Form</td>
+			<td>VAPM</td>
+			<td>PPG</td>
+		</tr>
+		<tr class="bg-accent">
+			<td>{{ player.player.total_points }}</td>
+			<td>{{ player.player.event_points }}</td>
+			<td>{{ player.player.form }}</td>
+			<td>{{ player.player.value_added_per_mil.toFixed(2) }}</td>
+			<td>{{ player.player.points_per_game }}</td>
+		</tr>
+		<tr>
+			<td>Price</td>
+			<td>Selected</td>
+			<td>Net Transfers</td>
+			<td>Cost Change</td>
+			<td>Minutes</td>
+		</tr>
+		<tr>
+			<td>£{{ player.player.now_cost.toFixed(1) }}</td>
+			<td>{{ player.player.selected_by_percent }}%</td>
+			<td>{{ player.player.transfers_diff }}</td>
+			<td>{{ player.player.cost_change_start }}</td>
+			<td>{{ player.player.minutes }}</td>
+		</tr>
+	</table>
+</md-dialog-content>

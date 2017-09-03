@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { MdDialog, MD_DIALOG_DATA } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
+import { PlayerDialog } from './player-dialog.component';
 
 export interface ICol {
 	index: number;
@@ -20,8 +22,8 @@ export interface IFilter {
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: [ './app.component.css' ]
+	styleUrls: [ './app.component.css' ],
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
 	cols: ICol[];
@@ -30,7 +32,7 @@ export class AppComponent implements OnInit {
 	filters: IFilter[];
 	search: any;
 
-	constructor(fplService: FplService) {
+	constructor(fplService: FplService, public dialog: MdDialog) {
 		this.data = {};
 		this.filteredPlayers = [];
     fplService.getData((res: any): void => {
@@ -50,7 +52,7 @@ export class AppComponent implements OnInit {
 		return (num >= low) && ((high >= low && num <= high) || high < low);
 	}
 
-	exportToCSV(): void {
+	exportAll(): void {
 		const d = new Date();
 		const fileName = 'FPL player stats ' +
 			`${d.getDay()}/${d.getDate()}/${d.getFullYear()}.csv`;
@@ -66,6 +68,30 @@ export class AppComponent implements OnInit {
 			}));
 		});
 
+		this.exportToCSV(rows, fileName);
+	}
+
+	exportFiltered(): void {
+		const d = new Date();
+		const fileName = 'FPL player stats (filtered) ' +
+			`${d.getDay()}/${d.getDate()}/${d.getFullYear()}.csv`;
+		let rows = [[]];
+
+		this.cols.forEach(col => {
+			if(col.show) rows[0].push(col.label);
+		});
+
+		this.filteredPlayers.forEach((player) => {
+			rows.push([]);
+			this.cols.forEach(col => {
+				if(col.show) rows[rows.length - 1].push(player[col.field]);
+			});
+		});
+
+		this.exportToCSV(rows, fileName);
+	}
+
+	exportToCSV(rows: string[][], fileName: string): void {
 		let processRow = function(row) {
 			let finalVal = '';
 			for(let j = 0; j < row.length; j++) {
@@ -217,6 +243,10 @@ export class AppComponent implements OnInit {
 		];
 
 		this.search = {
+			limit: true,
+			limitSize: 50,
+			poss: { all: true },
+			reverse: true,
 			showCols: [
 				'web_name',
 				'team',
@@ -235,14 +265,22 @@ export class AppComponent implements OnInit {
 			showFilters: [],
 			showPoss: ['All'],
 			showTeams: ['All'],
-			limit: true,
-			limitSize: 50,
-			reverse: true,
-			poss: { all: true },
 			sort: 'total_points',
 			teams: { all: true },
 		};
   }
+
+	showPopup(player: IPlayer): void {
+		player.team_name = this.data.teams[player.team - 1].name;
+		player.pos_name = this.data.element_types[player.element_type - 1].singular_name;
+		player.url = 'https://platform-static-files.s3.amazonaws.com/' +
+			'premierleague/photos/players/110x140/p' +
+			player.photo.slice(0, -4) + '.png';
+
+	  this.dialog.open(PlayerDialog, {
+	    data: { player: player }
+	  });
+	}
 
 	toggleSort(col: ICol): void {
 		if(col.field === this.search.sort) {

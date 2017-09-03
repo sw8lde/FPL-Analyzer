@@ -1,5 +1,5 @@
 /* header */
-#content-header button+button {
+#content-header button {
   margin-left: 20px;
 }
 
@@ -13,18 +13,18 @@
 }
 
 #sidenav-header {
-  position: fixed;
-  top: 0;
+  position: relative;
+  z-index: 2;
 }
 
 #sidenav-header input {
   color: #fff;
-  font-size: 20px;
+  font-size: 1.1em;
 }
 
 #sidenav ul {
   list-style: none;
-  margin: 84px 20px 76px 20px;
+  margin: 16px;
   padding: 0;
 }
 
@@ -32,11 +32,11 @@
 	font-size: 1em;
 	font-weight: 500;
 	color: rgba(0,0,0,.54);
-	margin: 20px 0 0 0;
+	margin: 16px 0 0 0;
 }
 
 #sidenav li {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 #sidenav .filter md-input-container {
@@ -44,19 +44,14 @@
 }
 
 #sidenav footer {
-  background: #fff;
   border-top: 1px solid rgba(0,0,0,.34);
-  bottom: 0;
-  padding: 10px 0;
-  position: fixed;
+  padding: 8px 0;
   text-align: center;
-  width: 100%;
 }
 
 /* content */
 #content {
-  margin-top: 64px;
-  padding: 50px;
+  padding: 48px;
 }
 
 #table-wrapper {
@@ -73,7 +68,7 @@
 
 #table th {
 	color: #fff;
-	padding: 15px;
+	padding: 16px;
 	vertical-align: middle;
 }
 
@@ -84,26 +79,8 @@
 	justify-content: center;
 }
 
-#table th > .abbr {
-	position: relative;
+#table th .abbr {
 	text-decoration: underline;
-}
-
-#table .full-label {
-	background: #fff;
-	box-shadow: 0 0 2px rgba(0,0,0,.12),
-	0 0 4px rgba(0,0,0,.24);
-	color: #212121;
-	display: none;
-	font-weight: normal;
-	min-width: 100px;
-	padding: 10px;
-	position: absolute;
-	top: 125%;
-}
-
-#table th > .abbr:hover .full-label{
-	display: block;
 }
 
 #table th:nth-child(n+3) > div {

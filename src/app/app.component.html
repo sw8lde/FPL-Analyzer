@@ -1,17 +1,21 @@
 <md-sidenav-container>
-  <md-toolbar id="content-header" color="primary" fpl-fixed="window">
+  <md-toolbar id="content-header" color="primary">
     <span class="flex">FPL Analyzer</span>
-    <button md-raised-button class="light" (click)="exportToCSV()">
-      Export to CSV
+    <button md-icon-button [mdMenuTriggerFor]="export">
+      <md-icon>file_download</md-icon>
     </button>
+    <md-menu #export="mdMenu" xPosition="before">
+      <button md-menu-item (click)="exportAll()">All data</button>
+      <button md-menu-item (click)="exportFiltered()">Filtered data</button>
+    </md-menu>
     <button md-icon-button (click)="sidenav.toggle()">
-      <md-icon class="md-24">{{ sidenav.opened ? 'chevron_right': 'filter_list' }}</md-icon>
+      <md-icon>{{ sidenav.opened ? 'chevron_right': 'filter_list' }}</md-icon>
     </button>
   </md-toolbar>
 
   <md-sidenav id="sidenav" #sidenav mode="side" position="end">
-    <md-toolbar id="sidenav-header" color="primary">
-      <md-icon class="md-24" style="margin-right: 10px;">search</md-icon>
+    <md-toolbar id="sidenav-header" color="primary" fpl-fixed="#sidenav">
+      <md-icon style="margin-right: 10px;">search</md-icon>
       <input class="blank dark" placeholder="Search players"
         [(ngModel)]="search.name" (ngModelChange)="filter()">
     </md-toolbar>
@@ -98,59 +102,61 @@
         <span class="accent">
           {{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}
         </span>
-        of {{ data.elements ? data.elements.length: 0 }} total players.
+        of {{ data.elements ? data.elements.length: 0 }} total players
       </div>
     <div id="table-wrapper" class="fixed-container mat-elevation-z8">
       <table id="table" ng-cloak>
         <thead class="bg-primary" fpl-fixed="#table-wrapper">
           <tr>
-            <th (click)="toggleSort(col)" [hidden]="!col.show" *ngFor="let col of cols">
-              <div [class.abbr]="col.full_label">{{ col.label }}
-                <div class="dir">
-                  <md-icon class="md-24" *ngIf="(search.sort == col.field) && !search.reverse">arrow_upwards</md-icon>
-                  <md-icon class="md-24" *ngIf="(search.sort == col.field) && search.reverse">arrow_downwards</md-icon>
+            <ng-container *ngFor="let col of cols">
+              <th (click)="toggleSort(col)" *ngIf="col.show">
+                <div [mdTooltip]="col.full_label">
+                  <span [class.abbr]="col.full_label">{{ col.label }}</span>
+                  <div class="dir">
+                    <md-icon *ngIf="(search.sort == col.field) && !search.reverse">arrow_upwards</md-icon>
+                    <md-icon *ngIf="(search.sort == col.field) && search.reverse">arrow_downwards</md-icon>
+                  </div>
                 </div>
-                <div class="full-label">{{ col.full_label }}</div>
-              </div>
-            </th>
+              </th>
+            </ng-container>
           </tr>
         </thead>
         <tbody>
           <tr (click)="showPopup(player)" *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: data.elements.length)">
-            <td [hidden]="!cols[0].show">{{ player.web_name }}</td>
-            <td [hidden]="!cols[1].show">{{ data.teams[player.team - 1].name }}</td>
-            <td [hidden]="!cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
-            <td [hidden]="!cols[3].show">{{ player.total_points }}</td>
-            <td [hidden]="!cols[4].show">{{ player.event_points }}</td>
-            <td [hidden]="!cols[5].show">{{ player.points_per_game }}</td>
-            <td [hidden]="!cols[6].show">{{ player.value_season }}</td>
-            <td [hidden]="!cols[7].show">{{ player.form }}</td>
-            <td [hidden]="!cols[8].show">{{ player.value_form }}</td>
-            <td [hidden]="!cols[9].show">£{{ player.now_cost.toFixed(1) }}</td>
-            <td [hidden]="!cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
-            <td [hidden]="!cols[11].show">{{ player.minutes }}</td>
-            <td [hidden]="!cols[12].show">{{ player.transfers_in }}</td>
-            <td [hidden]="!cols[13].show">{{ player.transfers_out }}</td>
-            <td [hidden]="!cols[14].show">{{ player.transfers_diff }}</td>
-            <td [hidden]="!cols[15].show">{{ player.transfers_in_event }}</td>
-            <td [hidden]="!cols[16].show">{{ player.transfers_out_event }}</td>
-            <td [hidden]="!cols[17].show">{{ player.transfers_diff_event }}</td>
-            <td [hidden]="!cols[18].show">{{ player.selected_by_percent }}%</td>
-            <td [hidden]="!cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
-            <td [hidden]="!cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
-            <td [hidden]="!cols[21].show">{{ player.ict_index }}</td>
-            <td [hidden]="!cols[22].show">{{ player.threat }}</td>
-            <td [hidden]="!cols[23].show">{{ player.creativity }}</td>
-            <td [hidden]="!cols[24].show">{{ player.influence }}</td>
-            <td [hidden]="!cols[25].show">{{ player.bonus }}</td>
-            <td [hidden]="!cols[26].show">{{ player.bps }}</td>
-            <td [hidden]="!cols[27].show">{{ player.goals_scored }}</td>
-            <td [hidden]="!cols[28].show">{{ player.assists }}</td>
-            <td [hidden]="!cols[29].show">{{ player.clean_sheets }}</td>
-            <td [hidden]="!cols[30].show">{{ player.saves }}</td>
-            <td [hidden]="!cols[31].show">{{ player.goals_conceded }}</td>
-            <td [hidden]="!cols[32].show">{{ player.yellow_cards }}</td>
-            <td [hidden]="!cols[33].show">{{ player.red_cards }}</td>
+            <td *ngIf="cols[0].show">{{ player.web_name }}</td>
+            <td *ngIf="cols[1].show">{{ data.teams[player.team - 1].name }}</td>
+            <td *ngIf="cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
+            <td *ngIf="cols[3].show">{{ player.total_points }}</td>
+            <td *ngIf="cols[4].show">{{ player.event_points }}</td>
+            <td *ngIf="cols[5].show">{{ player.points_per_game }}</td>
+            <td *ngIf="cols[6].show">{{ player.value_season }}</td>
+            <td *ngIf="cols[7].show">{{ player.form }}</td>
+            <td *ngIf="cols[8].show">{{ player.value_form }}</td>
+            <td *ngIf="cols[9].show">£{{ player.now_cost.toFixed(1) }}</td>
+            <td *ngIf="cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
+            <td *ngIf="cols[11].show">{{ player.minutes }}</td>
+            <td *ngIf="cols[12].show">{{ player.transfers_in }}</td>
+            <td *ngIf="cols[13].show">{{ player.transfers_out }}</td>
+            <td *ngIf="cols[14].show">{{ player.transfers_diff }}</td>
+            <td *ngIf="cols[15].show">{{ player.transfers_in_event }}</td>
+            <td *ngIf="cols[16].show">{{ player.transfers_out_event }}</td>
+            <td *ngIf="cols[17].show">{{ player.transfers_diff_event }}</td>
+            <td *ngIf="cols[18].show">{{ player.selected_by_percent }}%</td>
+            <td *ngIf="cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
+            <td *ngIf="cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
+            <td *ngIf="cols[21].show">{{ player.ict_index }}</td>
+            <td *ngIf="cols[22].show">{{ player.threat }}</td>
+            <td *ngIf="cols[23].show">{{ player.creativity }}</td>
+            <td *ngIf="cols[24].show">{{ player.influence }}</td>
+            <td *ngIf="cols[25].show">{{ player.bonus }}</td>
+            <td *ngIf="cols[26].show">{{ player.bps }}</td>
+            <td *ngIf="cols[27].show">{{ player.goals_scored }}</td>
+            <td *ngIf="cols[28].show">{{ player.assists }}</td>
+            <td *ngIf="cols[29].show">{{ player.clean_sheets }}</td>
+            <td *ngIf="cols[30].show">{{ player.saves }}</td>
+            <td *ngIf="cols[31].show">{{ player.goals_conceded }}</td>
+            <td *ngIf="cols[32].show">{{ player.yellow_cards }}</td>
+            <td *ngIf="cols[33].show">{{ player.red_cards }}</td>
           </tr>
         </tbody>
       </table>

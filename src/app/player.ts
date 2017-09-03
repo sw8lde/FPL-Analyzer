@@ -37,6 +37,7 @@ export interface IPlayer {
   penalties_saved: number;
   photo: string;
   points_per_game: number;
+  pos_name: string; // custom
   red_cards: number;
   saves: number;
   second_name: string;
@@ -45,6 +46,7 @@ export interface IPlayer {
   squad_number: number;
   status: string;
   team: number;
+  team_name: string; // custom
   team_code: number;
   threat: number;
   total_points: number;
@@ -54,6 +56,7 @@ export interface IPlayer {
   transfers_in_event: number;
   transfers_out: number;
   transfers_out_event: number;
+  url: string; // custom
   value_added_per_mil: number;
   value_form: number;
   value_season: number;
