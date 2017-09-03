@@ -1,0 +1,117 @@
+/* header */
+#content-header button {
+  margin-left: 20px;
+}
+
+#content-header button.light {
+  color: #212121;
+}
+
+/* sidenav */
+#sidenav {
+  min-width: 300px;
+}
+
+#sidenav-header {
+  position: relative;
+  z-index: 2;
+}
+
+#sidenav-header input {
+  color: #fff;
+  font-size: 1.1em;
+}
+
+#sidenav ul {
+  list-style: none;
+  margin: 16px;
+  padding: 0;
+}
+
+#sidenav h2 {
+	font-size: 1em;
+	font-weight: 500;
+	color: rgba(0,0,0,.54);
+	margin: 16px 0 0 0;
+}
+
+#sidenav li {
+  margin-top: 8px;
+}
+
+#sidenav .filter md-input-container {
+  width: 60px;
+}
+
+#sidenav footer {
+  border-top: 1px solid rgba(0,0,0,.34);
+  padding: 8px 0;
+  text-align: center;
+}
+
+/* content */
+#content {
+  padding: 48px;
+}
+
+#table-wrapper {
+	background: #fff;
+	height: 700px;
+	overflow: auto;
+	resize: vertical;
+}
+
+#table {
+	border-collapse: collapse;
+	min-width: 100%;
+}
+
+#table th {
+	color: #fff;
+	padding: 16px;
+	vertical-align: middle;
+}
+
+#table th > div {
+	align-items: center;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+}
+
+#table th .abbr {
+	text-decoration: underline;
+}
+
+#table th:nth-child(n+3) > div {
+	justify-content: flex-end;
+}
+
+#table .dir {
+  height: 24px;
+  margin-left: 8px;
+	width: 24px;
+}
+
+#table .dir .material-icons {
+	color: #fff;
+}
+
+#table tbody tr:nth-child(even) {
+	background: #f5f5f5;
+}
+
+#table tbody tr:hover {
+	background: #eee;
+	cursor: pointer;
+}
+
+#table td {
+	padding: 5px;
+	text-align: left;
+}
+
+#table td:nth-child(n+3) {
+	padding-right: 40px;
+	text-align: right;
+}
