@@ -9,5 +9,9 @@ import { IPlayer } from './player';
   templateUrl: './player-dialog.component.html'
 })
 export class PlayerDialog {
-  constructor(@Inject(MD_DIALOG_DATA) public player: IPlayer) {}
+  player: IPlayer;
+
+  constructor(@Inject(MD_DIALOG_DATA) public data: any) {
+    this.player = data.player;
+  }
 }
