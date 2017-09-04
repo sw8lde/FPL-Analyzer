@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MdDialog, MD_DIALOG_DATA } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
-import { PlayerDialog } from './player-dialog.component';
+import { PlayerDialogComponent } from './player-dialog.component';
 
 export interface ICol {
 	index: number;
@@ -22,7 +22,10 @@ export interface IFilter {
 
 @Component({
   selector: 'app-root',
-	styleUrls: [ './app.component.css' ],
+	styleUrls: [
+		'./app.component.css',
+		'./fpl-sidenav.directive.css'
+	],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
@@ -277,7 +280,7 @@ export class AppComponent implements OnInit {
 			'premierleague/photos/players/110x140/p' +
 			player.photo.slice(0, -4) + '.png';
 
-	  this.dialog.open(PlayerDialog, {
+	  this.dialog.open(PlayerDialogComponent, {
 	    data: { player: player }
 	  });
 	}

@@ -1,10 +1,10 @@
-import { Directive, ElementRef, Input } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { WindowRefService } from './window-ref.service';
 
 @Directive({
   selector: '[fpl-fixed]'
 })
-export class FplFixedDirective {
+export class FplFixedDirective implements OnInit {
   constructor(private el: ElementRef, private windowRef: WindowRefService) {}
 
   ngOnInit() {

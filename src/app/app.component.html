@@ -1,4 +1,4 @@
-<md-sidenav-container>
+<fpl-sidenav-container>
   <md-toolbar id="content-header" color="primary">
     <span class="flex">FPL Analyzer</span>
     <button md-icon-button [mdMenuTriggerFor]="export">
@@ -13,8 +13,8 @@
     </button>
   </md-toolbar>
 
-  <md-sidenav id="sidenav" #sidenav mode="side" position="end">
-    <md-toolbar id="sidenav-header" color="primary" fpl-fixed="#sidenav">
+  <fpl-sidenav id="sidenav" #sidenav mode="side" position="end">
+    <md-toolbar id="sidenav-header" color="primary">
       <md-icon style="margin-right: 10px;">search</md-icon>
       <input class="blank dark" placeholder="Search players"
         [(ngModel)]="search.name" (ngModelChange)="filter()">
@@ -94,7 +94,7 @@
 	      Clear filters
 	    </button>
 		</footer>
-  </md-sidenav>
+  </fpl-sidenav>
 
   <div id="content">
     <div class="small-text" ng-cloak style="margin-bottom: 20px; text-align: right;">
@@ -102,7 +102,7 @@
         <span class="accent">
           {{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}
         </span>
-        of {{ data.elements ? data.elements.length: 0 }} total players
+        of {{ data.elements?.length || 0 }} total players
       </div>
     <div id="table-wrapper" class="fixed-container mat-elevation-z8">
       <table id="table" ng-cloak>
@@ -163,4 +163,4 @@
       <div id="loading" [hidden]="data">Loading...</div>
     </div>
   </div>
-</md-sidenav-container>
+</fpl-sidenav-container>

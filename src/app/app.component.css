@@ -1,4 +1,11 @@
 /* header */
+#content-header {
+	position: fixed;
+	top: 0;
+	width: inherit;
+	z-index: 10;
+}
+
 #content-header button {
   margin-left: 20px;
 }
@@ -8,12 +15,10 @@
 }
 
 /* sidenav */
-#sidenav {
-  min-width: 300px;
-}
-
 #sidenav-header {
-  position: relative;
+  position: fixed;
+  top: 0;
+  width: inherit;
   z-index: 2;
 }
 
@@ -24,7 +29,7 @@
 
 #sidenav ul {
   list-style: none;
-  margin: 16px;
+  margin: 80px 16px 80px 16px;
   padding: 0;
 }
 
@@ -44,14 +49,22 @@
 }
 
 #sidenav footer {
-  border-top: 1px solid rgba(0,0,0,.34);
-  padding: 8px 0;
-  text-align: center;
+	align-items: center;
+	background: #fff;
+  border-top: 1px solid rgba(0,0,0,.12);
+	bottom: 0;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+  height: 64px;
+	position: fixed;
+	width: inherit;
 }
 
 /* content */
 #content {
   padding: 48px;
+	padding-top: 112px;
 }
 
 #table-wrapper {

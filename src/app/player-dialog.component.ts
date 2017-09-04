@@ -8,7 +8,7 @@ import { IPlayer } from './player';
   styleUrls: [ './player-dialog.component.css' ],
   templateUrl: './player-dialog.component.html'
 })
-export class PlayerDialog {
+export class PlayerDialogComponent {
   player: IPlayer;
 
   constructor(@Inject(MD_DIALOG_DATA) public data: any) {

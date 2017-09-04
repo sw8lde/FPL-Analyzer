@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FplFixedDirective } from './fpl-fixed.directive';
 import { FplService } from './fpl.service';
+import { FplSidenavDirective } from './fpl-sidenav.directive';
+import { FplSidenavContainerDirective } from './fpl-sidenav-container.directive';
 import { FormsModule } from '@angular/forms';
 import { JsonpModule } from '@angular/http';
 import {
@@ -17,7 +19,7 @@ import {
   MdTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
-import { PlayerDialog } from './player-dialog.component';
+import { PlayerDialogComponent } from './player-dialog.component';
 import { WindowRefService } from './window-ref.service';
 import 'hammerjs';
 
@@ -27,10 +29,12 @@ import { AppComponent } from './app.component';
   declarations: [
     AppComponent,
     FplFixedDirective,
-    PlayerDialog
+    FplSidenavDirective,
+    FplSidenavContainerDirective,
+    PlayerDialogComponent
   ],
   entryComponents: [
-    PlayerDialog
+    PlayerDialogComponent
   ],
   imports: [
     BrowserModule,
