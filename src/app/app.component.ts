@@ -1,15 +1,16 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { MdDialog, MD_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MdDialog } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
 import { PlayerDialogComponent } from './player-dialog.component';
 
 export interface ICol {
 	index: number;
-	label: string;
+	label?: string;
+	label_icon?: string;
+	label_full?: string;
 	field: string;
   show?: boolean;
-	full_label?: string;
 }
 
 export interface IFilter {
@@ -30,23 +31,34 @@ export interface IFilter {
 })
 export class AppComponent implements OnInit {
 	cols: ICol[];
-	data: any;
 	filteredPlayers: any[];
 	filters: IFilter[];
+	generalData: any;
 	search: any;
 
 	constructor(fplService: FplService, public dialog: MdDialog) {
-		this.data = {};
 		this.filteredPlayers = [];
-    fplService.getData((res: any): void => {
-			this.data = res;
-			this.filteredPlayers = fplService.updatePlayers(res.elements);
-			this.filter();
+		this.generalData = {};
+
+		let genData = new Promise(resolve => {
+			fplService.getGeneralData((res: any): void => {
+				this.generalData = res;
+				this.filteredPlayers = fplService.updatePlayers(res.elements);
+				this.filterPlayers();
+				resolve(this.generalData);
+			});
+		});
+
+		fplService.getEventData((res: any): void => {
+			genData.then(data => {
+				fplService.createEventMap(data, res);
+				this.updateEvents();
+			});
 		});
   }
 
   ngOnInit() {
-		this.resetTable();
+		this.resetPlayersTable();
 	}
 
 	between(num: number, low: number, high: number): boolean {
@@ -65,7 +77,7 @@ export class AppComponent implements OnInit {
 			return col.label;
 		}));
 
-		this.data.elements.forEach(player => {
+		this.generalData.elements.forEach(player => {
 			rows.push(this.cols.map(col => {
 				return player[col.field];
 			}));
@@ -133,11 +145,11 @@ export class AppComponent implements OnInit {
 		}
 	}
 
-	filter(): void {
+	filterPlayers(): void {
 		let filtered = [];
 
-		if(!this.data || !this.data.elements) return;
-		this.data.elements.forEach(player => {
+		if(!this.generalData || !this.generalData.elements) return;
+		this.generalData.elements.forEach(player => {
 			const s = this.search;
 			let include = true;
 
@@ -173,42 +185,46 @@ export class AppComponent implements OnInit {
 		});
 	}
 
-	resetTable(): void {
+	getTeamEventProd(team: any): string {
+		return Math.pow(team.event_prod, 1 / this.generalData.event_num).toFixed(2);
+	}
+
+	resetPlayersTable(): void {
     this.cols = [
 			{ index: 0, label: 'Name', field: 'web_name', show: true },
 			{ index: 1, label: 'Team', field: 'team', show: true },
 			{ index: 2, label: 'Pos', field: 'element_type', show: true },
-			{ index: 3, label: 'Total Points', field: 'total_points', show: true },
-			{ index: 4, label: 'GW Points', field: 'event_points', show: true },
-			{ index: 5, label: 'PPG', field: 'points_per_game', full_label: 'Points Per Game' },
-			{ index: 6, label: 'PPM', field: 'value_season', full_label: 'Points Per Million' },
+			{ index: 3, label: 'P', label_full: 'Total Points', field: 'total_points', show: true },
+			{ index: 4, label: 'P (GW)', label_full: 'Gameweek Points', field: 'event_points', show: true },
+			{ index: 5, label: 'PPG', label_full: 'Points Per Game', field: 'points_per_game' },
+			{ index: 6, label: 'PPM', label_full: 'Points Per Million', field: 'value_season' },
 			{ index: 7, label: 'Form', field: 'form', show: true },
-			{ index: 8, label: 'FPM', field: 'value_form', full_label: 'Form Per Million' },
-			{ index: 9, label: 'Price', field: 'now_cost', show: true },
-			{ index: 10, label: 'VAPM', field: 'value_added_per_mil', full_label: 'Value Added Per Million', show: true },
+			{ index: 8, label: 'FPM', label_full: 'Form Per Million', field: 'value_form' },
+			{ index: 9, label: '£', label_full: 'Price', field: 'now_cost', show: true },
+			{ index: 10, label: 'VAPM', label_full: 'Value Added Per Million', field: 'value_added_per_mil', show: true },
 			{ index: 11, label: 'Minutes', field: 'minutes' },
-			{ index: 12, label: 'Transfers In', field: 'transfers_in' },
-			{ index: 13, label: 'Transfers Out', field: 'transfers_out' },
-			{ index: 14, label: 'Net Transfers', field: 'transfers_diff', show: true },
-			{ index: 15, label: 'Transfers In (GW)', field: 'transfers_in_event' },
-			{ index: 16, label: 'Transfers out (GW)', field: 'transfers_out_event' },
-			{ index: 17, label: 'Net Transfers (GW)', field: 'transfers_diff_event', show: true },
-			{ index: 18, label: 'Selected By', field: 'selected_by_percent', show: true },
-			{ index: 19, label: 'Cost Change', field: 'cost_change_start', show: true },
-			{ index: 20, label: 'Cost Change (GW)', field: 'cost_change_event', show: true },
-			{ index: 21, label: 'ICT', field: 'ict_index', },
-			{ index: 22, label: 'Threat', field: 'threat', },
-			{ index: 23, label: 'Creativity', field: 'creativity', },
-			{ index: 24, label: 'Influence', field: 'influence', },
-			{ index: 25, label: 'Bonus', field: 'bonus', },
-			{ index: 26, label: 'BPS', field: 'bps', },
-			{ index: 27, label: 'Goals', field: 'goals_scored', },
-			{ index: 28, label: 'Assists', field: 'assists', },
-			{ index: 29, label: 'CS', field: 'clean_sheets', full_label: 'Clean Sheets' },
-			{ index: 30, label: 'Saves', field: 'saves', },
-			{ index: 31, label: 'Conceded', field: 'goals_conceded', },
-			{ index: 32, label: 'Yellow Cards', field: 'yellow_cards', },
-			{ index: 33, label: 'Red Cards', field: 'red_cards', }
+			{ index: 12, label_icon: 'swap_horiz', label: 'In', label_full: 'Transfers In', field: 'transfers_in' },
+			{ index: 13, label_icon: 'swap_horiz', label: 'Out', label_full: 'Transfers Out', field: 'transfers_out' },
+			{ index: 14, label_icon: 'swap_horiz', label: 'Net', label_full: 'Net Transfers', field: 'transfers_diff', show: true },
+			{ index: 15, label_icon: 'swap_horiz', label: 'In (GW)', label_full: 'Gameweek Transfers In', field: 'transfers_in_event' },
+			{ index: 16, label_icon: 'swap_horiz', label: 'out (GW)', label_full: 'Gameweek Transfers Out', field: 'transfers_out_event' },
+			{ index: 17, label_icon: 'swap_horiz', label: 'Net (GW)', label_full: 'Gameweek Net Transfers', field: 'transfers_diff_event', show: true },
+			{ index: 18, label: '%', label_full: 'Selected By Percent', field: 'selected_by_percent', show: true },
+			{ index: 19, label: '+/-', label_full: 'Price Change', field: 'cost_change_start', show: true },
+			{ index: 20, label: '+/- (GW)', label_full: 'Gameweek Price Change', field: 'cost_change_event', show: true },
+			{ index: 21, label: 'ICT', field: 'ict_index' },
+			{ index: 22, label: 'Threat', field: 'threat' },
+			{ index: 23, label: 'Creativity', field: 'creativity' },
+			{ index: 24, label: 'Influence', field: 'influence' },
+			{ index: 25, label: 'Bonus', field: 'bonus' },
+			{ index: 26, label: 'BPS', field: 'bps' },
+			{ index: 27, label: 'Goals', field: 'goals_scored' },
+			{ index: 28, label: 'Assists', field: 'assists' },
+			{ index: 29, label: 'CS', label_full: 'Clean Sheets', field: 'clean_sheets' },
+			{ index: 30, label: 'Saves', field: 'saves' },
+			{ index: 31, label: 'Conceded', field: 'goals_conceded' },
+			{ index: 32, label: 'Yellow Cards', field: 'yellow_cards' },
+			{ index: 33, label: 'Red Cards', field: 'red_cards' }
 		];
 
 		this.filters = [
@@ -273,9 +289,9 @@ export class AppComponent implements OnInit {
 		};
   }
 
-	showPopup(player: IPlayer): void {
-		player.team_name = this.data.teams[player.team - 1].name;
-		player.pos_name = this.data.element_types[player.element_type - 1].singular_name;
+	showPopupPlayer(player: IPlayer): void {
+		player.team_name = this.generalData.teams[player.team - 1].name;
+		player.pos_name = this.generalData.element_types[player.element_type - 1].singular_name;
 		player.url = 'https://platform-static-files.s3.amazonaws.com/' +
 			'premierleague/photos/players/110x140/p' +
 			player.photo.slice(0, -4) + '.png';
@@ -285,7 +301,7 @@ export class AppComponent implements OnInit {
 	  });
 	}
 
-	toggleSort(col: ICol): void {
+	togglePlayersSort(col: ICol): void {
 		if(col.field === this.search.sort) {
 			this.search.reverse = !this.search.reverse;
 			this.filteredPlayers.sort((a, b) => {
@@ -310,5 +326,31 @@ export class AppComponent implements OnInit {
 	      return valueA < valueB ? -1 : 1;
 	    });
 		}
+	}
+
+	updateEvents(): void {
+		const nextEvent = this.generalData['current-event'] + 1;
+
+		this.generalData.teams.forEach(team => {
+			let sum = 0,
+					prod = 1;
+
+			for(let i = nextEvent; i < nextEvent + this.generalData.event_num
+				&& i < team.events.length; i++) {
+				if(team.events[i]) {
+					const opponent = this.generalData.teams[team.events[i].opponent - 1];
+					if(team.events[i].is_home) {
+						sum += opponent.strength_a;
+						prod *= opponent.strength_a;
+					} else {
+						sum += opponent.strength_h;
+						prod *= opponent.strength_h;
+					}
+				}
+			}
+
+			team.event_sum = sum;
+			team.event_prod = prod;
+		});
 	}
 }

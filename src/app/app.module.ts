@@ -13,7 +13,6 @@ import {
   MdMenuModule,
   MdInputModule,
   MdSelectModule,
-  MdSidenavModule,
   MdSliderModule,
   MdToolbarModule,
   MdTooltipModule
@@ -47,7 +46,6 @@ import { AppComponent } from './app.component';
     MdMenuModule,
     MdInputModule,
     MdSelectModule,
-    MdSidenavModule,
     MdSliderModule,
     MdToolbarModule,
     MdTooltipModule

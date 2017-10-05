@@ -7,7 +7,7 @@ import 'rxjs/add/operator/map';
 export class FplService {
   constructor(private _jsonp: Jsonp) {}
 
-  getData(cb: (value: any) => void): void {
+  getGeneralData(cb: (value: any) => void): void {
     this._jsonp.request('https://json2jsonp.com/?url=https://fantasy.premierleague.com/drf/bootstrap-static&callback=JSONP_CALLBACK')
       .map(res => res.json())
       .subscribe(
@@ -32,5 +32,40 @@ export class FplService {
 			player.transfers_diff_event = player.transfers_in_event - player.transfers_out_event;
 			return player;
 		});
+	}
+
+	getEventData(cb: (valy: any) => void): void {
+    this._jsonp.request('https://json2jsonp.com/?url=https://fantasy.premierleague.com/drf/fixtures/&callback=JSONP_CALLBACK')
+      .map(res => res.json())
+      .subscribe(
+        cb,
+        console.error);
+	}
+
+	createEventMap(generalData: any, events: any): void {
+		generalData.event_num = 5;
+
+		events.forEach(event => {
+			let teamA = generalData.teams[event.team_a - 1];
+			let teamH = generalData.teams[event.team_h - 1];
+
+			teamA.events = teamA.events || [];
+			teamH.events = teamH.events || [];
+			teamA.strength_h = teamA.strength_a = teamA.strength;
+			teamH.strength_h = teamH.strength_a = teamH.strength;
+
+			teamA.events[event.event] = {
+				event: event.event,
+				is_home: true,
+				id: event.id,
+				opponent: event.team_h
+			};
+			teamH.events[event.event] = {
+				event: event.event,
+				is_home: true,
+				id: event.id,
+				opponent: event.team_a
+			};
+	  });
 	}
 }

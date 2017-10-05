@@ -1,4 +1,5 @@
 <fpl-sidenav-container>
+  <!-- Header -->
   <md-toolbar id="content-header" color="primary">
     <span class="flex">FPL Analyzer</span>
     <button md-icon-button [mdMenuTriggerFor]="export">
@@ -13,105 +14,168 @@
     </button>
   </md-toolbar>
 
+  <!-- Sidenav -->
   <fpl-sidenav id="sidenav" #sidenav mode="side" position="end">
     <md-toolbar id="sidenav-header" color="primary">
       <md-icon style="margin-right: 10px;">search</md-icon>
       <input class="blank dark" placeholder="Search players"
-        [(ngModel)]="search.name" (ngModelChange)="filter()">
+        [(ngModel)]="search.name" (ngModelChange)="filterPlayers()">
     </md-toolbar>
 
     <ul>
+      <h2>Fixtures</h2>
+      <li>
+        <md-slider color="accent" thumbLabel
+          min="0" max="38"
+          [(ngModel)]="generalData.event_num" (ngModelChange)="updateEvents()"></md-slider>
+      </li>
       <h2>Limit</h2>
 			<li>
-				  <md-checkbox color="accent" [(ngModel)]="search.limit"></md-checkbox>
-          <md-slider color="accent" thumbLabel step="5" min="5"
-            [max]="data.elements ? data.elements.length: 550"
-            [disabled]="!search.limit" [(ngModel)]="search.limitSize"></md-slider>
+			  <md-checkbox color="accent" [(ngModel)]="search.limit"></md-checkbox>
+        <md-slider color="accent" thumbLabel step="5" min="5"
+          [max]="generalData.elements ? generalData.elements.length: 550"
+          [disabled]="!search.limit" [(ngModel)]="search.limitSize"></md-slider>
 			</li>
 			<li>
-          <md-select color="accent" placeholder="Columns" floatPlaceholder="never"
-            multiple [(ngModel)]="search.showCols" (ngModelChange)="filter()">
-            <md-select-trigger>Columns</md-select-trigger>
-  					<md-option *ngFor="let col of cols" [value]="col.field"
-              (click)="col.show = !col.show">
-              {{ col.label }}
-            </md-option>
-          </md-select>
+        <md-select color="accent" placeholder="Columns" floatPlaceholder="never"
+          multiple [(ngModel)]="search.showCols" (ngModelChange)="filterPlayers()">
+          <md-select-trigger>Columns</md-select-trigger>
+					<md-option *ngFor="let col of cols" [value]="col.field"
+            (click)="col.show = !col.show">
+            {{ col.label_full || col.label }}
+          </md-option>
+        </md-select>
 			</li>
 			<li>
-          <md-select color="accent" placeholder="Teams" floatPlaceholder="never"
-            multiple [(ngModel)]="search.showTeams">
-            <md-select-trigger>Teams</md-select-trigger>
-  					<md-option value="All" (click)="search.teams.all = !search.teams.all; filter()">
-              All teams
-            </md-option>
-  					<md-option *ngFor="let team of data.teams" [value]="team.id"
-              (click)="search.teams[team.id] = !search.teams[team.id]; filter()">
-              {{ team.name }}
-            </md-option>
-          </md-select>
+        <md-select color="accent" placeholder="Teams" floatPlaceholder="never"
+          multiple [(ngModel)]="search.showTeams">
+          <md-select-trigger>Teams</md-select-trigger>
+					<md-option value="All" (click)="search.teams.all = !search.teams.all; filterPlayers()">
+            All teams
+          </md-option>
+					<md-option *ngFor="let team of generalData.teams" [value]="team.id"
+            (click)="search.teams[team.id] = !search.teams[team.id]; filterPlayers()">
+            {{ team.name }}
+          </md-option>
+        </md-select>
 			</li>
 			<li>
-          <md-select color="accent" placeholder="Positions" floatPlaceholder="never"
-            multiple [(ngModel)]="search.showPoss">
-            <md-select-trigger>Positions</md-select-trigger>
-  					<md-option value="All" (click)="search.poss.all = !search.poss.all; filter()">
-              All positions
-            </md-option>
-  					<md-option *ngFor="let pos of data.element_types" [value]="pos.id"
-              (click)="search.poss[pos.id] = !search.poss[pos.id]; filter()">
-              {{ pos.plural_name }}
-            </md-option>
-          </md-select>
+        <md-select color="accent" placeholder="Positions" floatPlaceholder="never"
+          multiple [(ngModel)]="search.showPoss">
+          <md-select-trigger>Positions</md-select-trigger>
+  				<md-option value="All" (click)="search.poss.all = !search.poss.all; filterPlayers()">
+            All positions
+          </md-option>
+  				<md-option *ngFor="let pos of generalData.element_types" [value]="pos.id"
+            (click)="search.poss[pos.id] = !search.poss[pos.id]; filterPlayers()">
+            {{ pos.plural_name }}
+          </md-option>
+        </md-select>
 			</li>
 			<li>
-          <md-select color="accent" placeholder="Filters" floatPlaceholder="never"
-            multiple [(ngModel)]="search.showFilters" (ngModelChange)="filter()">
-            <md-select-trigger>Filters</md-select-trigger>
-  					<md-option *ngFor="let f of filters" [value]="f.field"
-              (click)="f.show = !f.show">
-              {{ f.label }}
-            </md-option>
-          </md-select>
+        <md-select color="accent" placeholder="Filters" floatPlaceholder="never"
+          multiple [(ngModel)]="search.showFilters" (ngModelChange)="filterPlayers()">
+          <md-select-trigger>Filters</md-select-trigger>
+					<md-option *ngFor="let f of filters" [value]="f.field"
+            (click)="f.show = !f.show">
+            {{ f.label }}
+          </md-option>
+        </md-select>
 			</li>
       <div *ngFor="let f of filters" [hidden]="!f.show" class="filter">
         <h2>{{ f.label }}</h2>
   			<li>
           <md-input-container color="accent">
     				<input mdInput type="number" placeholder="Min"
-              [(ngModel)]="f.low" (ngModelChange)="filter()">
+              [(ngModel)]="f.low" (ngModelChange)="filterPlayers()">
           </md-input-container>
   				&nbsp;to&nbsp;
           <md-input-container color="accent">
     				<input mdInput type="number" placeholder="Max"
-              [(ngModel)]="f.high" (ngModelChange)="filter()">
+              [(ngModel)]="f.high" (ngModelChange)="filterPlayers()">
           </md-input-container>
   			</li>
       </div>
     </ul>
 		<footer>
-			<button md-button (click)="resetTable(); filter()">
+			<button md-button (click)="resetPlayersTable(); filterPlayers()">
 	      Clear filters
 	    </button>
 		</footer>
   </fpl-sidenav>
 
   <div id="content">
-    <div class="small-text" ng-cloak style="margin-bottom: 20px; text-align: right;">
-        Viewing
-        <span class="accent">
-          {{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}
-        </span>
-        of {{ data.elements?.length || 0 }} total players
+    <!-- Event difficulty -->
+    <div>
+      <table class="table events">
+        <thead class="bg-grey-3">
+          <tr>
+            <th>Team</th>
+            <th>
+              <div class="abbr" mdTooltip="Home Strength">
+                H Str
+              </div>
+            </th>
+            <th>
+              <div class="abbr" mdTooltip="Away Strength">
+                A Str
+              </div>
+            </th>
+            <th>Average</th>
+            <th>Product</th>
+            <th>Fixtures</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let team of generalData?.teams">
+            <ng-container *ngIf="team && generalData?.teams">
+              <td>{{ team.name }}</td>
+              <td>
+        				<input type="number" class="blank"
+                  [(ngModel)]="team.strength_h" (ngModelChange)="updateEvents()">
+              </td>
+              <td>
+        				<input type="number" class="blank"
+                  [(ngModel)]="team.strength_a" (ngModelChange)="updateEvents()">
+              </td>
+              <td>{{ (team.event_sum / generalData.event_num).toFixed(2) }}</td>
+              <td>{{ getTeamEventProd(team) }}</td>
+              <td>
+                <ng-container *ngFor="let event of team.events">
+                  <span *ngIf="event">
+                    {{ generalData.teams[event.opponent - 1].short_name }},
+                  </span>
+                </ng-container>
+              </td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+      <div>
       </div>
-    <div id="table-wrapper" class="fixed-container mat-elevation-z8">
-      <table id="table" ng-cloak>
-        <thead class="bg-primary" fpl-fixed="#table-wrapper">
+    </div>
+
+    <!-- Small text -->
+    <div class="small-text" ng-cloak style="margin-bottom: 20px; text-align: right;">
+      Viewing
+      <span class="accent">
+        {{ search.limit && search.limitSize < filteredPlayers.length ? search.limitSize: (filteredPlayers.length || 0) }}
+      </span>
+      of {{ generalData.elements?.length || 0 }} total players
+    </div>
+
+    <!-- Table -->
+    <div id="table-wrapper" class="fixed-container">
+      <table class="table players" ng-cloak>
+        <thead class="bg-grey-3" fpl-fixed="#table-wrapper">
           <tr>
             <ng-container *ngFor="let col of cols">
-              <th (click)="toggleSort(col)" *ngIf="col.show">
-                <div [mdTooltip]="col.full_label">
-                  <span [class.abbr]="col.full_label">{{ col.label }}</span>
+              <th (click)="togglePlayersSort(col)" *ngIf="col.show">
+                <div [mdTooltip]="col.label_full">
+                  <span [class.abbr]="col.label_full">
+                    <span class="icon">{{ col.label_icon }}</span>
+                    {{ col.label }}
+                  </span>
                   <div class="dir">
                     <md-icon *ngIf="(search.sort == col.field) && !search.reverse">arrow_upwards</md-icon>
                     <md-icon *ngIf="(search.sort == col.field) && search.reverse">arrow_downwards</md-icon>
@@ -122,10 +186,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr (click)="showPopup(player)" *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: data.elements.length)">
+          <tr (click)="showPopupPlayer(player)" *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: generalData.elements.length)">
             <td *ngIf="cols[0].show">{{ player.web_name }}</td>
-            <td *ngIf="cols[1].show">{{ data.teams[player.team - 1].name }}</td>
-            <td *ngIf="cols[2].show">{{ data.element_types[player.element_type - 1].singular_name_short }}</td>
+            <td *ngIf="cols[1].show">{{ generalData.teams[player.team - 1].short_name }}</td>
+            <td *ngIf="cols[2].show">{{ generalData.element_types[player.element_type - 1].singular_name_short }}</td>
             <td *ngIf="cols[3].show">{{ player.total_points }}</td>
             <td *ngIf="cols[4].show">{{ player.event_points }}</td>
             <td *ngIf="cols[5].show">{{ player.points_per_game }}</td>
@@ -160,7 +224,7 @@
           </tr>
         </tbody>
       </table>
-      <div id="loading" [hidden]="data">Loading...</div>
+      <div id="loading" [hidden]="generalData">Loading...</div>
     </div>
   </div>
 </fpl-sidenav-container>

@@ -1,9 +1,17 @@
 /* header */
 #content-header {
+	box-shadow: 0 2px 4px rgba(0,0,0,.24),
+		0 6px 4px rgba(0,0,0,.12);
 	position: fixed;
 	top: 0;
+	transition: box-shadow .2s;
 	width: inherit;
 	z-index: 10;
+}
+
+.fpl-sidenav-open #content-header {
+	box-shadow: -4px 2px 4px rgba(0,0,0,.24),
+		-4px 6px 4px rgba(0,0,0,.12);
 }
 
 #content-header button {
@@ -40,12 +48,14 @@
 	margin: 16px 0 0 0;
 }
 
-#sidenav li {
-  margin-top: 8px;
+#sidenav li { margin-top: 8px; }
+
+/deep/ .mat-select-trigger {
+	color: #212121;
 }
 
 #sidenav .filter md-input-container {
-  width: 60px;
+	width: 60px;
 }
 
 #sidenav footer {
@@ -63,9 +73,57 @@
 
 /* content */
 #content {
-  padding: 48px;
+  padding: 48px 128px;
+	padding-top: 112px;
+	transition: padding .2s;
+}
+
+.fpl-sidenav-open #content {
+	padding: 48px;
 	padding-top: 112px;
 }
+
+.table {
+	border-collapse: collapse;
+	min-width: 100%;
+	font-size: .8em;
+}
+
+.table th {
+	font-size: .8em;
+	padding: 12px 8px;
+	vertical-align: middle;
+}
+
+.table th > div {
+	align-items: center;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+}
+
+.table th .abbr {
+	text-decoration: underline;
+}
+
+.table th .icon {
+	font-family: 'Material Icons';
+	font-size: .8em;
+}
+
+.table .dir {
+  height: 18px;
+  margin-left: 6px;
+	width: 18px;
+}
+
+.table .dir md-icon {
+	font-size: 18px;
+}
+
+.events { background: #fff; }
+
+.events input { width: 50px; }
 
 #table-wrapper {
 	background: #fff;
@@ -74,57 +132,21 @@
 	resize: vertical;
 }
 
-#table {
-	border-collapse: collapse;
-	min-width: 100%;
-}
-
-#table th {
-	color: #fff;
-	padding: 16px;
-	vertical-align: middle;
-}
-
-#table th > div {
-	align-items: center;
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-}
-
-#table th .abbr {
-	text-decoration: underline;
-}
-
-#table th:nth-child(n+3) > div {
+.players th:nth-child(n+3) > div {
 	justify-content: flex-end;
 }
 
-#table .dir {
-  height: 24px;
-  margin-left: 8px;
-	width: 24px;
-}
-
-#table .dir .material-icons {
-	color: #fff;
-}
-
-#table tbody tr:nth-child(even) {
-	background: #f5f5f5;
-}
-
-#table tbody tr:hover {
+.players tbody tr:hover {
 	background: #eee;
 	cursor: pointer;
 }
 
-#table td {
-	padding: 5px;
+.players td {
+	padding: 8px;
 	text-align: left;
 }
 
-#table td:nth-child(n+3) {
-	padding-right: 40px;
+.players td:nth-child(n+3) {
+	padding-right: 24px;
 	text-align: right;
 }
