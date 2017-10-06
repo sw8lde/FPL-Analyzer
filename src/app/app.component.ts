@@ -25,7 +25,7 @@ export interface IFilter {
   selector: 'app-root',
 	styleUrls: [
 		'./app.component.css',
-		'./fpl-sidenav.directive.css'
+		'./fpl-expandable-menu.directive.css'
 	],
   templateUrl: './app.component.html'
 })
@@ -35,10 +35,12 @@ export class AppComponent implements OnInit {
 	filters: IFilter[];
 	generalData: any;
 	search: any;
+	tabIndex: number;
 
 	constructor(fplService: FplService, public dialog: MdDialog) {
 		this.filteredPlayers = [];
 		this.generalData = {};
+		this.tabIndex = 0;
 
 		let genData = new Promise(resolve => {
 			fplService.getGeneralData((res: any): void => {
@@ -65,6 +67,23 @@ export class AppComponent implements OnInit {
 		if(low !==0) low = low || -Infinity;
 		if(high !==0) high = high || Infinity;
 		return (num >= low) && ((high >= low && num <= high) || high < low);
+	}
+
+	downloadFile(name: string, contents: string, type: string) {
+		let blob = new Blob([contents], {type: type});
+		if(navigator.msSaveBlob) {
+			navigator.msSaveBlob(blob, name);
+		} else {
+			let link = document.createElement("a");
+			if(link.download !== undefined) {
+				link.setAttribute("href", URL.createObjectURL(blob));
+				link.setAttribute("download", name);
+				link.style.visibility = 'hidden';
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+			}
+		}
 	}
 
 	exportAll(): void {
@@ -106,6 +125,12 @@ export class AppComponent implements OnInit {
 		this.exportToCSV(rows, fileName);
 	}
 
+	exportRaw(): void {
+		this.downloadFile('FPL raw data.json',
+			JSON.stringify(this.generalData),
+			'text/json;charset=utf-8;')
+	}
+
 	exportToCSV(rows: string[][], fileName: string): void {
 		let processRow = function(row) {
 			let finalVal = '';
@@ -129,20 +154,7 @@ export class AppComponent implements OnInit {
 			csvFile += processRow(rows[i]);
 		}
 
-		let blob = new Blob([csvFile], {type: 'text/csv;charset=utf-8;'});
-		if(navigator.msSaveBlob) {
-			navigator.msSaveBlob(blob, fileName);
-		} else {
-			let link = document.createElement("a");
-			if(link.download !== undefined) {
-				link.setAttribute("href", URL.createObjectURL(blob));
-				link.setAttribute("download", fileName);
-				link.style.visibility = 'hidden';
-				document.body.appendChild(link);
-				link.click();
-				document.body.removeChild(link);
-			}
-		}
+		this.downloadFile(fileName, csvFile, 'text/csv;charset=utf-8;');
 	}
 
 	filterPlayers(): void {
@@ -195,23 +207,23 @@ export class AppComponent implements OnInit {
 			{ index: 1, label: 'Team', field: 'team', show: true },
 			{ index: 2, label: 'Pos', field: 'element_type', show: true },
 			{ index: 3, label: 'P', label_full: 'Total Points', field: 'total_points', show: true },
-			{ index: 4, label: 'P (GW)', label_full: 'Gameweek Points', field: 'event_points', show: true },
+			{ index: 4, label: 'P (GW)', label_full: 'Gameweek Points', field: 'event_points' },
 			{ index: 5, label: 'PPG', label_full: 'Points Per Game', field: 'points_per_game' },
 			{ index: 6, label: 'PPM', label_full: 'Points Per Million', field: 'value_season' },
-			{ index: 7, label: 'Form', field: 'form', show: true },
+			{ index: 7, label: 'F', label_full: 'Form', field: 'form', show: true },
 			{ index: 8, label: 'FPM', label_full: 'Form Per Million', field: 'value_form' },
 			{ index: 9, label: '£', label_full: 'Price', field: 'now_cost', show: true },
 			{ index: 10, label: 'VAPM', label_full: 'Value Added Per Million', field: 'value_added_per_mil', show: true },
-			{ index: 11, label: 'Minutes', field: 'minutes' },
-			{ index: 12, label_icon: 'swap_horiz', label: 'In', label_full: 'Transfers In', field: 'transfers_in' },
-			{ index: 13, label_icon: 'swap_horiz', label: 'Out', label_full: 'Transfers Out', field: 'transfers_out' },
-			{ index: 14, label_icon: 'swap_horiz', label: 'Net', label_full: 'Net Transfers', field: 'transfers_diff', show: true },
-			{ index: 15, label_icon: 'swap_horiz', label: 'In (GW)', label_full: 'Gameweek Transfers In', field: 'transfers_in_event' },
-			{ index: 16, label_icon: 'swap_horiz', label: 'out (GW)', label_full: 'Gameweek Transfers Out', field: 'transfers_out_event' },
-			{ index: 17, label_icon: 'swap_horiz', label: 'Net (GW)', label_full: 'Gameweek Net Transfers', field: 'transfers_diff_event', show: true },
+			{ index: 11, label: 'MP', label_full: 'Minutes Played', field: 'minutes' },
+			{ index: 12, label_icon: 'arrow_back', label_full: 'Transfers In', field: 'transfers_in' },
+			{ index: 13, label_icon: 'arrow_forward', label_full: 'Transfers Out', field: 'transfers_out' },
+			{ index: 14, label_icon: 'swap_horiz', label_full: 'Net Transfers', field: 'transfers_diff', show: true },
+			{ index: 15, label_icon: 'arrow_back', label: '(GW)', label_full: 'Gameweek Transfers In', field: 'transfers_in_event' },
+			{ index: 16, label_icon: 'arrow_forward', label: '(GW)', label_full: 'Gameweek Transfers Out', field: 'transfers_out_event' },
+			{ index: 17, label_icon: 'swap_horiz', label: '(GW)', label_full: 'Gameweek Net Transfers', field: 'transfers_diff_event', show: true },
 			{ index: 18, label: '%', label_full: 'Selected By Percent', field: 'selected_by_percent', show: true },
-			{ index: 19, label: '+/-', label_full: 'Price Change', field: 'cost_change_start', show: true },
-			{ index: 20, label: '+/- (GW)', label_full: 'Gameweek Price Change', field: 'cost_change_event', show: true },
+			{ index: 19, label_icon: 'trending_up', label_full: 'Price Change', field: 'cost_change_start', show: true },
+			{ index: 20, label_icon: 'trending_up', label: '(GW)', label_full: 'Gameweek Price Change', field: 'cost_change_event' },
 			{ index: 21, label: 'ICT', field: 'ict_index' },
 			{ index: 22, label: 'Threat', field: 'threat' },
 			{ index: 23, label: 'Creativity', field: 'creativity' },
@@ -263,33 +275,15 @@ export class AppComponent implements OnInit {
 
 		this.search = {
 			limit: true,
-			limitSize: 50,
+			limitSize: 20,
 			poss: { all: true },
 			reverse: true,
-			showCols: [
-				'web_name',
-				'team',
-				'element_type',
-				'total_points',
-				'event_points',
-				'form',
-				'now_cost',
-				'value_added_per_mil',
-				'transfers_diff',
-				'transfers_diff_event',
-				'selected_by_percent',
-				'cost_change_start',
-				'cost_change_event'
-			],
-			showFilters: [],
-			showPoss: ['All'],
-			showTeams: ['All'],
 			sort: 'total_points',
 			teams: { all: true },
 		};
   }
 
-	showPopupPlayer(player: IPlayer): void {
+	showPopupPlayer(player: IPlayer, teams: any): void {
 		player.team_name = this.generalData.teams[player.team - 1].name;
 		player.pos_name = this.generalData.element_types[player.element_type - 1].singular_name;
 		player.url = 'https://platform-static-files.s3.amazonaws.com/' +
@@ -297,7 +291,7 @@ export class AppComponent implements OnInit {
 			player.photo.slice(0, -4) + '.png';
 
 	  this.dialog.open(PlayerDialogComponent, {
-	    data: { player: player }
+	    data: { player: player, teams: teams }
 	  });
 	}
 

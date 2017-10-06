@@ -1,25 +1,25 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FplFixedDirective } from './fpl-fixed.directive';
+import { FplExpandableMenuDirective } from './fpl-expandable-menu.directive';
 import { FplService } from './fpl.service';
-import { FplSidenavDirective } from './fpl-sidenav.directive';
-import { FplSidenavContainerDirective } from './fpl-sidenav-container.directive';
 import { FormsModule } from '@angular/forms';
 import { JsonpModule } from '@angular/http';
 import {
   MdButtonModule,
   MdCheckboxModule,
   MdDialogModule,
+  MdExpansionModule,
   MdMenuModule,
   MdInputModule,
+  MdRippleModule,
   MdSelectModule,
   MdSliderModule,
+  MdTabsModule,
   MdToolbarModule,
   MdTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { PlayerDialogComponent } from './player-dialog.component';
-import { WindowRefService } from './window-ref.service';
 import 'hammerjs';
 
 import { AppComponent } from './app.component';
@@ -27,9 +27,7 @@ import { AppComponent } from './app.component';
 @NgModule({
   declarations: [
     AppComponent,
-    FplFixedDirective,
-    FplSidenavDirective,
-    FplSidenavContainerDirective,
+    FplExpandableMenuDirective,
     PlayerDialogComponent
   ],
   entryComponents: [
@@ -43,14 +41,17 @@ import { AppComponent } from './app.component';
     MdButtonModule,
     MdCheckboxModule,
     MdDialogModule,
+    MdExpansionModule,
     MdMenuModule,
     MdInputModule,
+    MdRippleModule,
     MdSelectModule,
     MdSliderModule,
+    MdTabsModule,
     MdToolbarModule,
     MdTooltipModule
   ],
-	providers: [ FplService, WindowRefService ],
+	providers: [ FplService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -38,4 +38,20 @@
 			<td>{{ player.minutes }}</td>
 		</tr>
 	</table>
+
+  <fpl-expandable-menu>
+    <header md-ripple>
+      <span>Fixtures</span>
+      <md-icon>keyboard_arrow_down</md-icon>
+    </header>
+    <main>
+			<ng-container *ngFor="let event of teams[player.team - 1].events">
+	      <div *ngIf="event">
+	        {{ teams[event.opponent - 1].short_name }}
+	        {{ event.is_home ? '(H)':'(A)'}}
+	        {{ event.is_home ? teams[event.opponent - 1].strength_a: teams[event.opponent - 1].strength_h}}
+	      </div>
+			</ng-container>
+    </main>
+  </fpl-expandable-menu>
 </md-dialog-content>
