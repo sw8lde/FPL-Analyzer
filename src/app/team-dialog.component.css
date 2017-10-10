@@ -1,18 +1,12 @@
 #popup-header { position: relative; }
 
-#popup-header img {
-	height: 130px;
-	margin-left: 24px;
-  vertical-align: bottom;
-}
-
-#player-info {
+#team-info {
 	display: inline-block;
 	margin-top: 24px;
 	vertical-align: top;
 }
 
-#player-info div + div {
+#team-info div + div {
 	margin-top: 10px;
 }
 
@@ -20,15 +14,6 @@ h3 {
 	font-size: 1.1em;
 	font-weight: 500;
 	margin: 0;
-}
-
-#popup-number {
-	font-size: 150px;
-	font-weight: 500;
-	color: rgba(0,0,0,.12);
-	right: 0;
-	position: absolute;
-	top: -30px;
 }
 
 .info {

@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FplExpandableMenuDirective } from './fpl-expandable-menu.directive';
+import { FplNoClickDirective } from './fpl-no-click.directive';
 import { FplService } from './fpl.service';
 import { FormsModule } from '@angular/forms';
 import { JsonpModule } from '@angular/http';
@@ -8,9 +9,9 @@ import {
   MdButtonModule,
   MdCheckboxModule,
   MdDialogModule,
-  MdExpansionModule,
   MdMenuModule,
   MdInputModule,
+  MdProgressSpinnerModule,
   MdRippleModule,
   MdSelectModule,
   MdSliderModule,
@@ -20,6 +21,7 @@ import {
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { PlayerDialogComponent } from './player-dialog.component';
+import { TeamDialogComponent } from './team-dialog.component';
 import 'hammerjs';
 
 import { AppComponent } from './app.component';
@@ -28,10 +30,13 @@ import { AppComponent } from './app.component';
   declarations: [
     AppComponent,
     FplExpandableMenuDirective,
-    PlayerDialogComponent
+    FplNoClickDirective,
+    PlayerDialogComponent,
+    TeamDialogComponent
   ],
   entryComponents: [
-    PlayerDialogComponent
+    PlayerDialogComponent,
+    TeamDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -41,9 +46,9 @@ import { AppComponent } from './app.component';
     MdButtonModule,
     MdCheckboxModule,
     MdDialogModule,
-    MdExpansionModule,
     MdMenuModule,
     MdInputModule,
+    MdProgressSpinnerModule,
     MdRippleModule,
     MdSelectModule,
     MdSliderModule,

@@ -23,7 +23,10 @@
 }
 .options .search md-icon { color: rgba(0,0,0,.54); }
 
-.options .search input { font-size: 1em; }
+.options .search input {
+	font-size: 1em;
+	width: 100%;
+}
 
 .options ul {
   list-style: none;
@@ -38,7 +41,11 @@
 	margin: 16px 0 0 0;
 }
 
-.options li { margin-top: 8px; }
+.options li {
+	align-items: center;
+	display: flex;
+	margin-top: 8px;
+}
 
 .options .filter md-input-container {
 	width: 60px;
@@ -57,26 +64,18 @@
 /deep/ #tabs-content md-tab-header { display: none; }
 
 /* content */
-.content {
-  padding: 12px 64px;
-	transition: padding .2s;
+.events td:first-child {
+	min-width: 200px;
 }
 
-.content h1 {
-	align-items: center;
-	display: flex;
-	font-size: 1.6em;
-	font-weight: 500;
-	margin: 0;
-	padding: 24px;
+.events td:nth-child(n+3) {
+	text-align: center;
 }
 
-.content h1 md-icon {
-	font-size: 32px;
-	margin-right: 12px;
+.events input {
+	border-bottom: 1px solid rgba(0,0,0,.24);
+	width: 50px;
 }
-
-.events input { width: 50px; }
 
 .players th:nth-child(n+3) > div {
 	justify-content: flex-end;
@@ -88,7 +87,6 @@
 
 .players td:first-child {
 	min-width: 200px;
-	padding-left: 32px;
 }
 
 .players td:nth-child(n+3) {

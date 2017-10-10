@@ -8,7 +8,7 @@
 		</div>
 		<span id="popup-number">{{ player.squad_number }}</span>
 	</div>
-	<table>
+	<table class="info">
 		<tr class="bg-accent">
 			<td>Points</td>
 			<td>GW</td>
@@ -39,19 +39,36 @@
 		</tr>
 	</table>
 
-  <fpl-expandable-menu>
+  <fpl-expandable-menu class="no-scroll">
     <header md-ripple>
       <span>Fixtures</span>
       <md-icon>keyboard_arrow_down</md-icon>
     </header>
     <main>
-			<ng-container *ngFor="let event of teams[player.team - 1].events">
-	      <div *ngIf="event">
-	        {{ teams[event.opponent - 1].short_name }}
-	        {{ event.is_home ? '(H)':'(A)'}}
-	        {{ event.is_home ? teams[event.opponent - 1].strength_a: teams[event.opponent - 1].strength_h}}
-	      </div>
-			</ng-container>
+			<table class="table">
+				<thead>
+					<th>Result</th>
+					<th>GW</th>
+					<th>Opponent</th>
+					<th>Difficulty</th>
+				</thead>
+				<tbody>
+					<ng-container *ngFor="let event of teams[player.team - 1].events">
+			      <tr *ngIf="event">
+							<td *ngIf="event.finished">{{ event.team_score }} - {{ event.opponent_score }}</td>
+							<td *ngIf="!event.finished">{{ event.date }}</td>
+							<td>{{ event.event }}
+			        <td>
+								{{ teams[event.opponent - 1].short_name }}
+								{{ event.is_home ? '(H)':'(A)'}}
+							</td>
+			        <td style="text-align: center" [style.background]="getEventColor(event.is_home ? teams[event.opponent - 1].strength_a: teams[event.opponent - 1].strength_h)">
+								{{ event.is_home ? teams[event.opponent - 1].strength_a: teams[event.opponent - 1].strength_h }}
+							</td>
+			      </tr>
+					</ng-container>
+				</tbody>
+			</table>
     </main>
   </fpl-expandable-menu>
 </md-dialog-content>

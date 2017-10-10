@@ -3,6 +3,7 @@ import { MdDialog } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
 import { PlayerDialogComponent } from './player-dialog.component';
+import { TeamDialogComponent } from './team-dialog.component';
 
 export interface ICol {
 	index: number;
@@ -34,10 +35,11 @@ export class AppComponent implements OnInit {
 	filteredPlayers: any[];
 	filters: IFilter[];
 	generalData: any;
+	pageSizes: any = [10, 25, 50, 100];
 	search: any;
 	tabIndex: number;
 
-	constructor(fplService: FplService, public dialog: MdDialog) {
+	constructor(private fplService: FplService, public dialog: MdDialog) {
 		this.filteredPlayers = [];
 		this.generalData = {};
 		this.tabIndex = 0;
@@ -197,13 +199,22 @@ export class AppComponent implements OnInit {
 		});
 	}
 
+	getEventColor(diff: number): string {
+		if(!this.search.show_event_colors) return 'none';
+		return this.fplService.getEventColor(diff);
+	}
+
+	getPages(): number {
+		return Math.ceil(this.filteredPlayers.length / this.search.pageSize);
+	}
+
 	getTeamEventProd(team: any): string {
 		return Math.pow(team.event_prod, 1 / this.generalData.event_num).toFixed(2);
 	}
 
 	resetPlayersTable(): void {
     this.cols = [
-			{ index: 0, label: 'Name', field: 'web_name', show: true },
+			{ index: 0, label: 'Player', field: 'web_name', show: true },
 			{ index: 1, label: 'Team', field: 'team', show: true },
 			{ index: 2, label: 'Pos', field: 'element_type', show: true },
 			{ index: 3, label: 'P', label_full: 'Total Points', field: 'total_points', show: true },
@@ -274,8 +285,8 @@ export class AppComponent implements OnInit {
 		];
 
 		this.search = {
-			limit: true,
-			limitSize: 20,
+			page: 1,
+			pageSize: this.pageSizes[1],
 			poss: { all: true },
 			reverse: true,
 			sort: 'total_points',
@@ -292,6 +303,12 @@ export class AppComponent implements OnInit {
 
 	  this.dialog.open(PlayerDialogComponent, {
 	    data: { player: player, teams: teams }
+	  });
+	}
+
+	showPopupTeam(teams: any, index: number): void {
+		this.dialog.open(TeamDialogComponent, {
+	    data: { teams: teams, index: index }
 	  });
 	}
 

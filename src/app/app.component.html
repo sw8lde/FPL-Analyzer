@@ -35,16 +35,6 @@
             [(ngModel)]="search.name" (ngModelChange)="filterPlayers()">
         </div>
 
-        <ul>
-          <h2>Page Size</h2>
-          <li>
-            <md-checkbox color="accent" [(ngModel)]="search.limit"></md-checkbox>
-            <md-slider color="accent" thumbLabel step="5" min="5"
-              [max]="generalData.elements ? generalData.elements.length: 550"
-              [disabled]="!search.limit" [(ngModel)]="search.limitSize"></md-slider>
-          </li>
-        </ul>
-
         <!-- Columns -->
         <fpl-expandable-menu>
           <header md-ripple>
@@ -158,66 +148,104 @@
         </h1>
 
         <!-- Table -->
-        <table class="table clickable players" ng-cloak>
-          <thead>
-            <tr>
-              <ng-container *ngFor="let col of cols">
-                <th (click)="togglePlayersSort(col)" *ngIf="col.show" md-ripple>
-                  <div [mdTooltip]="col.label_full">
-                    <span [class.abbr]="col.label_full">
-                      <span class="icon">{{ col.label_icon }}</span>
-                      {{ col.label }}
-                    </span>
-                    <div class="dir">
-                      <md-icon *ngIf="(search.sort == col.field) && !search.reverse">arrow_upwards</md-icon>
-                      <md-icon *ngIf="(search.sort == col.field) && search.reverse">arrow_downwards</md-icon>
+        <div class="table-wrapper">
+          <table class="table clickable players" ng-cloak>
+            <thead>
+              <tr>
+                <ng-container *ngFor="let col of cols">
+                  <th (click)="togglePlayersSort(col)" *ngIf="col.show" md-ripple>
+                    <div [mdTooltip]="col.label_full">
+                      <span [class.abbr]="col.label_full">
+                        <span class="icon">{{ col.label_icon }}</span>
+                        {{ col.label }}
+                      </span>
+                      <div class="dir">
+                        <md-icon *ngIf="(search.sort == col.field) && !search.reverse">arrow_upwards</md-icon>
+                        <md-icon *ngIf="(search.sort == col.field) && search.reverse">arrow_downwards</md-icon>
+                      </div>
                     </div>
-                  </div>
-                </th>
-              </ng-container>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let player of filteredPlayers | slice: 0:(search.limit ? search.limitSize: generalData.elements.length)"
-              (click)="showPopupPlayer(player, generalData.teams)" md-ripple>
-              <td *ngIf="cols[0].show">{{ player.web_name }}</td>
-              <td *ngIf="cols[1].show">{{ generalData.teams[player.team - 1].short_name }}</td>
-              <td *ngIf="cols[2].show">{{ generalData.element_types[player.element_type - 1].singular_name_short }}</td>
-              <td *ngIf="cols[3].show">{{ player.total_points }}</td>
-              <td *ngIf="cols[4].show">{{ player.event_points }}</td>
-              <td *ngIf="cols[5].show">{{ player.points_per_game }}</td>
-              <td *ngIf="cols[6].show">{{ player.value_season }}</td>
-              <td *ngIf="cols[7].show">{{ player.form }}</td>
-              <td *ngIf="cols[8].show">{{ player.value_form }}</td>
-              <td *ngIf="cols[9].show">{{ player.now_cost.toFixed(1) }}</td>
-              <td *ngIf="cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
-              <td *ngIf="cols[11].show">{{ player.minutes }}</td>
-              <td *ngIf="cols[12].show">{{ player.transfers_in }}</td>
-              <td *ngIf="cols[13].show">{{ player.transfers_out }}</td>
-              <td *ngIf="cols[14].show">{{ player.transfers_diff }}</td>
-              <td *ngIf="cols[15].show">{{ player.transfers_in_event }}</td>
-              <td *ngIf="cols[16].show">{{ player.transfers_out_event }}</td>
-              <td *ngIf="cols[17].show">{{ player.transfers_diff_event }}</td>
-              <td *ngIf="cols[18].show">{{ player.selected_by_percent }}</td>
-              <td *ngIf="cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
-              <td *ngIf="cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
-              <td *ngIf="cols[21].show">{{ player.ict_index }}</td>
-              <td *ngIf="cols[22].show">{{ player.threat }}</td>
-              <td *ngIf="cols[23].show">{{ player.creativity }}</td>
-              <td *ngIf="cols[24].show">{{ player.influence }}</td>
-              <td *ngIf="cols[25].show">{{ player.bonus }}</td>
-              <td *ngIf="cols[26].show">{{ player.bps }}</td>
-              <td *ngIf="cols[27].show">{{ player.goals_scored }}</td>
-              <td *ngIf="cols[28].show">{{ player.assists }}</td>
-              <td *ngIf="cols[29].show">{{ player.clean_sheets }}</td>
-              <td *ngIf="cols[30].show">{{ player.saves }}</td>
-              <td *ngIf="cols[31].show">{{ player.goals_conceded }}</td>
-              <td *ngIf="cols[32].show">{{ player.yellow_cards }}</td>
-              <td *ngIf="cols[33].show">{{ player.red_cards }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div id="loading" [hidden]="generalData">Loading...</div>
+                  </th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let player of filteredPlayers | slice: ((search.page - 1) * search.pageSize):(search.page * search.pageSize)"
+                (click)="showPopupPlayer(player, generalData.teams)">
+                <td *ngIf="cols[0].show">{{ player.web_name }}</td>
+                <td *ngIf="cols[1].show">{{ generalData.teams[player.team - 1].short_name }}</td>
+                <td *ngIf="cols[2].show">{{ generalData.element_types[player.element_type - 1].singular_name_short }}</td>
+                <td *ngIf="cols[3].show">{{ player.total_points }}</td>
+                <td *ngIf="cols[4].show">{{ player.event_points }}</td>
+                <td *ngIf="cols[5].show">{{ player.points_per_game }}</td>
+                <td *ngIf="cols[6].show">{{ player.value_season }}</td>
+                <td *ngIf="cols[7].show">{{ player.form }}</td>
+                <td *ngIf="cols[8].show">{{ player.value_form }}</td>
+                <td *ngIf="cols[9].show">{{ player.now_cost.toFixed(1) }}</td>
+                <td *ngIf="cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
+                <td *ngIf="cols[11].show">{{ player.minutes }}</td>
+                <td *ngIf="cols[12].show">{{ player.transfers_in }}</td>
+                <td *ngIf="cols[13].show">{{ player.transfers_out }}</td>
+                <td *ngIf="cols[14].show">{{ player.transfers_diff }}</td>
+                <td *ngIf="cols[15].show">{{ player.transfers_in_event }}</td>
+                <td *ngIf="cols[16].show">{{ player.transfers_out_event }}</td>
+                <td *ngIf="cols[17].show">{{ player.transfers_diff_event }}</td>
+                <td *ngIf="cols[18].show">{{ player.selected_by_percent }}</td>
+                <td *ngIf="cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
+                <td *ngIf="cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
+                <td *ngIf="cols[21].show">{{ player.ict_index }}</td>
+                <td *ngIf="cols[22].show">{{ player.threat }}</td>
+                <td *ngIf="cols[23].show">{{ player.creativity }}</td>
+                <td *ngIf="cols[24].show">{{ player.influence }}</td>
+                <td *ngIf="cols[25].show">{{ player.bonus }}</td>
+                <td *ngIf="cols[26].show">{{ player.bps }}</td>
+                <td *ngIf="cols[27].show">{{ player.goals_scored }}</td>
+                <td *ngIf="cols[28].show">{{ player.assists }}</td>
+                <td *ngIf="cols[29].show">{{ player.clean_sheets }}</td>
+                <td *ngIf="cols[30].show">{{ player.saves }}</td>
+                <td *ngIf="cols[31].show">{{ player.goals_conceded }}</td>
+                <td *ngIf="cols[32].show">{{ player.yellow_cards }}</td>
+                <td *ngIf="cols[33].show">{{ player.red_cards }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="loading" *ngIf="!generalData.elements">
+          <md-spinner></md-spinner>
+        </div>
+
+        <div class="pagination">
+          <span class="page">Page size:</span>
+
+          <md-select [(ngModel)]="search.pageSize" color="accent">
+            <md-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</md-option>
+          </md-select>
+
+          <button md-icon-button class="skip"
+            (click)="search.page = 1" [disabled]="search.page == 1">
+            <md-icon>chevron_left</md-icon>
+            <md-icon>chevron_left</md-icon>
+          </button>
+
+          <button md-icon-button
+            (click)="search.page = search.page - 1" [disabled]="search.page == 1">
+            <md-icon>chevron_left</md-icon>
+          </button>
+
+          <span class="page">Page {{ search.page }} of {{ getPages() }}</span>
+
+          <button md-icon-button
+            (click)="search.page = search.page + 1" [disabled]=" search.page == getPages()">
+            <md-icon>chevron_right</md-icon>
+          </button>
+
+          <button md-icon-button class="skip"
+            (click)="search.page = getPages()" [disabled]="search.page == getPages()">
+            <md-icon>chevron_right</md-icon>
+            <md-icon>chevron_right</md-icon>
+          </button>
+        </div>
+
       </div>
     </div>
   </md-tab>
@@ -233,11 +261,19 @@
         </h1>
 
         <ul>
-          <h2>Fixtures</h2>
+          <h2>Fixtures to analyze</h2>
           <li>
             <md-slider color="accent" thumbLabel
               min="0" max="38"
               [(ngModel)]="generalData.event_num" (ngModelChange)="updateEvents()"></md-slider>
+            <input class="blank" type="number" [(ngModel)]="generalData.event_num"
+              (ngModelChange)="updateEvents()"
+              style="width: 50px; border-bottom: 1px solid rgba(0,0,0,.24);">
+          </li>
+          <h2>Show colors</h2>
+          <li>
+            <md-checkbox color="accent"
+              [(ngModel)]="search.show_event_colors"></md-checkbox>
           </li>
         </ul>
       </div>
@@ -248,46 +284,37 @@
           <thead>
             <tr>
               <th>Team</th>
-              <th>
-                <div class="abbr" mdTooltip="Home Strength">
-                  H Str
-                </div>
-              </th>
-              <th>
-                <div class="abbr" mdTooltip="Away Strength">
-                  A Str
-                </div>
-              </th>
+              <th><div class="abbr" mdTooltip="Home Strength">HS</div></th>
+              <th><div class="abbr" mdTooltip="Away Strength">AS</div></th>
               <th>Average</th>
               <th>Product</th>
-              <th>Fixtures</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let team of generalData?.teams">
-              <ng-container *ngIf="team && generalData?.teams">
-                <td>{{ team.name }}</td>
-                <td>
-          				<input type="number" class="blank"
-                    [(ngModel)]="team.strength_h" (ngModelChange)="updateEvents()">
-                </td>
-                <td>
-          				<input type="number" class="blank"
-                    [(ngModel)]="team.strength_a" (ngModelChange)="updateEvents()">
-                </td>
-                <td>{{ (team.event_sum / generalData.event_num).toFixed(2) }}</td>
-                <td>{{ getTeamEventProd(team) }}</td>
-                <td>
-                  <ng-container *ngFor="let event of team.events">
-                    <span *ngIf="event">
-                      {{ generalData.teams[event.opponent - 1].short_name }},
-                    </span>
-                  </ng-container>
-                </td>
-              </ng-container>
+            <tr *ngFor="let team of generalData.teams; let i=index"
+              (click)="showPopupTeam(generalData.teams, i)">
+              <td>{{ team.name }}</td>
+              <td fpl-no-click>
+        				<input type="number" class="blank"
+                  [(ngModel)]="team.strength_h" (ngModelChange)="updateEvents()">
+              </td>
+              <td fpl-no-click>
+        				<input type="number" class="blank"
+                  [(ngModel)]="team.strength_a" (ngModelChange)="updateEvents()">
+              </td>
+              <td [style.background]="getEventColor((team.event_sum / generalData.event_num).toFixed(2))">
+                {{ (team.event_sum / generalData.event_num).toFixed(2) }}
+              </td>
+              <td [style.background]="getEventColor(getTeamEventProd(team))">
+                {{ getTeamEventProd(team) }}
+              </td>
             </tr>
           </tbody>
         </table>
+
+        <div class="loading" *ngIf="!generalData.elements">
+          <md-spinner></md-spinner>
+        </div>
       </div>
     </div>
   </md-tab>

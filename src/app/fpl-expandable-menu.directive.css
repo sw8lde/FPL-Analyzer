@@ -36,16 +36,21 @@ fpl-expandable-menu.open main {
   overflow-y: auto;
 }
 
+fpl-expandable-menu.no-scroll.open main {
+  max-height: none;
+  overflow-y: auto;
+}
+
 fpl-expandable-menu main div {
   align-items: center;
   display: flex;
+  padding: 12px 16px;
+  position: relative;
 }
 
 fpl-expandable-menu main div.clickable:hover {
   background: #f5f5f5;
   cursor: pointer;
-  padding: 12px 16px;
-  position: relative;
 }
 
 fpl-expandable-menu main div md-checkbox {

@@ -68,9 +68,52 @@ md-icon {
 
 .col {
   background: #fff;
-  display: inline-block;
   float: left;
   margin: 12px;
+}
+
+.col:first-child {
+  width: 300px;
+}
+
+.col:nth-child(2) {
+  width: calc(100% - 348px);
+}
+
+.col h1 {
+	align-items: center;
+	display: flex;
+	font-size: 1.6em;
+	font-weight: 500;
+	margin: 0;
+	padding: 24px;
+}
+
+.col h1 md-icon {
+	font-size: 32px;
+	margin-right: 12px;
+}
+
+.content {
+  padding: 24px;
+}
+
+@media (max-width: 900px) {
+  /*.content { padding: 24px 0; }*/
+
+  .col {
+    /*margin: 12px 0;*/
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .content { padding: 24px 0; }
+
+  .col {
+    margin: 12px 0;
+    width: 100% !important;
+  }
 }
 
 .flex { flex: 1 1 auto; }
@@ -82,6 +125,10 @@ input.blank {
 }
 
 /* table */
+.table-wrapper {
+  overflow-x: auto;
+}
+
 .table {
 	border-collapse: collapse;
 	min-width: 100%;
@@ -98,6 +145,11 @@ input.blank {
   position: relative;
 }
 
+.table th:first-child {
+  text-align: left;
+  padding-left: 32px;
+}
+
 .table th > div {
 	align-items: center;
 	cursor: pointer;
@@ -107,6 +159,10 @@ input.blank {
 
 .table th .abbr {
 	/*text-decoration: underline;*/
+}
+
+.table th:first-child > div {
+  justify-content: flex-start;
 }
 
 .table th .icon {
@@ -130,10 +186,41 @@ input.blank {
 }
 
 .table td {
-	padding: 12px 4px;
+	padding: 12px 8px;
+}
+
+.table td:first-child {
+	padding-left: 32px;
 }
 
 .table.clickable tbody tr:hover {
 	background: #eee;
 	cursor: pointer;
+}
+
+.loading {
+  padding: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+}
+
+.pagination md-select {
+  padding: 0;
+  margin: 0 16px;
+}
+
+.pagination .page {
+  color: rgba(0,0,0,.54);
+  font-size: .8em;
+}
+
+.pagination .skip md-icon + md-icon{
+  margin-left: -16px;
 }

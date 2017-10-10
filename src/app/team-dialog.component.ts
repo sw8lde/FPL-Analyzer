@@ -1,23 +1,22 @@
 import { Component, Inject } from '@angular/core';
 import { MD_DIALOG_DATA } from '@angular/material';
 import { FplService } from './fpl.service';
-import { IPlayer } from './player';
 
 @Component({
-  selector: 'player-dialog',
+  selector: 'team-dialog',
   styleUrls: [
-    './player-dialog.component.css',
+    './team-dialog.component.css',
 		'./fpl-expandable-menu.directive.css'
   ],
-  templateUrl: './player-dialog.component.html'
+  templateUrl: './team-dialog.component.html'
 })
-export class PlayerDialogComponent {
-  player: IPlayer;
+export class TeamDialogComponent {
   teams: any;
+  index: number;
 
   constructor(@Inject(MD_DIALOG_DATA) public data: any, private fplService: FplService) {
-    this.player = data.player;
     this.teams = data.teams;
+    this.index = data.index;
   }
 
   getEventColor(diff: number): string {

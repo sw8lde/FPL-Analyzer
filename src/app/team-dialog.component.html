@@ -1,0 +1,75 @@
+<md-dialog-content style="padding: 0">
+  <div id="popup-header">
+		<div id="team-info">
+			<div><h3>{{ teams[index].name }}</h3></div>
+			<div>
+				Next fixture:
+				{{ teams[teams[index].next_event_fixture[0].opponent].short_name }}
+				{{ teams[index].next_event_fixture.is_home ? '(H)' : '(A)' }}
+			</div>
+		</div>
+	</div>
+	<table class="info">
+		<tr class="bg-accent">
+			<td><div class="abbr" mdTooltip="Matches Played">MP</div></td>
+			<td><div class="abbr" mdTooltip="Wins">W</div></td>
+			<td><div class="abbr" mdTooltip="Losses">L</div></td>
+			<td><div class="abbr" mdTooltip="Draws">D</div></td>
+			<td><div class="abbr" mdTooltip="Points">P</div></td>
+		</tr>
+		<tr class="bg-accent">
+			<td>{{ teams[index].record[0] + teams[index].record[1] + teams[index].record[2] }}</td>
+			<td>{{ teams[index].record[0] }}</td>
+			<td>{{ teams[index].record[1] }}</td>
+			<td>{{ teams[index].record[2] }}</td>
+			<td>{{ 3 * teams[index].record[0] + teams[index].record[2] }}</td>
+		</tr>
+		<tr>
+			<td><div class="abbr" mdTooltip="Home Strength">HS</div></td>
+			<td><div class="abbr" mdTooltip="Away Strength">AS</div></td>
+			<td><div class="abbr" mdTooltip="Goals For">F</div></td>
+			<td><div class="abbr" mdTooltip="Goals Against">A</div></td>
+			<td><div class="abbr" mdTooltip="Goal Difference">+/-</div></td>
+		</tr>
+		<tr>
+			<td>{{ teams[index].strength_h }}</td>
+			<td>{{ teams[index].strength_a }}</td>
+			<td>{{ teams[index].goals_for }}</td>
+			<td>{{ teams[index].goals_against }}</td>
+			<td>{{ teams[index].goals_for - teams[index].goals_against }}</td>
+		</tr>
+	</table>
+
+  <fpl-expandable-menu class="no-scroll">
+    <header md-ripple>
+      <span>Fixtures</span>
+      <md-icon>keyboard_arrow_down</md-icon>
+    </header>
+    <main>
+			<table class="table">
+				<thead>
+					<th>Result</th>
+					<th>GW</th>
+					<th>Opponent</th>
+					<th>Difficulty</th>
+				</thead>
+				<tbody>
+					<ng-container *ngFor="let event of teams[index].events">
+			      <tr *ngIf="event">
+							<td *ngIf="event.finished">{{ event.team_score }} - {{ event.opponent_score }}</td>
+							<td *ngIf="!event.finished">{{ event.date }}</td>
+							<td>{{ event.event }}
+			        <td>
+								{{ teams[event.opponent - 1].short_name }}
+								{{ event.is_home ? '(H)':'(A)'}}
+							</td>
+			        <td style="text-align: center" [style.background]="getEventColor(event.is_home ? teams[event.opponent - 1].strength_a: teams[event.opponent - 1].strength_h)">
+								{{ event.is_home ? teams[event.opponent - 1].strength_a: teams[event.opponent - 1].strength_h }}
+							</td>
+			      </tr>
+					</ng-container>
+				</tbody>
+			</table>
+    </main>
+  </fpl-expandable-menu>
+</md-dialog-content>
