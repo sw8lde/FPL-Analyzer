@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog } from '@angular/material';
+import { MdDialog, MdSnackBar } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
 import { PlayerDialogComponent } from './player-dialog.component';
@@ -35,14 +35,25 @@ export class AppComponent implements OnInit {
 	filteredPlayers: any[];
 	filters: IFilter[];
 	generalData: any;
+	op_events: any;
+	op_predictor: any;
+	op_players: any;
 	pageSizes: any = [10, 25, 50, 100];
-	search: any;
 	tabIndex: number;
 
-	constructor(private fplService: FplService, public dialog: MdDialog) {
+	constructor(private fplService: FplService, public dialog: MdDialog, public snackBar: MdSnackBar) {
 		this.filteredPlayers = [];
 		this.generalData = {};
 		this.tabIndex = 0;
+		this.op_events = { event_num: 5 }
+		this.op_predictor = {
+			budget_mode: 'total',
+			budget_total: 100,
+			budget_gk: 9,
+			budget_def: 25,
+			budget_mid: 31,
+			budget_fwd: 35,
+		}
 
 		let genData = new Promise(resolve => {
 			fplService.getGeneralData((res: any): void => {
@@ -164,7 +175,7 @@ export class AppComponent implements OnInit {
 
 		if(!this.generalData || !this.generalData.elements) return;
 		this.generalData.elements.forEach(player => {
-			const s = this.search;
+			const s = this.op_players;
 			let include = true;
 
 			if(s.name &&
@@ -189,28 +200,41 @@ export class AppComponent implements OnInit {
 		});
 
 		this.filteredPlayers = filtered.sort((a, b) => {
-			let propA = a[this.search.sort];
-			let propB = b[this.search.sort];
+			let propA = a[this.op_players.sort];
+			let propB = b[this.op_players.sort];
 
 			let valueA = isNaN(+propA) ? propA : +propA;
 			let valueB = isNaN(+propB) ? propB : +propB;
 
-			return (valueA < valueB ? -1 : 1) * (this.search.reverse ? -1 : 1);
+			return (valueA < valueB ? -1 : 1) * (this.op_players.reverse ? -1 : 1);
 		});
 	}
 
 	getEventColor(diff: number): string {
-		if(!this.search.show_event_colors) return 'none';
+		if(!this.op_events.show_event_colors) return 'none';
 		return this.fplService.getEventColor(diff);
 	}
 
 	getPages(): number {
-		return Math.ceil(this.filteredPlayers.length / this.search.pageSize);
+		return Math.ceil(this.filteredPlayers.length / this.op_players.pageSize);
 	}
 
 	getTeamEventProd(team: any): string {
-		return Math.pow(team.event_prod, 1 / this.generalData.event_num).toFixed(2);
+		return Math.pow(team.event_prod, 1 / this.op_events.event_num).toFixed(2);
 	}
+
+	loadTeamStrength(): void {
+		let diff = JSON.parse(localStorage.getItem('teamStrength'));
+
+		if(diff) {
+			diff.forEach((team, index) => {
+				this.generalData.teams[index].strength_a = team.a;
+				this.generalData.teams[index].strength_h = team.h;
+			});
+		}
+	}
+
+	predict(): void {}
 
 	resetPlayersTable(): void {
     this.cols = [
@@ -284,7 +308,7 @@ export class AppComponent implements OnInit {
 			{ label: 'Red Cards', field: 'red_cards' }
 		];
 
-		this.search = {
+		this.op_players = {
 			page: 1,
 			pageSize: this.pageSizes[1],
 			poss: { all: true },
@@ -293,6 +317,27 @@ export class AppComponent implements OnInit {
 			teams: { all: true },
 		};
   }
+
+	resetTeamStrength(): void {
+		this.generalData.teams.forEach(team => {
+			team.strength_a = team.strength;
+			team.strength_h = team.strength;
+		});
+	}
+
+	saveTeamStrength(): void {
+		let diff = [];
+
+		this.generalData.teams.forEach((team, index) => {
+			diff[index] = {
+				a: team.strength_a,
+				h: team.strength_h
+			}
+		});
+
+		localStorage.setItem('teamStrength', JSON.stringify(diff));
+		this.snackBar.open('Saved!', null, { duration: 2000 });
+	}
 
 	showPopupPlayer(player: IPlayer, teams: any): void {
 		player.team_name = this.generalData.teams[player.team - 1].name;
@@ -313,23 +358,23 @@ export class AppComponent implements OnInit {
 	}
 
 	togglePlayersSort(col: ICol): void {
-		if(col.field === this.search.sort) {
-			this.search.reverse = !this.search.reverse;
+		if(col.field === this.op_players.sort) {
+			this.op_players.reverse = !this.op_players.reverse;
 			this.filteredPlayers.sort((a, b) => {
-	      let propA = a[this.search.sort];
-	      let propB = b[this.search.sort];
+	      let propA = a[this.op_players.sort];
+	      let propB = b[this.op_players.sort];
 
 	      let valueA = isNaN(+propA) ? propA : +propA;
 	      let valueB = isNaN(+propB) ? propB : +propB;
 
-	      return (valueA < valueB ? -1 : 1) * (this.search.reverse ? -1 : 1);
+	      return (valueA < valueB ? -1 : 1) * (this.op_players.reverse ? -1 : 1);
 	    });
 		} else {
-			this.search.sort = col.field;
-			this.search.reverse = false;
+			this.op_players.sort = col.field;
+			this.op_players.reverse = false;
 			this.filteredPlayers.sort((a, b) => {
-	      let propA = a[this.search.sort];
-	      let propB = b[this.search.sort];
+	      let propA = a[this.op_players.sort];
+	      let propB = b[this.op_players.sort];
 
 	      let valueA = isNaN(+propA) ? propA : +propA;
 	      let valueB = isNaN(+propB) ? propB : +propB;
@@ -346,7 +391,7 @@ export class AppComponent implements OnInit {
 			let sum = 0,
 					prod = 1;
 
-			for(let i = nextEvent; i < nextEvent + this.generalData.event_num
+			for(let i = nextEvent; i < nextEvent + this.op_events.event_num
 				&& i < team.events.length; i++) {
 				if(team.events[i]) {
 					const opponent = this.generalData.teams[team.events[i].opponent - 1];

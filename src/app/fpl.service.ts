@@ -8,8 +8,6 @@ export class FplService {
   constructor(private _jsonp: Jsonp) {}
 
 	createEventMap(generalData: any, events: any): void {
-		generalData.event_num = 5;
-
 		events.forEach(event => {
 			let teamA = generalData.teams[event.team_a - 1];
 			teamA.events = teamA.events || [];

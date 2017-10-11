@@ -99,10 +99,7 @@ md-icon {
 }
 
 @media (max-width: 900px) {
-  /*.content { padding: 24px 0; }*/
-
   .col {
-    /*margin: 12px 0;*/
     width: 100% !important;
   }
 }

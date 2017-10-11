@@ -9,8 +9,17 @@
 	z-index: 10;
 }
 
+#content-header img {
+  height: 40px;
+	margin-right: 24px;
+}
+
 #content-header button {
-  margin-left: 20px;
+  margin-left: 24px;
+}
+
+@media (max-width: 700px) {
+	#content-header .title { display: none; }
 }
 
 /* options */
@@ -44,6 +53,12 @@
 .options li {
 	align-items: center;
 	display: flex;
+	margin-top: 8px;
+}
+
+.options md-select { width: 200px; }
+
+.options md-radio-button + md-radio-button {
 	margin-top: 8px;
 }
 
