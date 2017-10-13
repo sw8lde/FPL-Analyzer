@@ -3,11 +3,14 @@ import { IPlayer } from './player';
 
 @Injectable()
 export class PredictorService {
-	playerItrCap: number = 100;
+	coolingRate: number = 0.9;
+	playerItrCap: number = 500;
 	posLen: number[] = [0, 2, 5, 5, 3];
 	posSum: number[] = [0, 0, 2, 7, 12];
 	restarts: number = 10;
 	teamItr: number = 10000;
+	temp: number = 80000;
+	weights: number[] = [0, 1, 1, 1, 1];
 
 	getInitialTeam(players: any, budget: any): any {
 			let team = {
@@ -44,8 +47,8 @@ export class PredictorService {
 			return team;
 	}
 
-	getMoveProb(itr: number): number {
-		return 0;
+	getMoveProb(itr: number, bestScore: any, succScore: any): number {
+		return Math.exp(-(bestScore - succScore)/(this.temp * Math.pow(this.coolingRate, itr)));
 	}
 
 	getPredictedTeam(players: any, budget: any): any {
@@ -57,29 +60,25 @@ export class PredictorService {
 			team = this.getInitialTeam(players, budget.map(b => { return b; }));
 
 		for(let itr = 0; itr < this.teamItr; itr++) {
-			let succ;
-			if(typeof budget == 'number') {
-				succ = {
-					itb: team.itb,
-					players: team.players.map(player => { return player; }),
-					score: team.score,
-					total_points: 0
-				}
-			} else {
-				succ = {
-					itb: team.itb.map(itb => { return itb; }),
-					players: team.players.map(player => { return player; }),
-					score: team.score,
-					total_points: 0
-				}
+			let succ = {
+				event_points: 0,
+				form: 0,
+				itb: 0,
+				players: team.players.map(player => { return player; }),
+				score: team.score,
+				total_points: 0
 			}
 
-			if(typeof budget == 'number')
+			if(typeof budget == 'number') {
+				succ.itb = team.itb;
 				this.getSuccessorByTotal(players, succ);
-			else
+			} else {
+				succ.itb = team.itb.map(itb => { return itb; });
 				this.getSuccessorByPos(players, succ);
+			}
 
-			if(succ.score > team.score)
+			if(succ.score > team.score
+				|| Math.random() < this.getMoveProb(itr, team.score, succ.score))
 				team = succ;
 
 			if(typeof budget == 'number')
@@ -92,7 +91,28 @@ export class PredictorService {
 	}
 
 	getScore(player: IPlayer): number {
-		return (player.minutes)*player.form*(player.points_per_game - 2)/(player.now_cost - 3);
+		let score = player.form * (player.points_per_game - 2) * player.minutes / 90;
+
+		switch(player.element_type) {
+			case 1:
+				score /= (Math.abs(player.now_cost - 3.5) + 1);
+				score *= player.clean_sheets;
+				break;
+			case 2:
+				score /= (Math.abs(player.now_cost - 3.5) + 1);
+				score *= player.clean_sheets;
+				break;
+			case 3:
+				score /= (Math.abs(player.now_cost - 4) + 1);
+				score *= player.goals_scored + player.assists;
+				break;
+			case 4:
+				score /= (Math.abs(player.now_cost - 4.5) + 1);
+				score *= player.goals_scored + player.assists;
+				break;
+		}
+
+		return this.weights[player.element_type]*score;
 	}
 
 	getSuccessorByPos(players: any, team: any): void {
@@ -188,6 +208,10 @@ export class PredictorService {
 			&& newPlayer.now_cost > team.itb[newPlayer.element_type])
 			return false;
 
+		if(newPlayer.chance_of_playing_next_round != null
+			&& newPlayer.chance_of_playing_next_round < 50)
+			return false;
+
 		// check for duplicates and max team members
 		let teammates = 0;
 		if(team.players.some(player => {
@@ -201,17 +225,17 @@ export class PredictorService {
 		return true;
 	}
 
-	predict(players: any, budget: any): any {
+	predict(players: any, budget: any, weights: number[]): any {
+		this.weights = weights;
 		let bestTeam = { score: 0 };
 
 		for(let i = 0; i < this.restarts; i++) {
-			let tempTeam = this.getPredictedTeam(players, budget);
+			let succTeam = this.getPredictedTeam(players, budget);
 
-			if(bestTeam.score < tempTeam.score)
-				bestTeam = tempTeam;
+			if(bestTeam.score < succTeam.score)
+				bestTeam = succTeam;
 		}
 
 		return bestTeam;
 	}
-
 }

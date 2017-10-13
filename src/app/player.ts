@@ -57,7 +57,7 @@ export interface IPlayer {
   transfers_out: number;
   transfers_out_event: number;
   url: string; // custom
-  value_added_per_mil: number;
+  value_added_per_mil: number; // custom
   value_form: number;
   value_season: number;
   web_name: string;

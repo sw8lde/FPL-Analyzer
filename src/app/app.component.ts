@@ -55,11 +55,14 @@ export class AppComponent implements OnInit {
 			budget_total: 100,
 			budget_pos: [0, 10, 25, 35, 30],
 			team: {
+				event_points: 0,
+				form: 0,
 				itb: 0,
 				players: [],
 				score: 0,
 				total_points: 0
-			}
+			},
+			weights: [0, 1, 1, 1, 1]
 		}
 
 		let genData = new Promise(resolve => {
@@ -248,11 +251,22 @@ export class AppComponent implements OnInit {
 		if(this.op_predictor.budget_mode == 'total') {
 			this.op_predictor.team = this.predictorService.predict(
 				this.generalData.elements,
-				this.op_predictor.budget_total);
+				this.op_predictor.budget_total,
+				this.op_predictor.weights);
 		} else {
 			this.op_predictor.team = this.predictorService.predict(
 				this.generalData.elements,
-				this.op_predictor.budget_pos);
+				this.op_predictor.budget_pos,
+				this.op_predictor.weights);
+		}
+
+		// update itb if its by position
+		if(typeof this.op_predictor.team.itb == 'object') {
+			this.op_predictor.team.itb =
+				'GKP: £' + this.op_predictor.team.itb[1] + ', ' +
+				'DEF: £' + this.op_predictor.team.itb[2] + ', ' +
+				'MID: £' + this.op_predictor.team.itb[3] + ', ' +
+				'FWD: £' + this.op_predictor.team.itb[4]
 		}
 
 		this.op_predictor.team.players.forEach(player => {
@@ -261,6 +275,8 @@ export class AppComponent implements OnInit {
 				player.photo.slice(0, -4) + '.png';
 
 			this.op_predictor.team.total_points += player.total_points;
+			this.op_predictor.team.event_points += player.event_points;
+			this.op_predictor.team.form += player.form;
 		});
 
 		// sort by position and price

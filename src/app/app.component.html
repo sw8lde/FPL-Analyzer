@@ -207,8 +207,7 @@
                 <td *ngIf="cols[30].show">{{ player.saves }}</td>
                 <td *ngIf="cols[31].show">{{ player.goals_conceded }}</td>
                 <td *ngIf="cols[32].show">{{ player.yellow_cards }}</td>
-                <!-- <td *ngIf="cols[33].show">{{ player.red_cards }}</td> -->
-                <td *ngIf="cols[33].show">{{ predictorService.getScore(player) }}</td>
+                <td *ngIf="cols[33].show">{{ player.red_cards }}</td>
               </tr>
             </tbody>
           </table>
@@ -394,6 +393,40 @@
           </ng-container>
         </ul>
 
+        <!-- Posisiton weights -->
+        <fpl-expandable-menu>
+          <header md-ripple>
+            <span>Advanced</span>
+            <md-icon>keyboard_arrow_down</md-icon>
+          </header>
+          <main>
+            <div>
+              <md-input-container color="accent">
+        				<input mdInput type="number" placeholder="Goalkeeper weight"
+                  [(ngModel)]="op_predictor.weights[1]">
+              </md-input-container>
+            </div>
+            <div>
+              <md-input-container color="accent">
+        				<input mdInput type="number" placeholder="Defender weight"
+                  [(ngModel)]="op_predictor.weights[2]">
+              </md-input-container>
+            </div>
+            <div>
+              <md-input-container color="accent">
+        				<input mdInput type="number" placeholder="Midfield weight"
+                  [(ngModel)]="op_predictor.weights[3]">
+              </md-input-container>
+            </div>
+            <div>
+              <md-input-container color="accent">
+        				<input mdInput type="number" placeholder="Forward weight"
+                  [(ngModel)]="op_predictor.weights[4]">
+              </md-input-container>
+            </div>
+          </main>
+        </fpl-expandable-menu>
+
         <footer>
           <button md-button (click)="predict()">Predict</button>
         </footer>
@@ -405,9 +438,25 @@
           Predictor
         </h1>
 
-        {{ op_predictor.team.total_points }}
-        {{ op_predictor.team.itb }}
-        {{ (op_predictor.team.score).toFixed(1) }}
+        <!-- {{ (op_predictor.team.score).toFixed(1) }} -->
+        <table class="table predicted-stats">
+          <thead>
+            <tr>
+              <th>ITB</th>
+              <th>Total Points</th>
+              <th>GW Points</th>
+              <th>Avg Form</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>£{{ op_predictor.team.itb }}</td>
+              <td>{{ op_predictor.team.total_points }}</td>
+              <td>{{ op_predictor.team.event_points }}</td>
+              <td>{{ (op_predictor.team.form / 15).toFixed(1) }}</td>
+            </tr>
+          </tbody>
+        </table>
         <div class="predicted-team">
           <!-- GKPs -->
           <div class="player-row">
@@ -416,7 +465,7 @@
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
               </div>
             </ng-container>
           </div>
@@ -427,7 +476,7 @@
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
               </div>
             </ng-container>
           </div>
@@ -438,7 +487,7 @@
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
               </div>
             </ng-container>
           </div>
@@ -449,7 +498,7 @@
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
               </div>
             </ng-container>
           </div>
