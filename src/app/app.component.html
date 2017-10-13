@@ -173,7 +173,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let player of filteredPlayers | slice: ((op_players.page - 1) * op_players.pageSize):(op_players.page * op_players.pageSize)"
-                (click)="showPopupPlayer(player, generalData.teams)">
+                (click)="showPopupPlayer(player)">
                 <td *ngIf="cols[0].show">{{ player.web_name }}</td>
                 <td *ngIf="cols[1].show">{{ generalData.teams[player.team - 1].short_name }}</td>
                 <td *ngIf="cols[2].show">{{ generalData.element_types[player.element_type - 1].singular_name_short }}</td>
@@ -207,7 +207,8 @@
                 <td *ngIf="cols[30].show">{{ player.saves }}</td>
                 <td *ngIf="cols[31].show">{{ player.goals_conceded }}</td>
                 <td *ngIf="cols[32].show">{{ player.yellow_cards }}</td>
-                <td *ngIf="cols[33].show">{{ player.red_cards }}</td>
+                <!-- <td *ngIf="cols[33].show">{{ player.red_cards }}</td> -->
+                <td *ngIf="cols[33].show">{{ predictorService.getScore(player) }}</td>
               </tr>
             </tbody>
           </table>
@@ -328,7 +329,7 @@
           </table>
         </div>
 
-        <div class="loading" *ngIf="!generalData.elements">
+        <div class="loading" *ngIf="!generalData.teams">
           <md-spinner></md-spinner>
         </div>
       </div>
@@ -369,25 +370,25 @@
             <li>
               <md-input-container color="accent">
         				<input mdInput type="number" placeholder="Goalkeeper budget"
-                  [(ngModel)]="op_predictor.budget_gk">
+                  [(ngModel)]="op_predictor.budget_pos[1]">
               </md-input-container>
             </li>
             <li>
               <md-input-container color="accent">
         				<input mdInput type="number" placeholder="Defender budget"
-                  [(ngModel)]="op_predictor.budget_def">
+                  [(ngModel)]="op_predictor.budget_pos[2]">
               </md-input-container>
             </li>
             <li>
               <md-input-container color="accent">
         				<input mdInput type="number" placeholder="Midfield budget"
-                  [(ngModel)]="op_predictor.budget_mid">
+                  [(ngModel)]="op_predictor.budget_pos[3]">
               </md-input-container>
             </li>
             <li>
               <md-input-container color="accent">
         				<input mdInput type="number" placeholder="Forward budget"
-                  [(ngModel)]="op_predictor.budget_fwd">
+                  [(ngModel)]="op_predictor.budget_pos[4]">
               </md-input-container>
             </li>
           </ng-container>
@@ -404,6 +405,59 @@
           Predictor
         </h1>
 
+        {{ op_predictor.team.total_points }}
+        {{ op_predictor.team.itb }}
+        {{ (op_predictor.team.score).toFixed(1) }}
+        <div class="predicted-team">
+          <!-- GKPs -->
+          <div class="player-row">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+              <div *ngIf="i < 2" class="player-card mat-elevation-z4"
+                (click)="showPopupPlayer(player)">
+                <img [src]="player.url">
+                <span>{{ player.web_name }}</span>
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+              </div>
+            </ng-container>
+          </div>
+          <!-- DEFs -->
+          <div class="player-row">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+              <div *ngIf="i > 1 && i < 7" class="player-card mat-elevation-z4"
+                (click)="showPopupPlayer(player)">
+                <img [src]="player.url">
+                <span>{{ player.web_name }}</span>
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+              </div>
+            </ng-container>
+          </div>
+          <!-- MIDs -->
+          <div class="player-row">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+              <div *ngIf="i > 6 && i < 12" class="player-card mat-elevation-z4"
+                (click)="showPopupPlayer(player)">
+                <img [src]="player.url">
+                <span>{{ player.web_name }}</span>
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+              </div>
+            </ng-container>
+          </div>
+          <!-- FWDs -->
+          <div class="player-row">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+              <div *ngIf="i > 11" class="player-card mat-elevation-z4"
+                (click)="showPopupPlayer(player)">
+                <img [src]="player.url">
+                <span>{{ player.web_name }}</span>
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="loading" *ngIf="!op_predictor.team.players.length > 0">
+            <md-spinner></md-spinner>
+          </div>
+        </div>
       </div>
     </div>
   </md-tab>

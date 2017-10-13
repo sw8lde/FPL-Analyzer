@@ -108,3 +108,40 @@
 	padding-right: 24px;
 	text-align: right;
 }
+
+.predicted-team {
+	background: url('/assets/field.png') #349629 no-repeat top;
+  min-height: 800px;
+  padding-top: 80px;
+	width: 100%;
+}
+
+.predicted-team .player-row {
+	text-align: center;
+}
+
+.predicted-team .player-card {
+	background: #fff;
+	border-radius: 2px;
+	cursor: pointer;
+	display: inline-block;
+	margin: 24px 0;
+	padding: 16px;
+	text-align: center;
+	width: 100px;
+}
+
+.predicted-team .player-card + .player-card {
+	margin-left: 24px;
+}
+
+.predicted-team img {
+	display: block;
+	height: 80px;
+  margin: 0 auto;
+}
+
+.predicted-team span {
+	display: block;
+	margin-top: 8px;
+}

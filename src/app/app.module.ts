@@ -23,6 +23,7 @@ import {
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { PlayerDialogComponent } from './player-dialog.component';
+import { PredictorService } from './predictor.service';
 import { TeamDialogComponent } from './team-dialog.component';
 import 'hammerjs';
 
@@ -60,7 +61,7 @@ import { AppComponent } from './app.component';
     MdToolbarModule,
     MdTooltipModule
   ],
-	providers: [ FplService ],
-  bootstrap: [AppComponent]
+	providers: [ FplService, PredictorService ],
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }

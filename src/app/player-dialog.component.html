@@ -10,11 +10,11 @@
 	</div>
 	<table class="info">
 		<tr class="bg-accent">
-			<td>Points</td>
-			<td>GW</td>
-			<td>Form</td>
-			<td>VAPM</td>
-			<td>PPG</td>
+			<td><div class="abbr" mdTooltip="Points">P</div></td>
+			<td><div class="abbr" mdTooltip="Gameweek Points">P (GW)</div></td>
+			<td><div class="abbr" mdTooltip="Form">F</div></td>
+			<td><div class="abbr" mdTooltip="Value Added Per Million">VAPM</div></td>
+			<td><div class="abbr" mdTooltip="Points Per Game">PPG</div></td>
 		</tr>
 		<tr class="bg-accent">
 			<td>{{ player.total_points }}</td>
@@ -24,11 +24,11 @@
 			<td>{{ player.points_per_game }}</td>
 		</tr>
 		<tr>
-			<td>Price</td>
-			<td>Selected</td>
-			<td>Net Transfers</td>
-			<td>Cost Change</td>
-			<td>Minutes</td>
+			<td><div class="abbr" mdTooltip="Price">£</div></td>
+			<td><div class="abbr" mdTooltip="Selected By Percent">%</div></td>
+			<td><div class="abbr icon" mdTooltip="Net Transfers">swap_horiz</div></td>
+			<td><div class="abbr icon" mdTooltip="Cost Change">trending_up</div></td>
+      <td><div class="abbr" mdTooltip="Minutes Played">MP</div></td>
 		</tr>
 		<tr>
 			<td>£{{ player.now_cost.toFixed(1) }}</td>

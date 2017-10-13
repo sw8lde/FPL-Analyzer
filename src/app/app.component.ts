@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MdDialog, MdSnackBar } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
+import { MdDialog, MdSnackBar } from '@angular/material';
 import { PlayerDialogComponent } from './player-dialog.component';
+import { PredictorService } from './predictor.service';
 import { TeamDialogComponent } from './team-dialog.component';
 
 export interface ICol {
@@ -41,7 +42,10 @@ export class AppComponent implements OnInit {
 	pageSizes: any = [10, 25, 50, 100];
 	tabIndex: number;
 
-	constructor(private fplService: FplService, public dialog: MdDialog, public snackBar: MdSnackBar) {
+	constructor(private fplService: FplService,
+		public dialog: MdDialog,
+		public snackBar: MdSnackBar,
+		public predictorService: PredictorService) {
 		this.filteredPlayers = [];
 		this.generalData = {};
 		this.tabIndex = 0;
@@ -49,10 +53,13 @@ export class AppComponent implements OnInit {
 		this.op_predictor = {
 			budget_mode: 'total',
 			budget_total: 100,
-			budget_gk: 9,
-			budget_def: 25,
-			budget_mid: 31,
-			budget_fwd: 35,
+			budget_pos: [0, 10, 25, 35, 30],
+			team: {
+				itb: 0,
+				players: [],
+				score: 0,
+				total_points: 0
+			}
 		}
 
 		let genData = new Promise(resolve => {
@@ -68,6 +75,7 @@ export class AppComponent implements OnInit {
 			genData.then(data => {
 				fplService.createEventMap(data, res);
 				this.updateEvents();
+				// this.predict();
 			});
 		});
   }
@@ -234,7 +242,32 @@ export class AppComponent implements OnInit {
 		}
 	}
 
-	predict(): void {}
+	predict(): void {
+		this.op_predictor.team.players = [];
+
+		if(this.op_predictor.budget_mode == 'total') {
+			this.op_predictor.team = this.predictorService.predict(
+				this.generalData.elements,
+				this.op_predictor.budget_total);
+		} else {
+			this.op_predictor.team = this.predictorService.predict(
+				this.generalData.elements,
+				this.op_predictor.budget_pos);
+		}
+
+		this.op_predictor.team.players.forEach(player => {
+			player.url = 'https://platform-static-files.s3.amazonaws.com/' +
+				'premierleague/photos/players/110x140/p' +
+				player.photo.slice(0, -4) + '.png';
+
+			this.op_predictor.team.total_points += player.total_points;
+		});
+
+		// sort by position and price
+		this.op_predictor.team.players.sort((a, b) => {
+			return (a.element_type  + .1 - (a.now_cost / 100)) - (b.element_type  + .1 - (b.now_cost / 100));
+		});
+	}
 
 	resetPlayersTable(): void {
     this.cols = [
@@ -339,7 +372,7 @@ export class AppComponent implements OnInit {
 		this.snackBar.open('Saved!', null, { duration: 2000 });
 	}
 
-	showPopupPlayer(player: IPlayer, teams: any): void {
+	showPopupPlayer(player: IPlayer): void {
 		player.team_name = this.generalData.teams[player.team - 1].name;
 		player.pos_name = this.generalData.element_types[player.element_type - 1].singular_name;
 		player.url = 'https://platform-static-files.s3.amazonaws.com/' +
@@ -347,7 +380,7 @@ export class AppComponent implements OnInit {
 			player.photo.slice(0, -4) + '.png';
 
 	  this.dialog.open(PlayerDialogComponent, {
-	    data: { player: player, teams: teams }
+	    data: { player: player, teams: this.generalData.teams }
 	  });
 	}
 
