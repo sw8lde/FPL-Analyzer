@@ -183,31 +183,33 @@
                 <td *ngIf="cols[6].show">{{ player.value_season }}</td>
                 <td *ngIf="cols[7].show">{{ player.form }}</td>
                 <td *ngIf="cols[8].show">{{ player.value_form }}</td>
-                <td *ngIf="cols[9].show">{{ player.now_cost.toFixed(1) }}</td>
-                <td *ngIf="cols[10].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
-                <td *ngIf="cols[11].show">{{ player.minutes }}</td>
-                <td *ngIf="cols[12].show">{{ player.transfers_in }}</td>
-                <td *ngIf="cols[13].show">{{ player.transfers_out }}</td>
-                <td *ngIf="cols[14].show">{{ player.transfers_diff }}</td>
-                <td *ngIf="cols[15].show">{{ player.transfers_in_event }}</td>
-                <td *ngIf="cols[16].show">{{ player.transfers_out_event }}</td>
-                <td *ngIf="cols[17].show">{{ player.transfers_diff_event }}</td>
-                <td *ngIf="cols[18].show">{{ player.selected_by_percent }}</td>
-                <td *ngIf="cols[19].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
-                <td *ngIf="cols[20].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
-                <td *ngIf="cols[21].show">{{ player.ict_index }}</td>
-                <td *ngIf="cols[22].show">{{ player.threat }}</td>
-                <td *ngIf="cols[23].show">{{ player.creativity }}</td>
-                <td *ngIf="cols[24].show">{{ player.influence }}</td>
-                <td *ngIf="cols[25].show">{{ player.bonus }}</td>
-                <td *ngIf="cols[26].show">{{ player.bps }}</td>
-                <td *ngIf="cols[27].show">{{ player.goals_scored }}</td>
-                <td *ngIf="cols[28].show">{{ player.assists }}</td>
-                <td *ngIf="cols[29].show">{{ player.clean_sheets }}</td>
-                <td *ngIf="cols[30].show">{{ player.saves }}</td>
-                <td *ngIf="cols[31].show">{{ player.goals_conceded }}</td>
-                <td *ngIf="cols[32].show">{{ player.yellow_cards }}</td>
-                <td *ngIf="cols[33].show">{{ player.red_cards }}</td>
+                <td *ngIf="cols[9].show">{{ player.ep_this }}</td>
+                <td *ngIf="cols[10].show">{{ player.ep_next }}</td>
+                <td *ngIf="cols[11].show">{{ player.now_cost.toFixed(1) }}</td>
+                <td *ngIf="cols[12].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
+                <td *ngIf="cols[13].show">{{ player.minutes }}</td>
+                <td *ngIf="cols[14].show">{{ player.transfers_in }}</td>
+                <td *ngIf="cols[15].show">{{ player.transfers_out }}</td>
+                <td *ngIf="cols[16].show">{{ player.transfers_diff }}</td>
+                <td *ngIf="cols[17].show">{{ player.transfers_in_event }}</td>
+                <td *ngIf="cols[18].show">{{ player.transfers_out_event }}</td>
+                <td *ngIf="cols[19].show">{{ player.transfers_diff_event }}</td>
+                <td *ngIf="cols[20].show">{{ player.selected_by_percent }}</td>
+                <td *ngIf="cols[21].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
+                <td *ngIf="cols[22].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
+                <td *ngIf="cols[23].show">{{ player.ict_index }}</td>
+                <td *ngIf="cols[24].show">{{ player.threat }}</td>
+                <td *ngIf="cols[25].show">{{ player.creativity }}</td>
+                <td *ngIf="cols[26].show">{{ player.influence }}</td>
+                <td *ngIf="cols[27].show">{{ player.bonus }}</td>
+                <td *ngIf="cols[28].show">{{ player.bps }}</td>
+                <td *ngIf="cols[29].show">{{ player.goals_scored }}</td>
+                <td *ngIf="cols[30].show">{{ player.assists }}</td>
+                <td *ngIf="cols[31].show">{{ player.clean_sheets }}</td>
+                <td *ngIf="cols[32].show">{{ player.saves }}</td>
+                <td *ngIf="cols[33].show">{{ player.goals_conceded }}</td>
+                <td *ngIf="cols[34].show">{{ player.yellow_cards }}</td>
+                <td *ngIf="cols[35].show">{{ player.red_cards }}</td>
               </tr>
             </tbody>
           </table>
@@ -445,6 +447,16 @@
               <th>ITB</th>
               <th>Total Points</th>
               <th>GW Points</th>
+              <!-- <th>
+                <div mdTooltip="Caculated points are from highest predicted scoring team, with captain set on the highest predicted scoring player.">
+                  <span class="abbr">xP</span>
+                </div>
+              </th>
+              <th>
+                <div mdTooltip="Caculated points are from highest predicted scoring team, with captain set on the highest predicted scoring player.">
+                  <span class="abbr">xP (Next)</span>
+                </div>
+              </th> -->
               <th>Avg Form</th>
             </tr>
           </thead>
@@ -453,6 +465,8 @@
               <td>£{{ op_predictor.team.itb }}</td>
               <td>{{ op_predictor.team.total_points }}</td>
               <td>{{ op_predictor.team.event_points }}</td>
+              <td>{{ (op_predictor.team.ep_this / 1).toFixed(1) }}</td>
+              <td>{{ (op_predictor.team.ep_next / 1).toFixed(1) }}</td>
               <td>{{ (op_predictor.team.form / 15).toFixed(1) }}</td>
             </tr>
           </tbody>
@@ -460,50 +474,50 @@
         <div class="predicted-team">
           <!-- GKPs -->
           <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
               <div *ngIf="i < 2" class="player-card mat-elevation-z4"
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
               </div>
             </ng-container>
           </div>
           <!-- DEFs -->
           <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
               <div *ngIf="i > 1 && i < 7" class="player-card mat-elevation-z4"
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
               </div>
             </ng-container>
           </div>
           <!-- MIDs -->
           <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
               <div *ngIf="i > 6 && i < 12" class="player-card mat-elevation-z4"
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
               </div>
             </ng-container>
           </div>
           <!-- FWDs -->
           <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i = index">
+            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
               <div *ngIf="i > 11" class="player-card mat-elevation-z4"
                 (click)="showPopupPlayer(player)">
                 <img [src]="player.url">
                 <span>{{ player.web_name }}</span>
-                <!-- <span>{{ predictorService.getScore(player).toFixed(1) }}</span> -->
+                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
               </div>
             </ng-container>
           </div>
 
-          <div class="loading" *ngIf="!op_predictor.team.players.length > 0">
+          <div class="loading" *ngIf="!(op_predictor.team.players.length > 0)">
             <md-spinner></md-spinner>
           </div>
         </div>

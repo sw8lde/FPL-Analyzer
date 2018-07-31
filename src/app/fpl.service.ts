@@ -95,6 +95,8 @@ export class FplService {
 		return players.map(player => {
 			player.now_cost = player.now_cost / 10;
 			player.creativity = parseFloat(player.creativity);
+			player.ep_this = parseFloat(player.ep_this);
+			player.ep_next = parseFloat(player.ep_next);
 			player.form = parseFloat(player.form);
 			player.ict_index = parseFloat(player.ict_index);
 			player.influence = parseFloat(player.influence);

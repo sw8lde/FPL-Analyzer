@@ -16,8 +16,7 @@ export class PredictorService {
 			let team = {
 				itb: budget,
 				players: [],
-				score: 0,
-				total_points: 0
+				score: 0
 			};
 
 			let currPos = 1;
@@ -61,12 +60,9 @@ export class PredictorService {
 
 		for(let itr = 0; itr < this.teamItr; itr++) {
 			let succ = {
-				event_points: 0,
-				form: 0,
 				itb: 0,
 				players: team.players.map(player => { return player; }),
-				score: team.score,
-				total_points: 0
+				score: team.score
 			}
 
 			if(typeof budget == 'number') {
@@ -113,6 +109,10 @@ export class PredictorService {
 		}
 
 		return this.weights[player.element_type]*score;
+	}
+
+	getScore2(player: IPlayer): number {
+		return player.ep_this + player.ep_next;
 	}
 
 	getSuccessorByPos(players: any, team: any): void {
@@ -225,17 +225,20 @@ export class PredictorService {
 		return true;
 	}
 
-	predict(players: any, budget: any, weights: number[]): any {
-		this.weights = weights;
-		let bestTeam = { score: 0 };
+	predict(players: any, budget: any, weights: number[]): Promise<any> {
+		return new Promise(resolve => {
+			this.weights = weights;
+			let bestTeam = { score: 0 };
 
-		for(let i = 0; i < this.restarts; i++) {
-			let succTeam = this.getPredictedTeam(players, budget);
+			for(let i = 0; i < this.restarts; i++) {
+				let succTeam = this.getPredictedTeam(players, budget);
 
-			if(bestTeam.score < succTeam.score)
-				bestTeam = succTeam;
-		}
+				if(bestTeam.score < succTeam.score)
+					bestTeam = succTeam;
+			}
 
-		return bestTeam;
+			resolve(bestTeam);
+		});
 	}
+
 }

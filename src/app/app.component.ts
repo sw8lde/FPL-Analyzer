@@ -78,12 +78,12 @@ export class AppComponent implements OnInit {
 			genData.then(data => {
 				fplService.createEventMap(data, res);
 				this.updateEvents();
-				// this.predict();
+				this.predict();
 			});
 		});
   }
 
-  ngOnInit() {
+	ngOnInit() {
 		this.resetPlayersTable();
 	}
 
@@ -247,41 +247,85 @@ export class AppComponent implements OnInit {
 
 	predict(): void {
 		this.op_predictor.team.players = [];
+		let prediction;
 
 		if(this.op_predictor.budget_mode == 'total') {
-			this.op_predictor.team = this.predictorService.predict(
+			prediction = this.predictorService.predict(
 				this.generalData.elements,
 				this.op_predictor.budget_total,
 				this.op_predictor.weights);
 		} else {
-			this.op_predictor.team = this.predictorService.predict(
+			prediction = this.predictorService.predict(
 				this.generalData.elements,
 				this.op_predictor.budget_pos,
 				this.op_predictor.weights);
 		}
 
-		// update itb if its by position
-		if(typeof this.op_predictor.team.itb == 'object') {
-			this.op_predictor.team.itb =
-				'GKP: £' + this.op_predictor.team.itb[1] + ', ' +
-				'DEF: £' + this.op_predictor.team.itb[2] + ', ' +
-				'MID: £' + this.op_predictor.team.itb[3] + ', ' +
-				'FWD: £' + this.op_predictor.team.itb[4]
-		}
+		prediction.then(team => {
+			this.op_predictor.team = team;
+			this.op_predictor.team.total_points = 0;
+			this.op_predictor.team.event_points = 0;
+			this.op_predictor.team.ep_this = 0;
+			this.op_predictor.team.ep_next = 0;
+			this.op_predictor.team.form = 0;
 
-		this.op_predictor.team.players.forEach(player => {
-			player.url = 'https://platform-static-files.s3.amazonaws.com/' +
-				'premierleague/photos/players/110x140/p' +
-				player.photo.slice(0, -4) + '.png';
+			if(!team.players)
+				this.op_predictor.team.players = this.generalData.elements.slice(0, 15);
 
-			this.op_predictor.team.total_points += player.total_points;
-			this.op_predictor.team.event_points += player.event_points;
-			this.op_predictor.team.form += player.form;
-		});
+			// update itb if its by position
+			if(typeof this.op_predictor.team.itb == 'object') {
+				this.op_predictor.team.itb =
+					'GKP: £' + this.op_predictor.team.itb[1] + ', ' +
+					'DEF: £' + this.op_predictor.team.itb[2] + ', ' +
+					'MID: £' + this.op_predictor.team.itb[3] + ', ' +
+					'FWD: £' + this.op_predictor.team.itb[4]
+			}
 
-		// sort by position and price
-		this.op_predictor.team.players.sort((a, b) => {
-			return (a.element_type  + .1 - (a.now_cost / 100)) - (b.element_type  + .1 - (b.now_cost / 100));
+			this.op_predictor.team.players.forEach(player => {
+				player.url = 'https://platform-static-files.s3.amazonaws.com/' +
+					'premierleague/photos/players/110x140/p' +
+					player.photo.slice(0, -4) + '.png';
+
+				this.op_predictor.team.total_points += player.total_points;
+				this.op_predictor.team.event_points += player.event_points;
+				this.op_predictor.team.ep_this += player.ep_this;
+				this.op_predictor.team.ep_next += player.ep_next;
+				this.op_predictor.team.form += player.form;
+			});
+
+			this.op_predictor.team.players.sort((a, b) => {
+				return this.predictorService.getScore(b) - this.predictorService.getScore(a);
+			});
+
+			// calc best team by score
+			let subs = 0;
+			let subPos = [-1, 1, 0, 0, 0];
+			let i = this.op_predictor.team.players.length - 1;
+			while(subs != 4) {
+				let p = this.op_predictor.team.players[i];
+				if(subPos[p.element_type] < 2) {
+					this.op_predictor.team.total_points -= p.total_points;
+					this.op_predictor.team.event_points -= p.event_points;
+					this.op_predictor.team.ep_this -= p.ep_this;
+					this.op_predictor.team.ep_next -= p.ep_next;
+					subPos[p.element_type]++;
+					subs++;
+					// console.log(p.web_name);
+				}
+				i--;
+			}
+
+			// add captain points
+			this.op_predictor.team.total_points += this.op_predictor.team.players[0].total_points;
+			this.op_predictor.team.event_points += this.op_predictor.team.players[0].event_points;
+			this.op_predictor.team.ep_this += this.op_predictor.team.players[0].ep_this;
+			this.op_predictor.team.ep_next += this.op_predictor.team.players[0].ep_next;
+			// console.log('cap: ' + this.op_predictor.team.players[0].web_name);
+
+			// sort by position and price
+			this.op_predictor.team.players.sort((a, b) => {
+				return (a.element_type - (a.now_cost / 100)) - (b.element_type - (b.now_cost / 100));
+			});
 		});
 	}
 
@@ -296,31 +340,33 @@ export class AppComponent implements OnInit {
 			{ index: 6, label: 'PPM', label_full: 'Points Per Million', field: 'value_season' },
 			{ index: 7, label: 'F', label_full: 'Form', field: 'form', show: true },
 			{ index: 8, label: 'FPM', label_full: 'Form Per Million', field: 'value_form' },
-			{ index: 9, label: '£', label_full: 'Price', field: 'now_cost', show: true },
-			{ index: 10, label: 'VAPM', label_full: 'Value Added Per Million', field: 'value_added_per_mil', show: true },
-			{ index: 11, label: 'MP', label_full: 'Minutes Played', field: 'minutes' },
-			{ index: 12, label_icon: 'arrow_back', label_full: 'Transfers In', field: 'transfers_in' },
-			{ index: 13, label_icon: 'arrow_forward', label_full: 'Transfers Out', field: 'transfers_out' },
-			{ index: 14, label_icon: 'swap_horiz', label_full: 'Net Transfers', field: 'transfers_diff', show: true },
-			{ index: 15, label_icon: 'arrow_back', label: '(GW)', label_full: 'Gameweek Transfers In', field: 'transfers_in_event' },
-			{ index: 16, label_icon: 'arrow_forward', label: '(GW)', label_full: 'Gameweek Transfers Out', field: 'transfers_out_event' },
-			{ index: 17, label_icon: 'swap_horiz', label: '(GW)', label_full: 'Gameweek Net Transfers', field: 'transfers_diff_event', show: true },
-			{ index: 18, label: '%', label_full: 'Selected By Percent', field: 'selected_by_percent', show: true },
-			{ index: 19, label_icon: 'trending_up', label_full: 'Price Change', field: 'cost_change_start', show: true },
-			{ index: 20, label_icon: 'trending_up', label: '(GW)', label_full: 'Gameweek Price Change', field: 'cost_change_event' },
-			{ index: 21, label: 'ICT', field: 'ict_index' },
-			{ index: 22, label: 'Threat', field: 'threat' },
-			{ index: 23, label: 'Creativity', field: 'creativity' },
-			{ index: 24, label: 'Influence', field: 'influence' },
-			{ index: 25, label: 'Bonus', field: 'bonus' },
-			{ index: 26, label: 'BPS', field: 'bps' },
-			{ index: 27, label: 'Goals', field: 'goals_scored' },
-			{ index: 28, label: 'Assists', field: 'assists' },
-			{ index: 29, label: 'CS', label_full: 'Clean Sheets', field: 'clean_sheets' },
-			{ index: 30, label: 'Saves', field: 'saves' },
-			{ index: 31, label: 'Conceded', field: 'goals_conceded' },
-			{ index: 32, label: 'Yellow Cards', field: 'yellow_cards' },
-			{ index: 33, label: 'Red Cards', field: 'red_cards' }
+			{ index: 9, label: 'xP', label_full: 'Expected Points', field: 'ep_this' },
+			{ index: 10, label: 'xP (Next)', label_full: 'Expected Points Next Gameweek', field: 'ep_next' },
+			{ index: 11, label: '£', label_full: 'Price', field: 'now_cost', show: true },
+			{ index: 12, label: 'VAPM', label_full: 'Value Added Per Million', field: 'value_added_per_mil', show: true },
+			{ index: 13, label: 'MP', label_full: 'Minutes Played', field: 'minutes' },
+			{ index: 14, label_icon: 'arrow_back', label_full: 'Transfers In', field: 'transfers_in' },
+			{ index: 15, label_icon: 'arrow_forward', label_full: 'Transfers Out', field: 'transfers_out' },
+			{ index: 16, label_icon: 'swap_horiz', label_full: 'Net Transfers', field: 'transfers_diff', show: true },
+			{ index: 17, label_icon: 'arrow_back', label: '(GW)', label_full: 'Gameweek Transfers In', field: 'transfers_in_event' },
+			{ index: 18, label_icon: 'arrow_forward', label: '(GW)', label_full: 'Gameweek Transfers Out', field: 'transfers_out_event' },
+			{ index: 19, label_icon: 'swap_horiz', label: '(GW)', label_full: 'Gameweek Net Transfers', field: 'transfers_diff_event', show: true },
+			{ index: 20, label: '%', label_full: 'Selected By Percent', field: 'selected_by_percent', show: true },
+			{ index: 21, label_icon: 'trending_up', label_full: 'Price Change', field: 'cost_change_start', show: true },
+			{ index: 22, label_icon: 'trending_up', label: '(GW)', label_full: 'Gameweek Price Change', field: 'cost_change_event' },
+			{ index: 23, label: 'ICT', field: 'ict_index' },
+			{ index: 24, label: 'Threat', field: 'threat' },
+			{ index: 25, label: 'Creativity', field: 'creativity' },
+			{ index: 26, label: 'Influence', field: 'influence' },
+			{ index: 27, label: 'Bonus', field: 'bonus' },
+			{ index: 28, label: 'BPS', field: 'bps' },
+			{ index: 29, label: 'Goals', field: 'goals_scored' },
+			{ index: 30, label: 'Assists', field: 'assists' },
+			{ index: 31, label: 'CS', label_full: 'Clean Sheets', field: 'clean_sheets' },
+			{ index: 32, label: 'Saves', field: 'saves' },
+			{ index: 33, label: 'Conceded', field: 'goals_conceded' },
+			{ index: 34, label: 'Yellow Cards', field: 'yellow_cards' },
+			{ index: 35, label: 'Red Cards', field: 'red_cards' }
 		];
 
 		this.filters = [
@@ -330,6 +376,8 @@ export class AppComponent implements OnInit {
 			{ label: 'PPM', field: 'value_season' },
 			{ label: 'Form', field: 'form' },
 			{ label: 'FPM', field: 'value_form' },
+			{ label: 'xP', field: 'ep_this' },
+			{ label: 'xP (Next)', field: 'ep_next' },
 			{ label: 'Price', field: 'now_cost' },
 			{ label: 'VAPM', field: 'value_added_per_mil' },
 			{ label: 'Minutes', field: 'minutes' },
@@ -458,4 +506,5 @@ export class AppComponent implements OnInit {
 			team.event_prod = prod;
 		});
 	}
+
 }
