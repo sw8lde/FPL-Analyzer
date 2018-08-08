@@ -3,12 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "test": "ng serve -o",
+    "build": "ng build --prod --base-href \"https://sw8lde.github.io/FPL-Analyzer/\" && ngh"
   },
   "private": true,
   "dependencies": {

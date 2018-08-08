@@ -86,7 +86,7 @@ export class PredictorService {
 		return team;
 	}
 
-	getScore(player: IPlayer): number {
+	getScore2(player: IPlayer): number {
 		let score = player.form * (player.points_per_game - 2) * player.minutes / 90;
 
 		switch(player.element_type) {
@@ -111,8 +111,8 @@ export class PredictorService {
 		return this.weights[player.element_type]*score;
 	}
 
-	getScore2(player: IPlayer): number {
-		return player.ep_this + player.ep_next;
+	getScore(player: IPlayer): number {
+		return player.ep_next;
 	}
 
 	getSuccessorByPos(players: any, team: any): void {
