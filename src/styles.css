@@ -76,7 +76,7 @@ md-icon {
   width: 300px;
 }
 
-.col:nth-child(2) {
+.col:nth-child(n + 2) {
   width: calc(100% - 348px);
 }
 
@@ -142,7 +142,7 @@ input.blank {
   position: relative;
 }
 
-.table th:first-child {
+.table th:first-child:not(.ignore-first) {
   text-align: left;
   padding-left: 32px;
 }
@@ -158,7 +158,7 @@ input.blank {
 	/*text-decoration: underline;*/
 }
 
-.table th:first-child > div {
+.table th:first-child:not(.ignore-first) > div {
   justify-content: flex-start;
 }
 
@@ -186,7 +186,7 @@ input.blank {
 	padding: 12px 8px;
 }
 
-.table td:first-child {
+.table td:first-child:not(.ignore-first) {
 	padding-left: 32px;
 }
 

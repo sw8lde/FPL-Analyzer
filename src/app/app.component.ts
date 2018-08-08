@@ -49,7 +49,12 @@ export class AppComponent implements OnInit {
 		this.filteredPlayers = [];
 		this.generalData = {};
 		this.tabIndex = 0;
-		this.op_events = { event_num: 5 }
+		this.op_events = {
+			event_num: 5,
+			rot_team_1: 1,
+			rot_team_2: 2,
+			show_event_colors: true
+		}
 		this.op_predictor = {
 			budget_mode: 'total',
 			budget_total: 100,
@@ -77,6 +82,7 @@ export class AppComponent implements OnInit {
 		fplService.getEventData((res: any): void => {
 			genData.then(data => {
 				fplService.createEventMap(data, res);
+				this.updateRotation();
 				this.updateEvents();
 				this.predict();
 			});
@@ -228,10 +234,6 @@ export class AppComponent implements OnInit {
 
 	getPages(): number {
 		return Math.ceil(this.filteredPlayers.length / this.op_players.pageSize);
-	}
-
-	getTeamEventProd(team: any): string {
-		return Math.pow(team.event_prod, 1 / this.op_events.event_num).toFixed(2);
 	}
 
 	loadTeamStrength(): void {
@@ -413,7 +415,7 @@ export class AppComponent implements OnInit {
 			sort: 'total_points',
 			teams: { all: true },
 		};
-  }
+	}
 
 	resetTeamStrength(): void {
 		this.generalData.teams.forEach(team => {
@@ -486,7 +488,7 @@ export class AppComponent implements OnInit {
 
 		this.generalData.teams.forEach(team => {
 			let sum = 0,
-					prod = 1;
+				prod = 1;
 
 			for(let i = nextEvent; i < nextEvent + this.op_events.event_num
 				&& i < team.events.length; i++) {
@@ -502,9 +504,62 @@ export class AppComponent implements OnInit {
 				}
 			}
 
-			team.event_sum = sum;
-			team.event_prod = prod;
+			team.event_sum = (sum / this.op_events.event_num).toFixed(2);
+			team.event_prod = Math.pow(prod, 1 / this.op_events.event_num).toFixed(2);
 		});
+	}
+
+	updateRotation(): void {
+		const nextEvent = this.generalData['current-event'] + 1,
+			team1 = this.generalData.teams[this.op_events.rot_team_1 - 1],
+			team2 = this.generalData.teams[this.op_events.rot_team_2 - 1];
+		let sum = 0,
+			prod = 1,
+			arr = [];
+		
+		for(let i = nextEvent; i < nextEvent + this.op_events.event_num
+			&& i < team1.events.length; i++) {
+			if(team1.events[i] || team2.events[i]) {
+				const opponent1 = this.generalData.teams[team1.events[i].opponent - 1] || {},
+					opponent2 = this.generalData.teams[team2.events[i].opponent - 1] || {};
+
+				let diff1 = opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
+					diff2 = opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99;
+				
+				// let diff = Math.min(
+				// 	opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
+				// 	opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99
+				// )
+
+				if(diff1 <= diff2) {
+					arr.push({
+						diff: diff1,
+						gw: i,
+						opp: opponent1.name + (team1.events[i].is_home ? '(H)' : '(A)')
+					})
+
+					sum += diff1;
+					prod *= diff1;
+				} else {
+					arr.push({
+						diff: diff2,
+						gw: i,
+						opp: opponent2.name + (team2.events[i].is_home ? '(H)' : '(A)')
+					})
+
+					sum += diff2;
+					prod *= diff2;
+				}
+
+				// arr.push({ diff})
+				// sum += diff;
+				// prod *= diff;
+			}
+		}
+
+		this.op_events.rot_arr = arr;
+		this.op_events.rot_avg = (sum / this.op_events.event_num).toFixed(2);
+		this.op_events.rot_prod = Math.pow(prod, 1 / this.op_events.event_num).toFixed(2);
 	}
 
 }

@@ -292,6 +292,72 @@
       <!-- Event difficulty -->
       <div class="col mat-elevation-z4">
         <h1 class="primary">
+          <md-icon>repeat</md-icon>
+          Fixture Rotation
+        </h1>
+
+        <div class="table-wrapper">
+          <table class="table rotation">
+            <thead>
+              <tr>
+                <th class="ignore-first">Team 1</th>
+                <th>Team 2</th>
+                <th>Average</th>
+                <th>Product</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="ignore-first">
+                  <md-select color="accent" [(value)]="op_events.rot_team_1">
+                    <md-option *ngFor="let team of generalData.teams" [value]="team.id" (click)="updateRotation()">
+                      {{ team.name }}
+                    </md-option>
+                  </md-select>
+                </td>
+                <td>
+                  <md-select color="accent" [(ngModel)]="op_events.rot_team_2">
+                    <md-option *ngFor="let team of generalData.teams" [value]="team.id" (click)="updateRotation()">
+                      {{ team.name }}
+                    </md-option>
+                  </md-select>
+                </td>
+                <td [style.background]="getEventColor(op_events.rot_avg)">{{ op_events.rot_avg }}</td>
+                <td [style.background]="getEventColor(op_events.rot_prod)">{{ op_events.rot_prod }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="ignore-first">GW</th>
+                <th>Opponent</th>
+                <th>Difficulty</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let event of op_events.rot_arr" >
+                <td>{{ event.gw }}</td>
+                <td>{{ event.opp }}</td>
+                <td class="ignore-first"[style.background]="getEventColor(diff)">
+                  {{ event.diff }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="loading" *ngIf="!generalData.teams">
+          <md-spinner></md-spinner>
+        </div>
+      </div>
+      
+      <!-- Event difficulty -->
+      <div class="col mat-elevation-z4">
+        <h1 class="primary">
           <md-icon>stars</md-icon>
           Fixture Difficulty
         </h1>
@@ -319,11 +385,11 @@
           				<input type="number" class="blank" fpl-no-click
                     [(ngModel)]="team.strength_a" (ngModelChange)="updateEvents()">
                 </td>
-                <td [style.background]="getEventColor((team.event_sum / op_events.event_num).toFixed(2))">
-                  {{ (team.event_sum / op_events.event_num).toFixed(2) }}
+                <td [style.background]="getEventColor(team.event_sum)">
+                  {{ team.event_sum }}
                 </td>
-                <td [style.background]="getEventColor(getTeamEventProd(team))">
-                  {{ getTeamEventProd(team) }}
+                <td [style.background]="getEventColor(team.event_prod)">
+                  {{ team.event_prod }}
                 </td>
               </tr>
             </tbody>

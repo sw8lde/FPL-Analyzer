@@ -79,19 +79,6 @@
 /deep/ #tabs-content md-tab-header { display: none; }
 
 /* content */
-.events td:first-child {
-	min-width: 200px;
-}
-
-.events td:nth-child(n+3) {
-	text-align: center;
-}
-
-.events input {
-	border-bottom: 1px solid rgba(0,0,0,.24);
-	width: 50px;
-}
-
 .players th:nth-child(n+3) > div {
 	justify-content: flex-end;
 }
@@ -107,6 +94,27 @@
 .players td:nth-child(n+3) {
 	padding-right: 24px;
 	text-align: right;
+}
+
+.rotation th {
+	width: 20%;
+}
+
+.rotation th:nth-child(n - 2) {
+	text-align: left;
+}
+
+.events td:first-child {
+	min-width: 200px;
+}
+
+.events td:nth-child(n+3) {
+	text-align: center;
+}
+
+.events input {
+	border-bottom: 1px solid rgba(0,0,0,.24);
+	width: 50px;
 }
 
 .predicted-stats th:nth-child(n+2) {
@@ -127,8 +135,8 @@
 
 .predicted-team {
 	background: url('/assets/field.png') #349629 no-repeat top;
-  min-height: 800px;
-  padding-top: 80px;
+	min-height: 800px;
+	padding-top: 80px;
 	width: 100%;
 }
 
