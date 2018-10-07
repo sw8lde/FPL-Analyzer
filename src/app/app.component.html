@@ -330,20 +330,26 @@
         </div>
 
         <div class="table-wrapper">
-          <table class="table">
+          <table class="table rotation">
             <thead>
               <tr>
                 <th class="ignore-first">GW</th>
-                <th>Opponent</th>
+                <th>Opponent 1</th>
+                <th>Difficulty</th>
+                <th>Opponent 2</th>
                 <th>Difficulty</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let event of op_events.rot_arr" >
-                <td>{{ event.gw }}</td>
-                <td>{{ event.opp }}</td>
-                <td class="ignore-first"[style.background]="getEventColor(diff)">
-                  {{ event.diff }}
+                <td class="ignore-first">{{ event.gw }}</td>
+                <td>{{ event.opp1 }}</td>
+                <td [style.background]="getEventColor(event.diff1)">
+                  {{ event.diff1 }}
+                </td>
+                <td>{{ event.opp2 }}</td>
+                <td [style.background]="getEventColor(event.diff2)">
+                  {{ event.diff2 }}
                 </td>
               </tr>
             </tbody>

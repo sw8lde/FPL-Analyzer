@@ -96,12 +96,8 @@
 	text-align: right;
 }
 
-.rotation th {
-	width: 20%;
-}
-
-.rotation th:nth-child(n - 2) {
-	text-align: left;
+.rotation th, .rotation td {
+	text-align: center;
 }
 
 .events td:first-child {

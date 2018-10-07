@@ -78,6 +78,7 @@ md-icon {
 
 .col:nth-child(n + 2) {
   width: calc(100% - 348px);
+  float: right;
 }
 
 .col h1 {

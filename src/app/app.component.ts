@@ -526,34 +526,17 @@ export class AppComponent implements OnInit {
 				let diff1 = opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
 					diff2 = opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99;
 				
-				// let diff = Math.min(
-				// 	opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
-				// 	opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99
-				// )
+				let minDiff = Math.min(diff1, diff2)
 
-				if(diff1 <= diff2) {
-					arr.push({
-						diff: diff1,
-						gw: i,
-						opp: opponent1.name + (team1.events[i].is_home ? '(H)' : '(A)')
-					})
-
-					sum += diff1;
-					prod *= diff1;
-				} else {
-					arr.push({
-						diff: diff2,
-						gw: i,
-						opp: opponent2.name + (team2.events[i].is_home ? '(H)' : '(A)')
-					})
-
-					sum += diff2;
-					prod *= diff2;
-				}
-
-				// arr.push({ diff})
-				// sum += diff;
-				// prod *= diff;
+				arr.push({
+					diff1: diff1,
+					diff2: diff2,
+					gw: i,
+					opp1: opponent2.short_name + (team2.events[i].is_home ? '(H)' : '(A)'),
+					opp2: opponent2.short_name + (team2.events[i].is_home ? '(H)' : '(A)')
+				})
+				sum += minDiff;
+				prod *= minDiff;
 			}
 		}
 
