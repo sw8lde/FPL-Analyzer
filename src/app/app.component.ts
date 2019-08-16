@@ -509,14 +509,80 @@ export class AppComponent implements OnInit {
 		});
 	}
 
+	/*
+	 * Calculate every teams fixture rotation with every other team
+	 */
 	updateRotation(): void {
+		const nextEvent = this.generalData['current-event'] + 1;
+		let rotation = {}
+
+		for(let i = 0; i < this.generalData.teams.length; i++) {
+			const team1 = this.generalData.teams[i];
+			let optRot = {
+				team: 0,
+				avg: Infinity
+			};
+
+			for(let j = 0; j < this.generalData.teams.length; j++) {
+				const team2 = this.generalData.teams[j];
+				let sum = 0,
+						prod = 1,
+						arr = [];
+
+				// calc diff for each fixture
+				for(let i = nextEvent; i < nextEvent + this.op_events.event_num
+					&& i < team1.events.length; i++) {
+					if(team1.events[i] || team2.events[i]) {
+						const opponent1 = this.generalData.teams[team1.events[i].opponent - 1] || {},
+									opponent2 = this.generalData.teams[team2.events[i].opponent - 1] || {};
+
+						let diff1 = opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
+								diff2 = opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99;
+
+						let minDiff = Math.min(diff1, diff2)
+
+						arr.push({
+							diff1: diff1,
+							diff2: diff2,
+							gw: i,
+							opp1: opponent1.short_name + (team1.events[i].is_home ? '(H)' : '(A)'),
+							opp2: opponent2.short_name + (team2.events[i].is_home ? '(H)' : '(A)')
+						})
+						sum += minDiff;
+						prod *= minDiff;
+					}
+				}
+
+				// store info back for each team
+				let avg = +(sum / this.op_events.event_num).toFixed(2);
+				prod = +Math.pow(prod, 1 / this.op_events.event_num).toFixed(2);
+				rotation[(i + 1) + 'and' + (j + 1)] = {arr, avg, prod};
+
+				if(avg < optRot.avg) {
+					optRot.team = j + 1;
+					optRot.avg = avg;
+				}
+			}
+
+			// calculate best rotation for each team
+
+		}
+		
+		this.generalData.rotation = rotation;
+	}
+
+
+	/*
+	 * Calculate selected teams fixture rotation
+	 */
+	updateRotationOLD(): void {
 		const nextEvent = this.generalData['current-event'] + 1,
 			team1 = this.generalData.teams[this.op_events.rot_team_1 - 1],
 			team2 = this.generalData.teams[this.op_events.rot_team_2 - 1];
 		let sum = 0,
 			prod = 1,
 			arr = [];
-		
+
 		for(let i = nextEvent; i < nextEvent + this.op_events.event_num
 			&& i < team1.events.length; i++) {
 			if(team1.events[i] || team2.events[i]) {
@@ -525,7 +591,7 @@ export class AppComponent implements OnInit {
 
 				let diff1 = opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
 					diff2 = opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99;
-				
+
 				let minDiff = Math.min(diff1, diff2)
 
 				arr.push({

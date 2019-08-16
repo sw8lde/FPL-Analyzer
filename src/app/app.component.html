@@ -268,11 +268,10 @@
         <ul>
           <h2>Fixtures to analyze</h2>
           <li>
-            <md-slider color="accent" thumbLabel
-              min="0" max="38"
-              [(ngModel)]="op_events.event_num" (ngModelChange)="updateEvents()"></md-slider>
+            <md-slider color="accent" thumbLabel min="0" max="38"
+              [(ngModel)]="op_events.event_num" (ngModelChange)="updateEvents(); updateRotation();"></md-slider>
             <input class="blank" type="number" [(ngModel)]="op_events.event_num"
-              (ngModelChange)="updateEvents()"
+              (ngModelChange)="updateEvents(); updateRotation();"
               style="width: 50px; border-bottom: 1px solid rgba(0,0,0,.24);">
           </li>
           <h2>Show colors</h2>
@@ -289,7 +288,7 @@
         </ul>
       </div>
 
-      <!-- Event difficulty -->
+      <!-- Event rotation -->
       <div class="col mat-elevation-z4">
         <h1 class="primary">
           <md-icon>repeat</md-icon>
@@ -297,7 +296,7 @@
         </h1>
 
         <div class="table-wrapper">
-          <table class="table rotation">
+          <table class="table rotation"  *ngIf="generalData.teams || generalData.rotation">
             <thead>
               <tr>
                 <th class="ignore-first">Team 1</th>
@@ -310,27 +309,31 @@
               <tr>
                 <td class="ignore-first">
                   <md-select color="accent" [(value)]="op_events.rot_team_1">
-                    <md-option *ngFor="let team of generalData.teams" [value]="team.id" (click)="updateRotation()">
+                    <md-option *ngFor="let team of generalData.teams" [value]="team.id">
                       {{ team.name }}
                     </md-option>
                   </md-select>
                 </td>
                 <td>
                   <md-select color="accent" [(ngModel)]="op_events.rot_team_2">
-                    <md-option *ngFor="let team of generalData.teams" [value]="team.id" (click)="updateRotation()">
+                    <md-option *ngFor="let team of generalData.teams" [value]="team.id">
                       {{ team.name }}
                     </md-option>
                   </md-select>
                 </td>
-                <td [style.background]="getEventColor(op_events.rot_avg)">{{ op_events.rot_avg }}</td>
-                <td [style.background]="getEventColor(op_events.rot_prod)">{{ op_events.rot_prod }}</td>
+                <td [style.background]="getEventColor(generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].avg)">
+                  {{ generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].avg }}
+                </td>
+                <td [style.background]="getEventColor(generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].prod)">
+                  {{ generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].prod }}
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="table-wrapper">
-          <table class="table rotation">
+          <table class="table rotation"  *ngIf="generalData.teams || generalData.rotation">
             <thead>
               <tr>
                 <th class="ignore-first">GW</th>
@@ -341,7 +344,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let event of op_events.rot_arr" >
+              <tr *ngFor="let event of generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].arr" >
                 <td class="ignore-first">{{ event.gw }}</td>
                 <td>{{ event.opp1 }}</td>
                 <td [style.background]="getEventColor(event.diff1)">
@@ -369,7 +372,7 @@
         </h1>
 
         <div class="table-wrapper">
-          <table class="table clickable events">
+          <table class="table clickable events"  *ngIf="generalData.teams || generalData.rotation">
             <thead>
               <tr>
                 <th>Team</th>
@@ -402,7 +405,7 @@
           </table>
         </div>
 
-        <div class="loading" *ngIf="!generalData.teams">
+        <div class="loading" *ngIf="!generalData.teams || !generalData.rotation">
           <md-spinner></md-spinner>
         </div>
       </div>

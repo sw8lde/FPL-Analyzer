@@ -102,6 +102,7 @@ md-icon {
 @media (max-width: 900px) {
   .col {
     width: 100% !important;
+    float: initial !important;
   }
 }
 
