@@ -16,12 +16,12 @@ fpl-expandable-menu header span {
   flex: 1 1 auto;
 }
 
-fpl-expandable-menu header md-icon {
+fpl-expandable-menu header mat-icon {
   float: right;
   transition: transform .2s;
 }
 
-fpl-expandable-menu.open header md-icon {
+fpl-expandable-menu.open header mat-icon {
   transform: rotate(180deg);
 }
 
@@ -53,6 +53,6 @@ fpl-expandable-menu main div.clickable:hover {
   cursor: pointer;
 }
 
-fpl-expandable-menu main div md-checkbox {
+fpl-expandable-menu main div mat-checkbox {
   margin-right: 12px;
 }

@@ -30,7 +30,7 @@
   height: 20px;
   padding: 12px 8px;
 }
-.options .search md-icon { color: rgba(0,0,0,.54); }
+.options .search mat-icon { color: rgba(0,0,0,.54); }
 
 .options .search input {
 	font-size: 1em;
@@ -56,13 +56,13 @@
 	margin-top: 8px;
 }
 
-.options md-select { width: 200px; }
+.options mat-select { width: 200px; }
 
-.options md-radio-button + md-radio-button {
+.options mat-radio-button + mat-radio-button {
 	margin-top: 8px;
 }
 
-.options .filter md-input-container {
+.options .filter mat-form-field {
 	width: 60px;
 }
 
@@ -76,7 +76,7 @@
 }
 
 
-/deep/ #tabs-content md-tab-header { display: none; }
+/deep/ #tabs-content mat-tab-header { display: none; }
 
 /* content */
 .players th:nth-child(n+3) > div {

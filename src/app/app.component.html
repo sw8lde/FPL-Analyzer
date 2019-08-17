@@ -1,599 +1,599 @@
 <!-- Header -->
 <div style="margin-bottom: 64px"></div>
-<md-toolbar class="mat-elevation-z8" id="content-header" color="primary">
-  <img src="assets/logo_white.png">
-  <span class="title">FPL Analyzer</span>
-  <span class="flex"></span>
+<mat-toolbar class="mat-elevation-z8" id="content-header" color="primary">
+	<img src="assets/logo_white.png">
+	<span class="title">FPL Analyzer</span>
+	<span class="flex"></span>
 
-  <md-tab-group id="tabs" [(selectedIndex)]="tabIndex" backgroundColor="primary">
-    <md-tab label="Players"></md-tab>
-    <md-tab label="Fixtures"></md-tab>
-    <md-tab label="Predictor"></md-tab>
-  </md-tab-group>
+	<mat-tab-group id="tabs" [(selectedIndex)]="tabIndex" backgroundColor="primary">
+		<mat-tab label="Players"></mat-tab>
+		<mat-tab label="Fixtures"></mat-tab>
+		<mat-tab label="Predictor"></mat-tab>
+	</mat-tab-group>
 
-  <button md-icon-button [mdMenuTriggerFor]="export">
-    <md-icon>file_download</md-icon>
-  </button>
-  <md-menu #export="mdMenu" xPosition="before">
-    <button md-menu-item (click)="exportAll()">All player data</button>
-    <button md-menu-item (click)="exportFiltered()">Filtered player data</button>
-    <button md-menu-item (click)="exportRaw()">Raw json data</button>
-  </md-menu>
-</md-toolbar>
+	<button mat-icon-button [matMenuTriggerFor]="export">
+		<mat-icon>file_download</mat-icon>
+	</button>
+	<mat-menu #export="matMenu" xPosition="before">
+		<button mat-menu-item (click)="exportAll()">All player data</button>
+		<button mat-menu-item (click)="exportFiltered()">Filtered player data</button>
+		<button mat-menu-item (click)="exportRaw()">Raw json data</button>
+	</mat-menu>
+</mat-toolbar>
 
-<md-tab-group id="tabs-content" [selectedIndex]="tabIndex">
-  <!-- Player tab -->
-  <md-tab>
-    <div class="content">
-      <!-- Options -->
-      <div class="col options mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>settings</md-icon>
-          Options
-        </h1>
+<mat-tab-group id="tabs-content" [selectedIndex]="tabIndex">
+	<!-- Player tab -->
+	<mat-tab>
+		<div class="content">
+			<!-- Options -->
+			<div class="col options mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>settings</mat-icon>
+					Options
+				</h1>
 
-        <div class="search">
-          <md-icon style="margin-right: 10px;">search</md-icon>
-          <input class="blank" placeholder="Search players"
-            [(ngModel)]="op_players.name" (ngModelChange)="filterPlayers()">
-        </div>
+				<div class="search">
+					<mat-icon style="margin-right: 10px;">search</mat-icon>
+					<input class="blank" placeholder="Search players"
+						[(ngModel)]="op_players.name" (ngModelChange)="filterPlayers()">
+				</div>
 
-        <!-- Columns -->
-        <fpl-expandable-menu>
-          <header md-ripple>
-            <span>Columns</span>
-            <md-icon>keyboard_arrow_down</md-icon>
-          </header>
-          <main>
-            <div *ngFor="let col of cols" class="clickable" md-ripple
-              (click)="col.show = !col.show">
-              <md-checkbox color="accent" [(ngModel)]="col.show"></md-checkbox>
-              <span [class.accent]="col.show">
-                {{ col.label_full || col.label }}
-              </span>
-            </div>
-          </main>
-        </fpl-expandable-menu>
+				<!-- Columns -->
+				<fpl-expandable-menu>
+					<header mat-ripple>
+						<span>Columns</span>
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</header>
+					<main>
+						<div *ngFor="let col of cols" class="clickable" mat-ripple
+							(click)="col.show = !col.show">
+							<mat-checkbox color="accent" [(ngModel)]="col.show"></mat-checkbox>
+							<span [class.accent]="col.show">
+								{{ col.label_full || col.label }}
+							</span>
+						</div>
+					</main>
+				</fpl-expandable-menu>
 
-        <!-- Teams -->
-        <fpl-expandable-menu>
-          <header md-ripple>
-            <span>Teams</span>
-            <md-icon>keyboard_arrow_down</md-icon>
-          </header>
-          <main>
-            <div class="clickable" md-ripple
-              (click)="op_players.teams.all = !op_players.teams.all; filterPlayers()">
-              <md-checkbox color="accent" [(ngModel)]="op_players.teams.all"></md-checkbox>
-              <span [class.accent]="op_players.teams.all">
-                All teams
-              </span>
-            </div>
-            <div *ngFor="let team of generalData.teams" class="clickable" md-ripple
-              (click)="op_players.teams[team.id] = !op_players.teams[team.id]; filterPlayers()">
-              <md-checkbox color="accent" [(ngModel)]="op_players.teams[team.id]"></md-checkbox>
-              <span [class.accent]="op_players.teams[team.id]">
-                {{ team.name }}
-              </span>
-            </div>
-          </main>
-        </fpl-expandable-menu>
+				<!-- Teams -->
+				<fpl-expandable-menu>
+					<header mat-ripple>
+						<span>Teams</span>
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</header>
+					<main>
+						<div class="clickable" mat-ripple
+							(click)="op_players.teams.all = !op_players.teams.all; filterPlayers()">
+							<mat-checkbox color="accent" [(ngModel)]="op_players.teams.all"></mat-checkbox>
+							<span [class.accent]="op_players.teams.all">
+								All teams
+							</span>
+						</div>
+						<div *ngFor="let team of generalData.teams" class="clickable" mat-ripple
+							(click)="op_players.teams[team.id] = !op_players.teams[team.id]; filterPlayers()">
+							<mat-checkbox color="accent" [(ngModel)]="op_players.teams[team.id]"></mat-checkbox>
+							<span [class.accent]="op_players.teams[team.id]">
+								{{ team.name }}
+							</span>
+						</div>
+					</main>
+				</fpl-expandable-menu>
 
-        <!-- Positions -->
-        <fpl-expandable-menu>
-          <header md-ripple>
-            <span>Positions</span>
-            <md-icon>keyboard_arrow_down</md-icon>
-          </header>
-          <main>
-            <div class="clickable" md-ripple
-              (click)="op_players.poss.all = !op_players.poss.all; filterPlayers()">
-              <md-checkbox color="accent" [(ngModel)]="op_players.poss.all"></md-checkbox>
-              <span [class.accent]="op_players.poss.all">
-                All positions
-              </span>
-            </div>
-            <div *ngFor="let pos of generalData.element_types" class="clickable" md-ripple
-              (click)="op_players.poss[pos.id] = !op_players.poss[pos.id]; filterPlayers()">
-              <md-checkbox color="accent" [(ngModel)]="op_players.poss[pos.id]"></md-checkbox>
-              <span [class.accent]="op_players.poss[pos.id]">
-                {{ pos.plural_name }}
-              </span>
-            </div>
-          </main>
-        </fpl-expandable-menu>
+				<!-- Positions -->
+				<fpl-expandable-menu>
+					<header mat-ripple>
+						<span>Positions</span>
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</header>
+					<main>
+						<div class="clickable" mat-ripple
+							(click)="op_players.poss.all = !op_players.poss.all; filterPlayers()">
+							<mat-checkbox color="accent" [(ngModel)]="op_players.poss.all"></mat-checkbox>
+							<span [class.accent]="op_players.poss.all">
+								All positions
+							</span>
+						</div>
+						<div *ngFor="let pos of generalData.element_types" class="clickable" mat-ripple
+							(click)="op_players.poss[pos.id] = !op_players.poss[pos.id]; filterPlayers()">
+							<mat-checkbox color="accent" [(ngModel)]="op_players.poss[pos.id]"></mat-checkbox>
+							<span [class.accent]="op_players.poss[pos.id]">
+								{{ pos.plural_name }}
+							</span>
+						</div>
+					</main>
+				</fpl-expandable-menu>
 
-        <!-- Filters -->
-        <fpl-expandable-menu>
-          <header md-ripple>
-            <span>Filters</span>
-            <md-icon>keyboard_arrow_down</md-icon>
-          </header>
-          <main>
-            <div *ngFor="let f of filters" class="clickable" md-ripple
-              (click)="f.show = !f.show; filterPlayers()">
-              <md-checkbox color="accent" [(ngModel)]="f.show"></md-checkbox>
-              <span [class.accent]="f.show">
-                {{ f.label }}
-              </span>
-            </div>
-          </main>
-        </fpl-expandable-menu>
+				<!-- Filters -->
+				<fpl-expandable-menu>
+					<header mat-ripple>
+						<span>Filters</span>
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</header>
+					<main>
+						<div *ngFor="let f of filters" class="clickable" mat-ripple
+							(click)="f.show = !f.show; filterPlayers()">
+							<mat-checkbox color="accent" [(ngModel)]="f.show"></mat-checkbox>
+							<span [class.accent]="f.show">
+								{{ f.label }}
+							</span>
+						</div>
+					</main>
+				</fpl-expandable-menu>
 
-        <ul>
-          <div *ngFor="let f of filters" [hidden]="!f.show" class="filter">
-            <h2>{{ f.label }}</h2>
-      			<li>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Min"
-                  [(ngModel)]="f.low" (ngModelChange)="filterPlayers()">
-              </md-input-container>
-      				&nbsp;to&nbsp;
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Max"
-                  [(ngModel)]="f.high" (ngModelChange)="filterPlayers()">
-              </md-input-container>
-      			</li>
-          </div>
-        </ul>
+				<ul>
+					<div *ngFor="let f of filters" [hidden]="!f.show" class="filter">
+						<h2>{{ f.label }}</h2>
+						<li>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Min"
+									[(ngModel)]="f.low" (ngModelChange)="filterPlayers()">
+							</mat-form-field>
+							&nbsp;to&nbsp;
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Max"
+									[(ngModel)]="f.high" (ngModelChange)="filterPlayers()">
+							</mat-form-field>
+						</li>
+					</div>
+				</ul>
 
-      	<footer>
-      		<button md-button (click)="resetPlayersTable(); filterPlayers()">
-            Reset
-          </button>
-      	</footer>
-      </div>
+				<footer>
+					<button mat-button (click)="resetPlayersTable(); filterPlayers()">
+						Reset
+					</button>
+				</footer>
+			</div>
 
-      <div class="col mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>account_circle</md-icon>
-          Players
-        </h1>
+			<div class="col mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>account_circle</mat-icon>
+					Players
+				</h1>
 
-        <!-- Table -->
-        <div class="table-wrapper">
-          <table class="table clickable players" ng-cloak>
-            <thead>
-              <tr>
-                <ng-container *ngFor="let col of cols">
-                  <th (click)="togglePlayersSort(col)" *ngIf="col.show" md-ripple>
-                    <div [mdTooltip]="col.label_full">
-                      <span [class.abbr]="col.label_full">
-                        <span class="icon">{{ col.label_icon }}</span>
-                        {{ col.label }}
-                      </span>
-                      <div class="dir">
-                        <md-icon *ngIf="(op_players.sort == col.field) && !op_players.reverse">arrow_upwards</md-icon>
-                        <md-icon *ngIf="(op_players.sort == col.field) && op_players.reverse">arrow_downwards</md-icon>
-                      </div>
-                    </div>
-                  </th>
-                </ng-container>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let player of filteredPlayers | slice: ((op_players.page - 1) * op_players.pageSize):(op_players.page * op_players.pageSize)"
-                (click)="showPopupPlayer(player)">
-                <td *ngIf="cols[0].show">{{ player.web_name }}</td>
-                <td *ngIf="cols[1].show">{{ generalData.teams[player.team - 1].short_name }}</td>
-                <td *ngIf="cols[2].show">{{ generalData.element_types[player.element_type - 1].singular_name_short }}</td>
-                <td *ngIf="cols[3].show">{{ player.total_points }}</td>
-                <td *ngIf="cols[4].show">{{ player.event_points }}</td>
-                <td *ngIf="cols[5].show">{{ player.points_per_game }}</td>
-                <td *ngIf="cols[6].show">{{ player.value_season }}</td>
-                <td *ngIf="cols[7].show">{{ player.form }}</td>
-                <td *ngIf="cols[8].show">{{ player.value_form }}</td>
-                <td *ngIf="cols[9].show">{{ player.ep_this }}</td>
-                <td *ngIf="cols[10].show">{{ player.ep_next }}</td>
-                <td *ngIf="cols[11].show">{{ player.now_cost.toFixed(1) }}</td>
-                <td *ngIf="cols[12].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
-                <td *ngIf="cols[13].show">{{ player.minutes }}</td>
-                <td *ngIf="cols[14].show">{{ player.transfers_in }}</td>
-                <td *ngIf="cols[15].show">{{ player.transfers_out }}</td>
-                <td *ngIf="cols[16].show">{{ player.transfers_diff }}</td>
-                <td *ngIf="cols[17].show">{{ player.transfers_in_event }}</td>
-                <td *ngIf="cols[18].show">{{ player.transfers_out_event }}</td>
-                <td *ngIf="cols[19].show">{{ player.transfers_diff_event }}</td>
-                <td *ngIf="cols[20].show">{{ player.selected_by_percent }}</td>
-                <td *ngIf="cols[21].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
-                <td *ngIf="cols[22].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
-                <td *ngIf="cols[23].show">{{ player.ict_index }}</td>
-                <td *ngIf="cols[24].show">{{ player.threat }}</td>
-                <td *ngIf="cols[25].show">{{ player.creativity }}</td>
-                <td *ngIf="cols[26].show">{{ player.influence }}</td>
-                <td *ngIf="cols[27].show">{{ player.bonus }}</td>
-                <td *ngIf="cols[28].show">{{ player.bps }}</td>
-                <td *ngIf="cols[29].show">{{ player.goals_scored }}</td>
-                <td *ngIf="cols[30].show">{{ player.assists }}</td>
-                <td *ngIf="cols[31].show">{{ player.clean_sheets }}</td>
-                <td *ngIf="cols[32].show">{{ player.saves }}</td>
-                <td *ngIf="cols[33].show">{{ player.goals_conceded }}</td>
-                <td *ngIf="cols[34].show">{{ player.yellow_cards }}</td>
-                <td *ngIf="cols[35].show">{{ player.red_cards }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+				<!-- Table -->
+				<div class="table-wrapper">
+					<table class="table clickable players" ng-cloak>
+						<thead>
+							<tr>
+								<ng-container *ngFor="let col of cols">
+									<th (click)="togglePlayersSort(col)" *ngIf="col.show" mat-ripple>
+										<div [matTooltip]="col.label_full">
+											<span [class.abbr]="col.label_full">
+												<span class="icon">{{ col.label_icon }}</span>
+												{{ col.label }}
+											</span>
+											<div class="dir">
+												<mat-icon *ngIf="(op_players.sort == col.field) && !op_players.reverse">arrow_upwards</mat-icon>
+												<mat-icon *ngIf="(op_players.sort == col.field) && op_players.reverse">arrow_downwards</mat-icon>
+											</div>
+										</div>
+									</th>
+								</ng-container>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let player of filteredPlayers | slice: ((op_players.page - 1) * op_players.pageSize):(op_players.page * op_players.pageSize)"
+								(click)="showPopupPlayer(player)">
+								<td *ngIf="cols[0].show">{{ player.web_name }}</td>
+								<td *ngIf="cols[1].show">{{ generalData.teams[player.team - 1].short_name }}</td>
+								<td *ngIf="cols[2].show">{{ generalData.element_types[player.element_type - 1].singular_name_short }}</td>
+								<td *ngIf="cols[3].show">{{ player.total_points }}</td>
+								<td *ngIf="cols[4].show">{{ player.event_points }}</td>
+								<td *ngIf="cols[5].show">{{ player.points_per_game }}</td>
+								<td *ngIf="cols[6].show">{{ player.value_season }}</td>
+								<td *ngIf="cols[7].show">{{ player.form }}</td>
+								<td *ngIf="cols[8].show">{{ player.value_form }}</td>
+								<td *ngIf="cols[9].show">{{ player.ep_this }}</td>
+								<td *ngIf="cols[10].show">{{ player.ep_next }}</td>
+								<td *ngIf="cols[11].show">{{ player.now_cost.toFixed(1) }}</td>
+								<td *ngIf="cols[12].show">{{ player.value_added_per_mil.toFixed(2) }}</td>
+								<td *ngIf="cols[13].show">{{ player.minutes }}</td>
+								<td *ngIf="cols[14].show">{{ player.transfers_in }}</td>
+								<td *ngIf="cols[15].show">{{ player.transfers_out }}</td>
+								<td *ngIf="cols[16].show">{{ player.transfers_diff }}</td>
+								<td *ngIf="cols[17].show">{{ player.transfers_in_event }}</td>
+								<td *ngIf="cols[18].show">{{ player.transfers_out_event }}</td>
+								<td *ngIf="cols[19].show">{{ player.transfers_diff_event }}</td>
+								<td *ngIf="cols[20].show">{{ player.selected_by_percent }}</td>
+								<td *ngIf="cols[21].show">{{ (player.cost_change_start / 10).toFixed(1) }}</td>
+								<td *ngIf="cols[22].show">{{ (player.cost_change_event / 10).toFixed(1) }}</td>
+								<td *ngIf="cols[23].show">{{ player.ict_index }}</td>
+								<td *ngIf="cols[24].show">{{ player.threat }}</td>
+								<td *ngIf="cols[25].show">{{ player.creativity }}</td>
+								<td *ngIf="cols[26].show">{{ player.influence }}</td>
+								<td *ngIf="cols[27].show">{{ player.bonus }}</td>
+								<td *ngIf="cols[28].show">{{ player.bps }}</td>
+								<td *ngIf="cols[29].show">{{ player.goals_scored }}</td>
+								<td *ngIf="cols[30].show">{{ player.assists }}</td>
+								<td *ngIf="cols[31].show">{{ player.clean_sheets }}</td>
+								<td *ngIf="cols[32].show">{{ player.saves }}</td>
+								<td *ngIf="cols[33].show">{{ player.goals_conceded }}</td>
+								<td *ngIf="cols[34].show">{{ player.yellow_cards }}</td>
+								<td *ngIf="cols[35].show">{{ player.red_cards }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-        <div class="loading" *ngIf="!generalData.elements">
-          <md-spinner></md-spinner>
-        </div>
+				<div class="loading" *ngIf="!generalData.elements">
+					<mat-spinner></mat-spinner>
+				</div>
 
-        <div class="pagination">
-          <span class="page">Page size:</span>
+				<div class="pagination">
+					<span class="page">Page size:</span>
 
-          <md-select [(ngModel)]="op_players.pageSize" color="accent">
-            <md-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</md-option>
-          </md-select>
+					<mat-select [(ngModel)]="op_players.pageSize" color="accent">
+						<mat-option *ngFor="let size of pageSizes" [value]="size">{{ size }}</mat-option>
+					</mat-select>
 
-          <button md-icon-button class="skip"
-            (click)="op_players.page = 1" [disabled]="op_players.page == 1">
-            <md-icon>chevron_left</md-icon>
-            <md-icon>chevron_left</md-icon>
-          </button>
+					<button mat-icon-button class="skip"
+						(click)="op_players.page = 1" [disabled]="op_players.page == 1">
+						<mat-icon>chevron_left</mat-icon>
+						<mat-icon>chevron_left</mat-icon>
+					</button>
 
-          <button md-icon-button
-            (click)="op_players.page = op_players.page - 1" [disabled]="op_players.page == 1">
-            <md-icon>chevron_left</md-icon>
-          </button>
+					<button mat-icon-button
+						(click)="op_players.page = op_players.page - 1" [disabled]="op_players.page == 1">
+						<mat-icon>chevron_left</mat-icon>
+					</button>
 
-          <span class="page">Page {{ op_players.page }} of {{ getPages() }}</span>
+					<span class="page">Page {{ op_players.page }} of {{ getPages() }}</span>
 
-          <button md-icon-button
-            (click)="op_players.page = op_players.page + 1" [disabled]=" op_players.page == getPages()">
-            <md-icon>chevron_right</md-icon>
-          </button>
+					<button mat-icon-button
+						(click)="op_players.page = op_players.page + 1" [disabled]=" op_players.page == getPages()">
+						<mat-icon>chevron_right</mat-icon>
+					</button>
 
-          <button md-icon-button class="skip"
-            (click)="op_players.page = getPages()" [disabled]="op_players.page == getPages()">
-            <md-icon>chevron_right</md-icon>
-            <md-icon>chevron_right</md-icon>
-          </button>
-        </div>
+					<button mat-icon-button class="skip"
+						(click)="op_players.page = getPages()" [disabled]="op_players.page == getPages()">
+						<mat-icon>chevron_right</mat-icon>
+						<mat-icon>chevron_right</mat-icon>
+					</button>
+				</div>
 
-      </div>
-    </div>
-  </md-tab>
+			</div>
+		</div>
+	</mat-tab>
 
-  <!-- fixtures tab -->
-  <md-tab>
-    <div class="content">
-      <!-- Options -->
-      <div class="col options mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>settings</md-icon>
-          Options
-        </h1>
+	<!-- fixtures tab -->
+	<mat-tab>
+		<div class="content">
+			<!-- Options -->
+			<div class="col options mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>settings</mat-icon>
+					Options
+				</h1>
 
-        <ul>
-          <h2>Fixtures to analyze</h2>
-          <li>
-            <md-slider color="accent" thumbLabel min="0" max="38"
-              [(ngModel)]="op_events.event_num" (ngModelChange)="updateEvents(); updateRotation();"></md-slider>
-            <input class="blank" type="number" [(ngModel)]="op_events.event_num"
-              (ngModelChange)="updateEvents(); updateRotation();"
-              style="width: 50px; border-bottom: 1px solid rgba(0,0,0,.24);">
-          </li>
-          <h2>Show colors</h2>
-          <li>
-            <md-checkbox color="accent"
-              [(ngModel)]="op_events.show_event_colors"></md-checkbox>
-          </li>
-          <h2>Team strengths</h2>
-          <li>
-            <button md-button (click)="saveTeamStrength()">Save</button>
-            <button md-button (click)="loadTeamStrength()">Load</button>
-            <button md-button (click)="resetTeamStrength()">Reset</button>
-          </li>
-        </ul>
-      </div>
+				<ul>
+					<h2>Fixtures to analyze</h2>
+					<li>
+						<mat-slider color="accent" thumbLabel min="0" max="38"
+							[(ngModel)]="op_events.event_num" (ngModelChange)="updateEvents(); updateRotation();"></mat-slider>
+						<input class="blank" type="number" [(ngModel)]="op_events.event_num"
+							(ngModelChange)="updateEvents(); updateRotation();"
+							style="width: 50px; border-bottom: 1px solid rgba(0,0,0,.24);">
+					</li>
+					<h2>Show colors</h2>
+					<li>
+						<mat-checkbox color="accent"
+							[(ngModel)]="op_events.show_event_colors"></mat-checkbox>
+					</li>
+					<h2>Team strengths</h2>
+					<li>
+						<button mat-button (click)="saveTeamStrength()">Save</button>
+						<button mat-button (click)="loadTeamStrength()">Load</button>
+						<button mat-button (click)="resetTeamStrength()">Reset</button>
+					</li>
+				</ul>
+			</div>
 
-      <!-- Event rotation -->
-      <div class="col mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>repeat</md-icon>
-          Fixture Rotation
-        </h1>
+			<!-- Event rotation -->
+			<div class="col mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>repeat</mat-icon>
+					Fixture Rotation
+				</h1>
 
-        <div class="table-wrapper">
-          <table class="table rotation"  *ngIf="generalData.teams || generalData.rotation">
-            <thead>
-              <tr>
-                <th class="ignore-first">Team 1</th>
-                <th>Team 2</th>
-                <th>Average</th>
-                <th>Product</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="ignore-first">
-                  <md-select color="accent" [(value)]="op_events.rot_team_1">
-                    <md-option *ngFor="let team of generalData.teams" [value]="team.id">
-                      {{ team.name }}
-                    </md-option>
-                  </md-select>
-                </td>
-                <td>
-                  <md-select color="accent" [(ngModel)]="op_events.rot_team_2">
-                    <md-option *ngFor="let team of generalData.teams" [value]="team.id">
-                      {{ team.name }}
-                    </md-option>
-                  </md-select>
-                </td>
-                <td [style.background]="getEventColor(generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].avg)">
-                  {{ generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].avg }}
-                </td>
-                <td [style.background]="getEventColor(generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].prod)">
-                  {{ generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].prod }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+				<div class="table-wrapper">
+					<table class="table rotation"  *ngIf="generalData.teams && generalData.rotation">
+						<thead>
+							<tr>
+								<th class="ignore-first">Team 1</th>
+								<th>Team 2</th>
+								<th>Average</th>
+								<th>Product</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="ignore-first">
+									<mat-select color="accent" [(value)]="op_events.rot_team_1">
+										<mat-option *ngFor="let team of generalData.teams" [value]="team.id">
+											{{ team.name }}
+										</mat-option>
+									</mat-select>
+								</td>
+								<td>
+									<mat-select color="accent" [(ngModel)]="op_events.rot_team_2">
+										<mat-option *ngFor="let team of generalData.teams" [value]="team.id">
+											{{ team.name }}
+										</mat-option>
+									</mat-select>
+								</td>
+								<td [style.background]="getEventColor(generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].avg)">
+									{{ generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].avg }}
+								</td>
+								<td [style.background]="getEventColor(generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].prod)">
+									{{ generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].prod }}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-        <div class="table-wrapper">
-          <table class="table rotation"  *ngIf="generalData.teams || generalData.rotation">
-            <thead>
-              <tr>
-                <th class="ignore-first">GW</th>
-                <th>Opponent 1</th>
-                <th>Difficulty</th>
-                <th>Opponent 2</th>
-                <th>Difficulty</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let event of generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].arr" >
-                <td class="ignore-first">{{ event.gw }}</td>
-                <td>{{ event.opp1 }}</td>
-                <td [style.background]="getEventColor(event.diff1)">
-                  {{ event.diff1 }}
-                </td>
-                <td>{{ event.opp2 }}</td>
-                <td [style.background]="getEventColor(event.diff2)">
-                  {{ event.diff2 }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+				<div class="table-wrapper">
+					<table class="table rotation"  *ngIf="generalData.teams && generalData.rotation">
+						<thead>
+							<tr>
+								<th class="ignore-first">GW</th>
+								<th>Opponent 1</th>
+								<th>Difficulty</th>
+								<th>Opponent 2</th>
+								<th>Difficulty</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let event of generalData.rotation[op_events.rot_team_1 + 'and' + op_events.rot_team_2].arr" >
+								<td class="ignore-first">{{ event.gw }}</td>
+								<td>{{ event.opp1 }}</td>
+								<td [style.background]="getEventColor(event.diff1)">
+									{{ event.diff1 }}
+								</td>
+								<td>{{ event.opp2 }}</td>
+								<td [style.background]="getEventColor(event.diff2)">
+									{{ event.diff2 }}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-        <div class="loading" *ngIf="!generalData.teams">
-          <md-spinner></md-spinner>
-        </div>
-      </div>
-      
-      <!-- Event difficulty -->
-      <div class="col mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>stars</md-icon>
-          Fixture Difficulty
-        </h1>
+				<div class="loading" *ngIf="!generalData.teams">
+					<mat-spinner></mat-spinner>
+				</div>
+			</div>
 
-        <div class="table-wrapper">
-          <table class="table clickable events"  *ngIf="generalData.teams || generalData.rotation">
-            <thead>
-              <tr>
-                <th>Team</th>
-                <th><div class="abbr" mdTooltip="Home Strength">HS</div></th>
-                <th><div class="abbr" mdTooltip="Away Strength">AS</div></th>
-                <th>Average</th>
-                <th>Product</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let team of generalData.teams; let i=index"
-                (click)="showPopupTeam(generalData.teams, i)">
-                <td>{{ team.name }}</td>
-                <td>
-          				<input type="number" class="blank" fpl-no-click
-                    [(ngModel)]="team.strength_h" (ngModelChange)="updateEvents()">
-                </td>
-                <td>
-          				<input type="number" class="blank" fpl-no-click
-                    [(ngModel)]="team.strength_a" (ngModelChange)="updateEvents()">
-                </td>
-                <td [style.background]="getEventColor(team.event_sum)">
-                  {{ team.event_sum }}
-                </td>
-                <td [style.background]="getEventColor(team.event_prod)">
-                  {{ team.event_prod }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+			<!-- Event difficulty -->
+			<div class="col mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>stars</mat-icon>
+					Fixture Difficulty
+				</h1>
 
-        <div class="loading" *ngIf="!generalData.teams || !generalData.rotation">
-          <md-spinner></md-spinner>
-        </div>
-      </div>
-    </div>
-  </md-tab>
+				<div class="table-wrapper">
+					<table class="table clickable events"  *ngIf="generalData.teams && generalData.rotation">
+						<thead>
+							<tr>
+								<th>Team</th>
+								<th><div class="abbr" matTooltip="Home Strength">HS</div></th>
+								<th><div class="abbr" matTooltip="Away Strength">AS</div></th>
+								<th>Average</th>
+								<th>Product</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let team of generalData.teams; let i=index"
+								(click)="showPopupTeam(i)">
+								<td>{{ team.name }}</td>
+								<td>
+									<input type="number" class="blank" fpl-no-click
+										[(ngModel)]="team.strength_h" (ngModelChange)="updateEvents()">
+								</td>
+								<td>
+									<input type="number" class="blank" fpl-no-click
+										[(ngModel)]="team.strength_a" (ngModelChange)="updateEvents()">
+								</td>
+								<td [style.background]="getEventColor(team.event_sum)">
+									{{ team.event_sum }}
+								</td>
+								<td [style.background]="getEventColor(team.event_prod)">
+									{{ team.event_prod }}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-  <!-- Predictor tab -->
-  <md-tab>
-    <div class="content">
-      <!-- Options -->
-      <div class="col options mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>settings</md-icon>
-          Options
-        </h1>
+				<div class="loading" *ngIf="!generalData.teams && !generalData.rotation">
+					<mat-spinner></mat-spinner>
+				</div>
+			</div>
+		</div>
+	</mat-tab>
 
-        <ul>
-          <h2>Budget mode</h2>
-          <li>
-            <md-select color="accent" [(ngModel)]="op_predictor.budget_mode">
-              <md-option value="total" (click)="op_predictor.budget_mode = 'total'">
-                Total budget
-              </md-option>
-              <md-option value="pos" (click)="op_predictor.budget_mode = 'pos'">
-                Budget by position
-              </md-option>
-            </md-select>
-          </li>
-          <ng-container *ngIf="op_predictor.budget_mode == 'total'">
-            <li>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Total budget"
-                  [(ngModel)]="op_predictor.budget_total">
-              </md-input-container>
-            </li>
-          </ng-container>
-          <ng-container *ngIf="op_predictor.budget_mode == 'pos'">
-            <li>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Goalkeeper budget"
-                  [(ngModel)]="op_predictor.budget_pos[1]">
-              </md-input-container>
-            </li>
-            <li>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Defender budget"
-                  [(ngModel)]="op_predictor.budget_pos[2]">
-              </md-input-container>
-            </li>
-            <li>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Midfield budget"
-                  [(ngModel)]="op_predictor.budget_pos[3]">
-              </md-input-container>
-            </li>
-            <li>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Forward budget"
-                  [(ngModel)]="op_predictor.budget_pos[4]">
-              </md-input-container>
-            </li>
-          </ng-container>
-        </ul>
+	<!-- Predictor tab -->
+	<mat-tab>
+		<div class="content">
+			<!-- Options -->
+			<div class="col options mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>settings</mat-icon>
+					Options
+				</h1>
 
-        <!-- Posisiton weights -->
-        <fpl-expandable-menu>
-          <header md-ripple>
-            <span>Advanced</span>
-            <md-icon>keyboard_arrow_down</md-icon>
-          </header>
-          <main>
-            <div>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Goalkeeper weight"
-                  [(ngModel)]="op_predictor.weights[1]">
-              </md-input-container>
-            </div>
-            <div>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Defender weight"
-                  [(ngModel)]="op_predictor.weights[2]">
-              </md-input-container>
-            </div>
-            <div>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Midfield weight"
-                  [(ngModel)]="op_predictor.weights[3]">
-              </md-input-container>
-            </div>
-            <div>
-              <md-input-container color="accent">
-        				<input mdInput type="number" placeholder="Forward weight"
-                  [(ngModel)]="op_predictor.weights[4]">
-              </md-input-container>
-            </div>
-          </main>
-        </fpl-expandable-menu>
+				<ul>
+					<h2>Budget mode</h2>
+					<li>
+						<mat-select color="accent" [(ngModel)]="op_predictor.budget_mode">
+							<mat-option value="total" (click)="op_predictor.budget_mode = 'total'">
+								Total budget
+							</mat-option>
+							<mat-option value="pos" (click)="op_predictor.budget_mode = 'pos'">
+								Budget by position
+							</mat-option>
+						</mat-select>
+					</li>
+					<ng-container *ngIf="op_predictor.budget_mode == 'total'">
+						<li>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Total budget"
+									[(ngModel)]="op_predictor.budget_total">
+							</mat-form-field>
+						</li>
+					</ng-container>
+					<ng-container *ngIf="op_predictor.budget_mode == 'pos'">
+						<li>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Goalkeeper budget"
+									[(ngModel)]="op_predictor.budget_pos[1]">
+							</mat-form-field>
+						</li>
+						<li>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Defender budget"
+									[(ngModel)]="op_predictor.budget_pos[2]">
+							</mat-form-field>
+						</li>
+						<li>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Midfield budget"
+									[(ngModel)]="op_predictor.budget_pos[3]">
+							</mat-form-field>
+						</li>
+						<li>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Forward budget"
+									[(ngModel)]="op_predictor.budget_pos[4]">
+							</mat-form-field>
+						</li>
+					</ng-container>
+				</ul>
 
-        <footer>
-          <button md-button (click)="predict()">Predict</button>
-        </footer>
-      </div>
+				<!-- Posisiton weights -->
+				<fpl-expandable-menu>
+					<header mat-ripple>
+						<span>Advanced</span>
+						<mat-icon>keyboard_arrow_down</mat-icon>
+					</header>
+					<main>
+						<div>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Goalkeeper weight"
+									[(ngModel)]="op_predictor.weights[1]">
+							</mat-form-field>
+						</div>
+						<div>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Defender weight"
+									[(ngModel)]="op_predictor.weights[2]">
+							</mat-form-field>
+						</div>
+						<div>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Midfield weight"
+									[(ngModel)]="op_predictor.weights[3]">
+							</mat-form-field>
+						</div>
+						<div>
+							<mat-form-field color="accent">
+								<input matInput type="number" placeholder="Forward weight"
+									[(ngModel)]="op_predictor.weights[4]">
+							</mat-form-field>
+						</div>
+					</main>
+				</fpl-expandable-menu>
 
-      <div class="col mat-elevation-z4">
-        <h1 class="primary">
-          <md-icon>bubble_chart</md-icon>
-          Predictor
-        </h1>
+				<footer>
+					<button mat-button (click)="predict()">Predict</button>
+				</footer>
+			</div>
 
-        <!-- {{ (op_predictor.team.score).toFixed(1) }} -->
-        <table class="table predicted-stats">
-          <thead>
-            <tr>
-              <th colspan="6">
-                Caculated points are from highest predicted scoring team, with captain set on the highest predicted scoring player.
-              </th>
-            </tr>
-            <tr>
-              <th>ITB</th>
-              <th>Total Points</th>
-              <th>GW Points</th>
-              <th>xP</th>
-              <th>xP (Next)</th>
-              <th>Avg Form</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>£{{ op_predictor.team.itb }}</td>
-              <td>{{ op_predictor.team.total_points }}</td>
-              <td>{{ op_predictor.team.event_points }}</td>
-              <td>{{ (op_predictor.team.ep_this / 1).toFixed(1) }}</td>
-              <td>{{ (op_predictor.team.ep_next / 1).toFixed(1) }}</td>
-              <td>{{ (op_predictor.team.form / 15).toFixed(1) }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="predicted-team">
-          <!-- GKPs -->
-          <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
-              <div *ngIf="i < 2" class="player-card mat-elevation-z4"
-                (click)="showPopupPlayer(player)">
-                <img [src]="player.url">
-                <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
-              </div>
-            </ng-container>
-          </div>
-          <!-- DEFs -->
-          <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
-              <div *ngIf="i > 1 && i < 7" class="player-card mat-elevation-z4"
-                (click)="showPopupPlayer(player)">
-                <img [src]="player.url">
-                <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
-              </div>
-            </ng-container>
-          </div>
-          <!-- MIDs -->
-          <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
-              <div *ngIf="i > 6 && i < 12" class="player-card mat-elevation-z4"
-                (click)="showPopupPlayer(player)">
-                <img [src]="player.url">
-                <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
-              </div>
-            </ng-container>
-          </div>
-          <!-- FWDs -->
-          <div class="player-row">
-            <ng-container *ngFor="let player of op_predictor.team.players; let i=index">
-              <div *ngIf="i > 11" class="player-card mat-elevation-z4"
-                (click)="showPopupPlayer(player)">
-                <img [src]="player.url">
-                <span>{{ player.web_name }}</span>
-                <span>{{ predictorService.getScore(player).toFixed(1) }}</span>
-              </div>
-            </ng-container>
-          </div>
+			<div class="col mat-elevation-z4">
+				<h1 class="primary">
+					<mat-icon>bubble_chart</mat-icon>
+					Predictor
+				</h1>
 
-          <div class="loading" *ngIf="!(op_predictor.team.players.length > 0)">
-            <md-spinner></md-spinner>
-          </div>
-        </div>
-      </div>
-    </div>
-  </md-tab>
-</md-tab-group>
+				<!-- {{ (op_predictor.team.score).toFixed(1) }} -->
+				<table class="table predicted-stats">
+					<thead>
+						<tr>
+							<th colspan="6">
+								Caculated points are from highest predicted scoring team, with captain set on the highest predicted scoring player.
+							</th>
+						</tr>
+						<tr>
+							<th>ITB</th>
+							<th>Total Points</th>
+							<th>GW Points</th>
+							<th>xP</th>
+							<th>xP (Next)</th>
+							<th>Avg Form</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>£{{ op_predictor.team.itb }}</td>
+							<td>{{ op_predictor.team.total_points }}</td>
+							<td>{{ op_predictor.team.event_points }}</td>
+							<td>{{ (op_predictor.team.ep_this / 1).toFixed(1) }}</td>
+							<td>{{ (op_predictor.team.ep_next / 1).toFixed(1) }}</td>
+							<td>{{ (op_predictor.team.form / 15).toFixed(1) }}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="predicted-team">
+					<!-- GKPs -->
+					<div class="player-row">
+						<ng-container *ngFor="let player of op_predictor.team.players; let i=index">
+							<div *ngIf="i < 2" class="player-card mat-elevation-z4"
+								(click)="showPopupPlayer(player)">
+								<img [src]="player.url">
+								<span>{{ player.web_name }}</span>
+								<span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+							</div>
+						</ng-container>
+					</div>
+					<!-- DEFs -->
+					<div class="player-row">
+						<ng-container *ngFor="let player of op_predictor.team.players; let i=index">
+							<div *ngIf="i > 1 && i < 7" class="player-card mat-elevation-z4"
+								(click)="showPopupPlayer(player)">
+								<img [src]="player.url">
+								<span>{{ player.web_name }}</span>
+								<span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+							</div>
+						</ng-container>
+					</div>
+					<!-- MIDs -->
+					<div class="player-row">
+						<ng-container *ngFor="let player of op_predictor.team.players; let i=index">
+							<div *ngIf="i > 6 && i < 12" class="player-card mat-elevation-z4"
+								(click)="showPopupPlayer(player)">
+								<img [src]="player.url">
+								<span>{{ player.web_name }}</span>
+								<span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+							</div>
+						</ng-container>
+					</div>
+					<!-- FWDs -->
+					<div class="player-row">
+						<ng-container *ngFor="let player of op_predictor.team.players; let i=index">
+							<div *ngIf="i > 11" class="player-card mat-elevation-z4"
+								(click)="showPopupPlayer(player)">
+								<img [src]="player.url">
+								<span>{{ player.web_name }}</span>
+								<span>{{ predictorService.getScore(player).toFixed(1) }}</span>
+							</div>
+						</ng-container>
+					</div>
+
+					<div class="loading" *ngIf="!(op_predictor.team.players.length > 0)">
+						<mat-spinner></mat-spinner>
+					</div>
+				</div>
+			</div>
+		</div>
+	</mat-tab>
+</mat-tab-group>

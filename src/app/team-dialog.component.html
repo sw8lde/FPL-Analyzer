@@ -1,11 +1,11 @@
-<md-dialog-content style="padding: 0">
+<mat-dialog-content style="padding: 0">
   <div id="popup-header">
 		<div id="team-info">
 			<div><h3>{{ teams[index].name }}</h3></div>
 			<div>
 				Next fixture:
-				{{ teams[teams[index].next_event_fixture[0].opponent].short_name }}
-				{{ teams[index].next_event_fixture.is_home ? '(H)' : '(A)' }}
+				{{ teams[teams[index].events[current_event + 1].opponent - 1].short_name }}
+				{{ teams[index].events[current_event + 1].is_home ? '(H)' : '(A)' }}
 			</div>
 		</div>
 	</div>
@@ -41,9 +41,9 @@
 	</table>
 
   <fpl-expandable-menu class="no-scroll">
-    <header md-ripple>
+    <header mat-ripple>
       <span>Fixtures</span>
-      <md-icon>keyboard_arrow_down</md-icon>
+      <mat-icon>keyboard_arrow_down</mat-icon>
     </header>
     <main>
 			<table class="table">
@@ -72,4 +72,4 @@
 			</table>
     </main>
   </fpl-expandable-menu>
-</md-dialog-content>
+</mat-dialog-content>

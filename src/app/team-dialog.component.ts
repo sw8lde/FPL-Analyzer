@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MD_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material';
 import { FplService } from './fpl.service';
 
 @Component({
@@ -12,11 +12,13 @@ import { FplService } from './fpl.service';
 })
 export class TeamDialogComponent {
   teams: any;
-  index: number;
+	index: number;
+	current_event: number;
 
-  constructor(@Inject(MD_DIALOG_DATA) public data: any, private fplService: FplService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fplService: FplService) {
     this.teams = data.teams;
     this.index = data.index;
+    this.current_event = data.current_event;
   }
 
   getEventColor(diff: number): string {

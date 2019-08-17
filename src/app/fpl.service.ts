@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { IPlayer } from './player';
-import { Jsonp } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { HttpRequest, HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class FplService {
-  constructor(private _jsonp: Jsonp) {}
+  constructor(private http: HttpClient) {}
 
 	createEventMap(generalData: any, events: any): void {
 		events.forEach(event => {
@@ -75,20 +74,12 @@ export class FplService {
     return colors[Math.round(diff)];
   }
 
-	getEventData(cb: (valy: any) => void): void {
-    this._jsonp.request('https://json2jsonp.com/?url=https://fantasy.premierleague.com/drf/fixtures/&callback=JSONP_CALLBACK')
-      .map(res => res.json())
-      .subscribe(
-        cb,
-        console.error);
+	getEventData(cb: (value: any) => void): void {
+		this.http.jsonp('https://json2jsonp.com/?url=https://fantasy.premierleague.com/api/fixtures/', 'callback').subscribe(cb);
 	}
 
-  getGeneralData(cb: (value: any) => void): void {
-    this._jsonp.request('https://json2jsonp.com/?url=https://fantasy.premierleague.com/drf/bootstrap-static&callback=JSONP_CALLBACK')
-      .map(res => res.json())
-      .subscribe(
-        cb,
-        console.error);
+	getGeneralData(cb: (value: any) => void): void {
+    this.http.jsonp('https://json2jsonp.com/?url=https://fantasy.premierleague.com/api/bootstrap-static/', 'callback').subscribe(cb);
   }
 
 	updatePlayers(players: any): IPlayer[] {

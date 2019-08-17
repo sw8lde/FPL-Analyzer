@@ -4,22 +4,23 @@ import { FplExpandableMenuDirective } from './fpl-expandable-menu.directive';
 import { FplNoClickDirective } from './fpl-no-click.directive';
 import { FplService } from './fpl.service';
 import { FormsModule } from '@angular/forms';
-import { JsonpModule } from '@angular/http';
+import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import {
-  MdButtonModule,
-  MdCheckboxModule,
-  MdDialogModule,
-  MdMenuModule,
-  MdInputModule,
-  MdProgressSpinnerModule,
-  MdRadioModule,
-  MdRippleModule,
-  MdSnackBarModule,
-  MdSelectModule,
-  MdSliderModule,
-  MdTabsModule,
-  MdToolbarModule,
-  MdTooltipModule
+	MatButtonModule,
+  MatCheckboxModule,
+  MatDialogModule,
+	MatIconModule,
+  MatInputModule,
+  MatMenuModule,
+  MatProgressSpinnerModule,
+  MatRadioModule,
+  MatRippleModule,
+  MatSelectModule,
+  MatSliderModule,
+  MatSnackBarModule,
+  MatTabsModule,
+  MatToolbarModule,
+  MatTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { PlayerDialogComponent } from './player-dialog.component';
@@ -42,24 +43,26 @@ import { AppComponent } from './app.component';
     TeamDialogComponent
   ],
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
+    BrowserModule,
     FormsModule,
-    JsonpModule,
-    MdButtonModule,
-    MdCheckboxModule,
-    MdDialogModule,
-    MdMenuModule,
-    MdInputModule,
-    MdProgressSpinnerModule,
-    MdRadioModule,
-    MdRippleModule,
-    MdSnackBarModule,
-    MdSelectModule,
-    MdSliderModule,
-    MdTabsModule,
-    MdToolbarModule,
-    MdTooltipModule
+		HttpClientJsonpModule,
+    HttpClientModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+		MatIconModule,
+    MatInputModule,
+		MatMenuModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatSnackBarModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule
   ],
 	providers: [ FplService, PredictorService ],
   bootstrap: [ AppComponent ]

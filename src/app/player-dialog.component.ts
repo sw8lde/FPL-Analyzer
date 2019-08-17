@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MD_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
 
@@ -15,7 +15,7 @@ export class PlayerDialogComponent {
   player: IPlayer;
   teams: any;
 
-  constructor(@Inject(MD_DIALOG_DATA) public data: any, private fplService: FplService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fplService: FplService) {
     this.player = data.player;
     this.teams = data.teams;
   }

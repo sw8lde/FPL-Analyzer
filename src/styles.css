@@ -45,7 +45,7 @@ input::-webkit-inner-spin-button {
 
 .mat-menu-item { text-transform: none; }
 
-md-icon {
+mat-icon {
   font-family: 'Material Icons' !important;
   font-size: 24px;
   text-transform: lowercase !important;
@@ -90,7 +90,7 @@ md-icon {
 	padding: 24px;
 }
 
-.col h1 md-icon {
+.col h1 mat-icon {
 	font-size: 32px;
 	margin-right: 12px;
 }
@@ -175,7 +175,7 @@ input.blank {
 	width: 18px;
 }
 
-.table .dir md-icon {
+.table .dir mat-icon {
 	font-size: 18px;
 }
 
@@ -210,7 +210,7 @@ input.blank {
   padding: 16px;
 }
 
-.pagination md-select {
+.pagination mat-select {
   padding: 0;
   margin: 0 16px;
 }
@@ -220,6 +220,6 @@ input.blank {
   font-size: .8em;
 }
 
-.pagination .skip md-icon + md-icon{
+.pagination .skip mat-icon + mat-icon{
   margin-left: -16px;
 }

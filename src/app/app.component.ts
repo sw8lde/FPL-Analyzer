@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FplService } from './fpl.service';
 import { IPlayer } from './player';
-import { MdDialog, MdSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { PlayerDialogComponent } from './player-dialog.component';
 import { PredictorService } from './predictor.service';
 import { TeamDialogComponent } from './team-dialog.component';
@@ -12,7 +12,7 @@ export interface ICol {
 	label_icon?: string;
 	label_full?: string;
 	field: string;
-  show?: boolean;
+	show?: boolean;
 }
 
 export interface IFilter {
@@ -24,12 +24,12 @@ export interface IFilter {
 }
 
 @Component({
-  selector: 'app-root',
+	selector: 'app-root',
 	styleUrls: [
 		'./app.component.css',
 		'./fpl-expandable-menu.directive.css'
 	],
-  templateUrl: './app.component.html'
+	templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
 	cols: ICol[];
@@ -43,8 +43,8 @@ export class AppComponent implements OnInit {
 	tabIndex: number;
 
 	constructor(private fplService: FplService,
-		public dialog: MdDialog,
-		public snackBar: MdSnackBar,
+		public dialog: MatDialog,
+		public snackBar: MatSnackBar,
 		public predictorService: PredictorService) {
 		this.filteredPlayers = [];
 		this.generalData = {};
@@ -75,6 +75,15 @@ export class AppComponent implements OnInit {
 				this.generalData = res;
 				this.filteredPlayers = fplService.updatePlayers(res.elements);
 				this.filterPlayers();
+
+				// get current event
+				for(let i = 0; i < this.generalData.events.length; i++) {
+					if(!this.generalData.events[i].finished) {
+						this.generalData.current_event = i;
+						break;
+					}
+				}
+
 				resolve(this.generalData);
 			});
 		});
@@ -87,7 +96,7 @@ export class AppComponent implements OnInit {
 				this.predict();
 			});
 		});
-  }
+	}
 
 	ngOnInit() {
 		this.resetPlayersTable();
@@ -332,7 +341,7 @@ export class AppComponent implements OnInit {
 	}
 
 	resetPlayersTable(): void {
-    this.cols = [
+		this.cols = [
 			{ index: 0, label: 'Player', field: 'web_name', show: true },
 			{ index: 1, label: 'Team', field: 'team', show: true },
 			{ index: 2, label: 'Pos', field: 'element_type', show: true },
@@ -445,52 +454,56 @@ export class AppComponent implements OnInit {
 			'premierleague/photos/players/110x140/p' +
 			player.photo.slice(0, -4) + '.png';
 
-	  this.dialog.open(PlayerDialogComponent, {
-	    data: { player: player, teams: this.generalData.teams }
-	  });
+		this.dialog.open(PlayerDialogComponent, {
+			data: { player: player, teams: this.generalData.teams }
+		});
 	}
 
-	showPopupTeam(teams: any, index: number): void {
+	showPopupTeam(index: number): void {
 		this.dialog.open(TeamDialogComponent, {
-	    data: { teams: teams, index: index }
-	  });
+			data: {
+				teams: this.generalData.teams,
+				index: index,
+				current_event: this.generalData.current_event
+			}
+		});
 	}
 
 	togglePlayersSort(col: ICol): void {
 		if(col.field === this.op_players.sort) {
 			this.op_players.reverse = !this.op_players.reverse;
 			this.filteredPlayers.sort((a, b) => {
-	      let propA = a[this.op_players.sort];
-	      let propB = b[this.op_players.sort];
+				let propA = a[this.op_players.sort];
+				let propB = b[this.op_players.sort];
 
-	      let valueA = isNaN(+propA) ? propA : +propA;
-	      let valueB = isNaN(+propB) ? propB : +propB;
+				let valueA = isNaN(+propA) ? propA : +propA;
+				let valueB = isNaN(+propB) ? propB : +propB;
 
-	      return (valueA < valueB ? -1 : 1) * (this.op_players.reverse ? -1 : 1);
-	    });
+				return (valueA < valueB ? -1 : 1) * (this.op_players.reverse ? -1 : 1);
+			});
 		} else {
 			this.op_players.sort = col.field;
 			this.op_players.reverse = false;
 			this.filteredPlayers.sort((a, b) => {
-	      let propA = a[this.op_players.sort];
-	      let propB = b[this.op_players.sort];
+				let propA = a[this.op_players.sort];
+				let propB = b[this.op_players.sort];
 
-	      let valueA = isNaN(+propA) ? propA : +propA;
-	      let valueB = isNaN(+propB) ? propB : +propB;
+				let valueA = isNaN(+propA) ? propA : +propA;
+				let valueB = isNaN(+propB) ? propB : +propB;
 
-	      return valueA < valueB ? -1 : 1;
-	    });
+				return valueA < valueB ? -1 : 1;
+			});
 		}
 	}
 
 	updateEvents(): void {
-		const nextEvent = this.generalData['current-event'] + 1;
+		const currEvent = this.generalData.current_event;
 
 		this.generalData.teams.forEach(team => {
 			let sum = 0,
 				prod = 1;
 
-			for(let i = nextEvent; i < nextEvent + this.op_events.event_num
+			for(let i = currEvent; i < currEvent + this.op_events.event_num
 				&& i < team.events.length; i++) {
 				if(team.events[i]) {
 					const opponent = this.generalData.teams[team.events[i].opponent - 1];
@@ -513,7 +526,7 @@ export class AppComponent implements OnInit {
 	 * Calculate every teams fixture rotation with every other team
 	 */
 	updateRotation(): void {
-		const nextEvent = this.generalData['current-event'] + 1;
+		const currEvent = this.generalData.current_event;
 		let rotation = {}
 
 		for(let i = 0; i < this.generalData.teams.length; i++) {
@@ -530,7 +543,7 @@ export class AppComponent implements OnInit {
 						arr = [];
 
 				// calc diff for each fixture
-				for(let i = nextEvent; i < nextEvent + this.op_events.event_num
+				for(let i = currEvent; i < currEvent + this.op_events.event_num
 					&& i < team1.events.length; i++) {
 					if(team1.events[i] || team2.events[i]) {
 						const opponent1 = this.generalData.teams[team1.events[i].opponent - 1] || {},
@@ -567,48 +580,8 @@ export class AppComponent implements OnInit {
 			// calculate best rotation for each team
 
 		}
-		
+
 		this.generalData.rotation = rotation;
-	}
-
-
-	/*
-	 * Calculate selected teams fixture rotation
-	 */
-	updateRotationOLD(): void {
-		const nextEvent = this.generalData['current-event'] + 1,
-			team1 = this.generalData.teams[this.op_events.rot_team_1 - 1],
-			team2 = this.generalData.teams[this.op_events.rot_team_2 - 1];
-		let sum = 0,
-			prod = 1,
-			arr = [];
-
-		for(let i = nextEvent; i < nextEvent + this.op_events.event_num
-			&& i < team1.events.length; i++) {
-			if(team1.events[i] || team2.events[i]) {
-				const opponent1 = this.generalData.teams[team1.events[i].opponent - 1] || {},
-					opponent2 = this.generalData.teams[team2.events[i].opponent - 1] || {};
-
-				let diff1 = opponent1['strength_' + (team1.events[i].is_home ? 'a' : 'h')] || 99,
-					diff2 = opponent2['strength_' + (team2.events[i].is_home ? 'a' : 'h')] || 99;
-
-				let minDiff = Math.min(diff1, diff2)
-
-				arr.push({
-					diff1: diff1,
-					diff2: diff2,
-					gw: i,
-					opp1: opponent2.short_name + (team2.events[i].is_home ? '(H)' : '(A)'),
-					opp2: opponent2.short_name + (team2.events[i].is_home ? '(H)' : '(A)')
-				})
-				sum += minDiff;
-				prod *= minDiff;
-			}
-		}
-
-		this.op_events.rot_arr = arr;
-		this.op_events.rot_avg = (sum / this.op_events.event_num).toFixed(2);
-		this.op_events.rot_prod = Math.pow(prod, 1 / this.op_events.event_num).toFixed(2);
 	}
 
 }
